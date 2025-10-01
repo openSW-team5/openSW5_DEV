@@ -8,7 +8,7 @@
 | 이름   | 전공/학번   | 역할   | GitHub ID |
 |--------|-------------|--------|-----------|
 | 이가현 | 정보보안 / 20223319 | PM 🏆 | [Clotilde30603](https://github.com/Clotilde30603) |
-| 손영준 | 정보보안 / 20221783 | 팀원   | [disekyd](https://github.com/disekyd) |
+| 손영준 | 정보보안 / 20211783 | 팀원   | [disekyd](https://github.com/disekyd) |
 | 제갈은지 | 정보보안 / 20233273 | 팀원   | [ingbeee](https://github.com/ingbeee) |
 
 
