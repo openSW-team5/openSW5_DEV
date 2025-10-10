@@ -49,7 +49,7 @@
 
 ## 🛠 기술 스택
 
--   **백엔드**: Python, FastAPI (+ Uvicorn)
+-   **백엔드**: Python, FastAPI (+Uvicorn)
 -   **DB**: SQLite (개발/시연용), DataGrip 관리
 -   **OCR**: Naver Clova OCR API
 -   **프론트엔드**: HTML, Tailwind CSS, HTMX, Alpine.js

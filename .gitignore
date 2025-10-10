@@ -1,0 +1,11 @@
+# Python 캐시 및 환경
+__pycache__/
+*.pyc
+.venv/
+
+# Node.js
+node_modules/
+
+# macOS & VSCode
+.DS_Store
+.vscode/
