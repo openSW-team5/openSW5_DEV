@@ -15,7 +15,6 @@ templates = Jinja2Templates(directory="app/templates")
 def get_connection():
     return sqlite3.connect("app/db/ledger.db")
 
-
 # 기본 페이지 (Jinja2 템플릿)
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
@@ -23,7 +22,6 @@ def home(request: Request):
         "index.html",
         {"request": request, "title": "Home", "msg": "Hello FastAPI + Jinja2!"}
     )
-
 
 # ✅ DB 연결 확인용 라우트
 @app.get("/healthz")
