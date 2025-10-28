@@ -3,6 +3,11 @@ __pycache__/
 *.pyc
 .venv/
 
+# SQLite DB (로컬 생성 전용)
+*.db
+*.sqlite
+*.sqlite3
+
 # Node.js
 node_modules/
 
