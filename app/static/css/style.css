@@ -1,0 +1,57 @@
+/* app/static/css/style.css */
+
+/* 전체 배경과 글꼴 */
+body {
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+/* 상단 네비게이션 바 */
+.site-header {
+  background-color: #2563eb;       /* 파란색 계열 */
+  color: white;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.site-header nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 16px;
+  font-weight: 500;
+}
+
+.site-header nav a:hover {
+  text-decoration: underline;
+}
+
+/* 본문 영역 */
+main {
+  padding: 24px 32px;
+}
+
+/* 버튼 스타일 (있을 경우) */
+button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background-color: #2563eb;
+}
