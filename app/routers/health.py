@@ -7,7 +7,7 @@ router = APIRouter()
 def get_connection():
     return sqlite3.connect("app/db/ledger.db")
 
-@router.get("/healthz")
+@router.get("/health")
 def health_check():
     try:
         conn = get_connection()
