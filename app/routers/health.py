@@ -1,16 +1,13 @@
 # app/routers/health.py
 from fastapi import APIRouter
-import sqlite3
+from app.db.util import get_conn  # ✅ util.py에서 가져옴
 
 router = APIRouter()
-
-def get_connection():
-    return sqlite3.connect("app/db/ledger.db")
 
 @router.get("/health")
 def health_check():
     try:
-        conn = get_connection()
+        conn = get_conn()  # ✅ util.py 함수 사용
         conn.execute("SELECT 1")
         conn.close()
         return {"status": "OK", "db": "Connected"}
