@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 .venv/
+.env
 
 # SQLite DB (로컬 생성 전용)
 *.db
