@@ -36,6 +36,7 @@ CREATE TABLE receipts (
   purchased_at  TEXT NOT NULL,                 -- YYYY-MM-DD
   status        TEXT NOT NULL CHECK(status IN ('PENDING','CONFIRMED')),
   image_path    TEXT,                          -- OCR 원본 파일 경로 (선택)
+  note          TEXT,
   created_at    TEXT DEFAULT (datetime('now')),
   updated_at    TEXT DEFAULT (datetime('now')),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
