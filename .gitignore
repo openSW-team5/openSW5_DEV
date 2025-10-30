@@ -2,6 +2,8 @@
 __pycache__/
 *.pyc
 .venv/
+
+# 환경 변수 
 .env
 
 # SQLite DB (로컬 생성 전용)
@@ -15,3 +17,6 @@ node_modules/
 # macOS & VSCode
 .DS_Store
 .vscode/
+
+# Mock data (local test only)
+app/mock/
