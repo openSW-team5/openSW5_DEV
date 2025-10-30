@@ -3,8 +3,9 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import sqlite3
-from app.routers import health  # ← API 라우터만 분리
+
+from app.routers import health,receipts  # ← API 라우터만 분리
+from app.routers.receipts import router as receipts_router
 
 app = FastAPI(title="OpenSW5")
 
@@ -22,3 +23,4 @@ def home(request: Request):
     )
 
 app.include_router(health.router)
+app.include_router(receipts.router)
