@@ -16,14 +16,22 @@ DROP TABLE IF EXISTS receipts;
 DROP TABLE IF EXISTS users;
 
 ------------------------------------------------------------
--- 사용자 정보 (시연용 단일 계정)
+-- 사용자 정보 (username 기반 로그인)
 ------------------------------------------------------------
 CREATE TABLE users (
   id            INTEGER PRIMARY KEY AUTOINCREMENT,
-  email         TEXT UNIQUE NOT NULL,
-  password_hash TEXT,
+  username      TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name          TEXT NOT NULL,
+  email         TEXT UNIQUE,
+  phone         TEXT,
+  birthdate     TEXT,
   created_at    TEXT DEFAULT (datetime('now'))
 );
+
+-- 자주 조회하는 컬럼 인덱스(선택)
+CREATE UNIQUE INDEX IF NOT EXISTS uq_users_username ON users(username);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_users_email    ON users(email);
 
 ------------------------------------------------------------
 -- 영수증 본문
@@ -39,18 +47,21 @@ CREATE TABLE receipts (
   note          TEXT,
   created_at    TEXT DEFAULT (datetime('now')),
   updated_at    TEXT DEFAULT (datetime('now')),
+  is_deleted    INTEGER NOT NULL DEFAULT 0,    -- ✅ Soft Delete 플래그
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 중복 방지 (동일 사용자+상호+날짜+합계)
+-- ✅ 삭제되지 않은 건만 중복 방지
 CREATE UNIQUE INDEX IF NOT EXISTS uq_receipt_dedup
-ON receipts(user_id, merchant, total, purchased_at);
+ON receipts(user_id, merchant, total, purchased_at)
+WHERE is_deleted = 0;
 
 -- 주요 인덱스
-CREATE INDEX idx_receipts_user ON receipts(user_id);
-CREATE INDEX idx_receipts_date ON receipts(purchased_at);
-CREATE INDEX idx_receipts_merchant ON receipts(merchant);
-CREATE INDEX idx_receipts_status ON receipts(status);
+CREATE INDEX idx_receipts_user      ON receipts(user_id);
+CREATE INDEX idx_receipts_date      ON receipts(purchased_at);
+CREATE INDEX idx_receipts_merchant  ON receipts(merchant);
+CREATE INDEX idx_receipts_status    ON receipts(status);
+CREATE INDEX idx_receipts_isdel     ON receipts(is_deleted);
 
 ------------------------------------------------------------
 -- 영수증 품목
@@ -66,7 +77,7 @@ CREATE TABLE receipt_items (
   FOREIGN KEY (receipt_id) REFERENCES receipts(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_items_receipt ON receipt_items(receipt_id);
+CREATE INDEX idx_items_receipt  ON receipt_items(receipt_id);
 CREATE INDEX idx_items_category ON receipt_items(category);
 
 ------------------------------------------------------------
@@ -79,7 +90,7 @@ CREATE TABLE category_rules (
   priority        INTEGER NOT NULL DEFAULT 100 -- 낮을수록 우선 적용
 );
 
-CREATE INDEX idx_rules_keyword ON category_rules(keyword);
+CREATE INDEX idx_rules_keyword  ON category_rules(keyword);
 CREATE INDEX idx_rules_priority ON category_rules(priority);
 
 ------------------------------------------------------------
@@ -110,14 +121,14 @@ CREATE TABLE alerts (
 );
 
 ------------------------------------------------------------
--- 대시보드용 뷰 (월별 합계 & 카테고리별 합계)
+-- ✅ 대시보드용 뷰 (Soft Delete 반영)
 ------------------------------------------------------------
 CREATE VIEW v_month_totals AS
 SELECT
   substr(purchased_at, 1, 7) AS month,  -- YYYY-MM
   SUM(total) AS month_total
 FROM receipts
-WHERE status = 'CONFIRMED'
+WHERE status = 'CONFIRMED' AND is_deleted = 0
 GROUP BY substr(purchased_at, 1, 7);
 
 CREATE VIEW v_month_category_totals AS
@@ -127,7 +138,7 @@ SELECT
   SUM(ri.qty * ri.price) AS category_total
 FROM receipts r
 JOIN receipt_items ri ON ri.receipt_id = r.id
-WHERE r.status = 'CONFIRMED'
+WHERE r.status = 'CONFIRMED' AND r.is_deleted = 0
 GROUP BY substr(r.purchased_at, 1, 7), COALESCE(ri.category, '미분류');
 
 ------------------------------------------------------------
@@ -141,5 +152,3 @@ BEGIN
   SET updated_at = datetime('now')
   WHERE id = NEW.id;
 END;
-
-                    

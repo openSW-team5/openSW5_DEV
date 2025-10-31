@@ -1,22 +1,20 @@
 # app/main.py
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from app.routers import health,receipts  # ← API 라우터만 분리
-from app.routers.receipts import router as receipts_router
+# ✅ 한 방식으로만 임포트
+from app.routers import health, receipts, users, reports
 
-from dotenv import load_dotenv
-
-load_dotenv()
 app = FastAPI(title="OpenSW5")
 
-# 정적/템플릿 경로는 app/ 하위로 고정
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
-# 기본 페이지 (Jinja2 템플릿)
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(
@@ -24,6 +22,8 @@ def home(request: Request):
         {"request": request, "title": "Home", "msg": "Hello FastAPI + Jinja2!"}
     )
 
-# 라우터 등록
+# ✅ 라우터 등록
 app.include_router(health.router)
 app.include_router(receipts.router)
+app.include_router(users.router)
+app.include_router(reports.router) 
