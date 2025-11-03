@@ -1,5 +1,7 @@
 # app/routers/users.py
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Request, Form, status, HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from datetime import datetime
@@ -8,10 +10,11 @@ import sqlite3
 import secrets
 import hashlib
 import hmac
-
 from app.db.util import get_conn
 
+
 router = APIRouter(prefix="/users", tags=["users"])
+templates = Jinja2Templates(directory="app/templates")
 
 PBKDF2_ALG = "pbkdf2_sha256"
 PBKDF2_ITER = int(os.getenv("PWD_ITERATIONS", "240000"))  # 배포 시 충분히 크게
@@ -103,21 +106,27 @@ def _exists_email(cur: sqlite3.Cursor, email: str) -> bool:
         return False
     return bool(cur.execute("SELECT 1 FROM users WHERE email = ?", (email,)).fetchone())
 
-@router.post("/register", response_model=RegisterOut)
-def register_user(payload: RegisterIn):
-    username = payload.username.strip()
-    name = payload.name.strip()
-    email = payload.email.strip() if payload.email else None
-    phone = payload.phone.strip() if payload.phone else None
-    birthdate = payload.birthdate
+@router.get("/register", response_class=HTMLResponse)
+def register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
 
-    pw_hash = _hash_password(payload.password)
+@router.post("/register", response_model=RegisterOut)
+def register_user_form(
+    username: str = Form(...),
+    password: str = Form(...),
+    name: str = Form(...),
+    email: Optional[str] = Form(None),
+    phone: Optional[str] = Form(None),
+    birthdate: Optional[str] = Form(None),
+):
+    # ↓ 기존 register_user() 내부와 동일한 로직
+    pw_hash = _hash_password(password)
 
     with get_conn() as conn:
         cur = conn.cursor()
-        if _exists_username(cur, username):
+        if _exists_username(cur, username.strip()):
             raise HTTPException(status_code=409, detail="username already exists")
-        if email and _exists_email(cur, email):
+        if email and _exists_email(cur, email.strip()):
             raise HTTPException(status_code=409, detail="email already exists")
 
         cur.execute(
@@ -125,35 +134,45 @@ def register_user(payload: RegisterIn):
             INSERT INTO users (username, password_hash, name, email, phone, birthdate)
             VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (username, pw_hash, name, email, phone, birthdate),
+            (username.strip(), pw_hash, name.strip(),
+             email.strip() if email else None,
+             phone.strip() if phone else None,
+             birthdate),
         )
-        user_id = cur.lastrowid
-        row = cur.execute(
-            "SELECT id, username, name, email, phone, birthdate, created_at FROM users WHERE id = ?",
-            (user_id,),
-        ).fetchone()
+        conn.commit()
 
-    return RegisterOut(
-        id=row["id"],
-        username=row["username"],
-        name=row["name"],
-        email=row["email"],
-        phone=row["phone"],
-        birthdate=row["birthdate"],
-        created_at=row["created_at"],
-    )
+    # 저장 후 홈으로 리다이렉트 (플래시용 쿼리 파라미터 추가)
+    return RedirectResponse(url="/?registered=1", status_code=status.HTTP_303_SEE_OTHER)
 
-@router.post("/login", response_model=LoginOut)
-def login(payload: LoginIn):
-    username = payload.username.strip()
+@router.get("/login", response_class=HTMLResponse)
+async def login_page(request: Request):
+    # 단순히 로그인 폼 렌더링
+    return templates.TemplateResponse("login.html", {"request": request})
+
+
+@router.post("/login")
+async def login_submit(
+    request: Request,
+    username: str = Form(...),
+    password: str = Form(...),
+):
+    u = username.strip()
+
+    # DB 조회
     with get_conn() as conn:
         cur = conn.cursor()
         row = cur.execute(
             "SELECT id, username, name, password_hash FROM users WHERE username = ?",
-            (username,),
+            (u,),
         ).fetchone()
 
-        if not row or not _verify_password(payload.password, row["password_hash"]):
-            raise HTTPException(status_code=401, detail="invalid credentials")
+    # 인증 실패 → 같은 페이지에 에러 표시
+    if not row or not _verify_password(password, row["password_hash"]):
+        return templates.TemplateResponse(
+            "login.html",
+            {"request": request, "error": "아이디 또는 비밀번호가 올바르지 않습니다."},
+            status_code=401,
+        )
 
-        return LoginOut(user_id=row["id"], username=row["username"], name=row["name"])
+    # 인증 성공 → 홈으로 리다이렉트 (세션/쿠키는 이후에 추가)
+    return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
