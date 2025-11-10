@@ -1,4 +1,10 @@
 {
+    "name": "smartledger-frontend",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "tailwindcss -i ./app/static/css/input.css -o ./app/static/css/output.css --watch",
+        "build": "tailwindcss -i ./app/static/css/input.css -o ./app/static/css/output.css --minify"
+    },
     "devDependencies": {
         "autoprefixer": "^10.4.21",
         "postcss": "^8.5.6",
