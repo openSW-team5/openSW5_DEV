@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Splash Screen -->
+<div class="fixed inset-0 bg-background flex items-center justify-center">
+  <div class="w-[365px] h-[128px]">
+    <img src="{{ url_for('static', path='assets/logo.svg') }}" alt="SmartLedger" class="w-full h-full">
+  </div>
+</div>
+
+<!-- 2초 후 메인 페이지로 자동 이동 -->
+<script>
+  setTimeout(function() {
+    window.location.href = '/';
+  }, 2000);
+</script>
+{% endblock %}
