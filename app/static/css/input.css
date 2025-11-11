@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Yde street 폰트 */
+@font-face {
+  font-family: 'Yidstreet';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetL.woff2') format('woff2');
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Yidstreet';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* 커스텀 스타일 */
+@layer base {
+  body {
+    @apply bg-background text-text;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-light text-text px-4 py-2 rounded-lg font-medium hover:bg-gray transition-colors;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-sm p-6;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2 border border-gray-light rounded-lg focus:outline-none focus:border-primary;
+  }
+}
