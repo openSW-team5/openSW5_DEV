@@ -2,20 +2,32 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <title>{{ title or "FastAPI Site" }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title or "SmartLedger" }}</title>
+
+    <!-- Pretendard 폰트 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/output.css') }}">
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
   </head>
-  <body>
+  <body class="min-h-screen flex flex-col">
     <header class="site-header">
-      <h1>My FastAPI Site</h1>
+      <h1>SmartLedger</h1>
 
       <nav class="nav-links">
-        <a href="/">Home</a>
+        <a href="/">홈</a>
         <a href="/users/login">로그인</a>
       </nav>
     </header>
 
-    <main>
+    <main class="flex-1">
       {% block content %}{% endblock %}
     </main>
 
