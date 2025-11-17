@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Yde street 폰트 */
+@font-face {
+  font-family: 'Yidstreet';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetL.woff2') format('woff2');
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Yidstreet';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/YdestreetB.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
 /* 커스텀 스타일 */
 @layer base {
   body {
