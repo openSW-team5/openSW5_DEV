@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Navbar -->
+{% set variant = 'back' %}
+{% include 'components/navbar.html' %}
+
+<div class="max-w-md mx-auto px-5 pb-24">
+  <!-- User Profile Section -->
+  <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787]">
+    <!-- Profile Image -->
+    <div class="relative w-20 h-20">
+      <div class="w-20 h-20 bg-[#C4C4C4] rounded-full flex items-center justify-center overflow-hidden">
+        <!-- User Icon -->
+        <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Head -->
+          <circle cx="35" cy="26.25" r="8.75" fill="black" fill-opacity="0.2"/>
+          <circle cx="35" cy="26.25" r="8.75" stroke="black" stroke-width="4"/>
+          <!-- Body -->
+          <path d="M17.5 52.5C17.5 43.7 24.2 36.5 35 36.5C45.8 36.5 52.5 43.7 52.5 52.5" stroke="black" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- User Name -->
+    <h2 class="font-noto font-bold text-[24px] text-[#1B1B1B]">User</h2>
+
+    <!-- Right Arrow -->
+    <div class="ml-auto">
+      <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16.875 11.25L28.125 22.5L16.875 33.75" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Menu List -->
+  <div class="space-y-0">
+    <!-- Notice Setting -->
+    <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
+      <!-- Bell Icon -->
+      <div class="w-[45px] h-[45px] flex items-center justify-center">
+        <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Bell body -->
+          <path d="M13.125 16.875C13.125 11.7 17.325 7.5 22.5 7.5C27.675 7.5 31.875 11.7 31.875 16.875V26.25L35.625 30V33.75H9.375V30L13.125 26.25V16.875Z" fill="black" fill-opacity="0.2"/>
+          <path d="M13.125 16.875C13.125 11.7 17.325 7.5 22.5 7.5C27.675 7.5 31.875 11.7 31.875 16.875V26.25L35.625 30V33.75H9.375V30L13.125 26.25V16.875Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Bell clapper -->
+          <path d="M19.6875 33.75C19.6875 35.4 20.85 36.5625 22.5 36.5625C24.15 36.5625 25.3125 35.4 25.3125 33.75" stroke="black" stroke-width="3" stroke-linecap="round"/>
+          <!-- Notification dot -->
+          <circle cx="32.8125" cy="10.3125" r="2.8125" fill="black" stroke="black" stroke-width="3"/>
+        </svg>
+      </div>
+
+      <span class="font-noto font-medium text-[24px] text-[#1B1B1B]">알림 설정</span>
+
+      <!-- Right Arrow -->
+      <div class="ml-auto">
+        <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.875 11.25L28.125 22.5L16.875 33.75" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Data Export -->
+    <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
+      <!-- Export Icon -->
+      <div class="w-[45px] h-[45px] flex items-center justify-center">
+        <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Square -->
+          <rect x="7.03125" y="12.6562" width="25.3125" height="25.3125" fill="black" fill-opacity="0.2"/>
+          <rect x="7.03125" y="12.6562" width="25.3125" height="25.3125" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Arrow -->
+          <path d="M23.9062 7.03125H37.9688V21.0938" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M26.7188 18.2812L37.9688 7.03125" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <span class="font-noto font-medium text-[24px] text-[#1B1B1B]">데이터 내보내기</span>
+
+      <!-- Right Arrow -->
+      <div class="ml-auto">
+        <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.875 11.25L28.125 22.5L16.875 33.75" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Category Edit -->
+    <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
+      <!-- Folder Icon -->
+      <div class="w-[45px] h-[45px] flex items-center justify-center">
+        <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Folder -->
+          <path d="M5.625 9.84375H18.75L22.5 13.5938H39.375V35.1562H5.625V9.84375Z" fill="black" fill-opacity="0.2"/>
+          <path d="M5.625 9.84375H18.75L22.5 13.5938H39.375V35.1562H5.625V9.84375Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <span class="font-noto font-medium text-[24px] text-[#1B1B1B]">카테고리 편집</span>
+
+      <!-- Right Arrow -->
+      <div class="ml-auto">
+        <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.875 11.25L28.125 22.5L16.875 33.75" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Additional Settings (Disabled) -->
+    <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] opacity-50 cursor-not-allowed">
+      <!-- Gear Icon -->
+      <div class="w-[45px] h-[45px] flex items-center justify-center">
+        <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Gear center -->
+          <circle cx="22.5" cy="22.5" r="7.03125" fill="black" fill-opacity="0.2"/>
+          <circle cx="22.5" cy="22.5" r="7.03125" stroke="black" stroke-width="3"/>
+          <!-- Gear outer -->
+          <path d="M22.5 5.5125C24.0375 5.5125 25.425 6.3375 26.1375 7.6875L27.9 11.025C28.35 11.8875 29.2125 12.4125 30.15 12.4125H33.975C35.5125 12.4125 36.9 13.2375 37.6125 14.5875L39.375 17.925C40.0875 19.275 39.975 20.925 39.0375 22.1625L36.45 25.4625C35.8875 26.1375 35.8875 27.1125 36.45 27.7875L39.0375 31.0875C39.975 32.325 40.0875 33.975 39.375 35.325L37.6125 38.6625C36.9 40.0125 35.5125 40.8375 33.975 40.8375H30.15C29.2125 40.8375 28.35 41.3625 27.9 42.225L26.1375 45.5625C25.425 46.9125 24.0375 47.7375 22.5 47.7375C20.9625 47.7375 19.575 46.9125 18.8625 45.5625L17.1 42.225C16.65 41.3625 15.7875 40.8375 14.85 40.8375H11.025C9.4875 40.8375 8.1 40.0125 7.3875 38.6625L5.625 35.325C4.9125 33.975 5.025 32.325 5.9625 31.0875L8.55 27.7875C9.1125 27.1125 9.1125 26.1375 8.55 25.4625L5.9625 22.1625C5.025 20.925 4.9125 19.275 5.625 17.925L7.3875 14.5875C8.1 13.2375 9.4875 12.4125 11.025 12.4125H14.85C15.7875 12.4125 16.65 11.8875 17.1 11.025L18.8625 7.6875C19.575 6.3375 20.9625 5.5125 22.5 5.5125Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <span class="font-noto font-medium text-[24px] text-[#878787]">설정 추가</span>
+
+      <!-- Right Arrow -->
+      <div class="ml-auto">
+        <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16.875 11.25L28.125 22.5L16.875 33.75" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+{% set active = 'user' %}
+{% include 'components/footer.html' %}
+{% endblock %}
