@@ -3,53 +3,119 @@
 {% block title %}로그인 | OpenSW5{% endblock %}
 
 {% block content %}
-<div class="flex justify-center items-center min-h-[80vh] bg-gray-50">
-  <div class="bg-white/90 backdrop-blur-sm p-10 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
-    <h2 class="text-3xl font-bold text-center mb-8 text-indigo-700 tracking-tight">로그인</h2>
+<div class="flex justify-center items-center min-h-screen bg-background">
+  <!-- 로그인 컨테이너 -->
+  <div class="relative w-[428px] h-[926px] bg-white rounded-[63px] shadow-2xl">
 
-    <form method="post" action="/users/login" class="space-y-6">
-      <!-- 아이디 -->
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">아이디</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-        />
+    <!-- 베리언트3 navbar -->
+    <div class="absolute w-[362px] h-[62px] left-[37px] top-[33px]">
+      <!-- Back Button -->
+      <a href="/" class="absolute left-0 right-[86.19%] top-[5px] h-[50px] flex items-center justify-center">
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+          <path d="M31.25 9.375L15.625 25L31.25 40.625" stroke="#000000" stroke-width="3"/>
+        </svg>
+      </a>
+
+      <!-- Logo -->
+      <div class="absolute left-[28.18%] right-[30.11%] top-[30.65%] bottom-[33.87%]">
+        <span class="font-yidstreet font-bold text-[17px] leading-[22px] flex items-center justify-center text-center text-black w-full h-full">
+          SmartLedger
+        </span>
       </div>
 
-      <!-- 비밀번호 -->
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">비밀번호</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-        />
-      </div>
+      <!-- Ellipse 2 (녹색 테두리) -->
+      <div class="absolute left-[82.87%] right-0 top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"></div>
 
-      <!-- 로그인 버튼 -->
+      <!-- Ellipse 1 (회색 배경) -->
+      <div class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%] bg-gray-light rounded-full"></div>
+    </div>
+
+    <!-- 로그인 타이틀 -->
+    <div class="absolute w-[120px] h-[52px] left-[calc(50%-60px)] top-[162px]">
+      <h2 class="font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black">로그인</h2>
+    </div>
+
+    <!-- Form -->
+    <form method="post" action="/users/login">
+      <!-- ID 라벨 -->
+      <label for="username" class="absolute left-[54px] top-[281px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1">
+        ID
+      </label>
+
+      <!-- ID Input (Rectangle 14) -->
+      <input
+        type="text"
+        id="username"
+        name="username"
+        required
+        placeholder="아이디"
+        style="box-sizing: border-box;"
+        class="absolute w-[357px] h-[58px] left-[calc(50%-178.5px)] top-[290px] border-[3px] border-[#C4C4C4] rounded-[15px] px-4 focus:outline-none focus:border-primary font-montserrat"
+      />
+
+      <!-- Password 라벨 -->
+      <label for="password" class="absolute left-[54px] top-[385px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1">
+        Password
+      </label>
+
+      <!-- Password Input (Rectangle 15) -->
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+        placeholder="비밀번호"
+        style="box-sizing: border-box;"
+        class="absolute w-[357px] h-[58px] left-[35px] top-[394px] border-[3px] border-[#C4C4C4] rounded-[15px] px-4 focus:outline-none focus:border-primary font-montserrat"
+      />
+
+      <!-- 로그인 버튼 (Google Button Container) -->
       <button
         type="submit"
-        class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 hover:shadow-md active:scale-[0.98] transition"
+        class="absolute w-[351px] h-[54px] left-[calc(50%-175.5px)] top-[498px] bg-primary border border-text rounded-[70px] flex items-center justify-center font-satoshi font-medium text-[16px] leading-[22px] text-text"
       >
         로그인
       </button>
     </form>
 
     <!-- 회원가입 링크 -->
-    <p class="text-center text-sm text-gray-600 mt-6">
-      계정이 없으신가요?
-      <a href="/users/register" class="text-indigo-600 hover:underline font-medium">회원가입</a>
+    <p class="absolute w-[192px] h-[19px] left-[119px] top-[568px] font-sans font-medium text-[16px] leading-[19px] text-center text-gray">
+      계정이 없으신가요? <a href="/users/register" class="hover:underline" style="color: #0024F3;">회원가입</a>
     </p>
 
     {% if error %}
-      <p class="text-red-600 text-center mt-4 font-medium">{{ error }}</p>
+      <p class="absolute left-[50%] -translate-x-1/2 top-[620px] text-warning text-center font-medium">{{ error }}</p>
     {% endif %}
+
+    <!-- Default Footer (top: 839px) -->
+    <div class="absolute w-full h-[95px] left-0 top-[839px] bg-white shadow-[0_-17px_33px_-9px_rgba(0,0,0,0.15)] rounded-b-[63px]">
+
+      <!-- Vector (Home) - left: 13.55%, right: 79.71% -->
+      <a href="/" class="absolute left-[13.55%] top-[calc(50%-14px)] h-[28px] w-[28px] border-[3.5px] border-black rounded-lg"></a>
+
+      <!-- Group 17 (List) - left: 29.67%, right: 64.02% -->
+      <a href="/transactions" class="absolute left-[29.67%] top-[calc(50%-13.5px)] h-[27px]">
+        <div class="flex flex-col gap-[4px]">
+          <div class="w-[27px] h-[3.5px] bg-black"></div>
+          <div class="w-[27px] h-[3.5px] bg-black"></div>
+        </div>
+      </a>
+
+      <!-- Group 16 (Plus Button) - left: 184px, top: 14px -->
+      <a href="/receipts/upload" class="absolute left-[184px] top-[14px] w-[60px] h-[60px]">
+        <div class="w-full h-full bg-primary rounded-full flex items-center justify-center shadow-lg">
+          <span class="text-white text-[40px] font-bold leading-none mb-1">+</span>
+        </div>
+      </a>
+
+      <!-- Group (Chart) - left: 64.02%, right: 29.21% -->
+      <a href="/reports" class="absolute left-[64.02%] top-[calc(50%-11.6px)] h-[23.2px] w-[27px] border-[3.5px] border-black rounded"></a>
+
+      <!-- Vector (Profile) - left: 81.07%, right: 13.47% -->
+      <a href="/users/profile" class="absolute left-[81.07%] top-[calc(50%-12.5px)] h-[25px] w-[25px] border-[3.5px] border-black rounded-full"></a>
+
+    </div>
+
   </div>
 </div>
 {% endblock %}

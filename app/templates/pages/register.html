@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Navbar -->
+{% set variant = 'back' %}
+{% include 'components/navbar.html' %}
+
+<div class="max-w-md mx-auto px-5 pb-24 pt-6">
+  <!-- Title -->
+  <h1 class="font-yidstreet font-bold text-[40px] text-center mb-8">회원가입</h1>
+
+  <form method="post" action="/users/register" class="space-y-4">
+    <!-- ID Input -->
+    <div>
+      <label for="username" class="block font-montserrat font-medium text-[15px] text-[#C4C4C4] mb-2 ml-5">ID</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        required
+        placeholder="아이디를 입력하세요"
+        class="w-full h-[58px] px-5 border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] focus:outline-none focus:border-primary transition-colors"
+      />
+    </div>
+
+    <!-- Password Input -->
+    <div>
+      <label for="password" class="block font-montserrat font-medium text-[15px] text-[#C4C4C4] mb-2 ml-5">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+        placeholder="비밀번호를 입력하세요"
+        class="w-full h-[58px] px-5 border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] focus:outline-none focus:border-primary transition-colors"
+      />
+    </div>
+
+    <!-- Name Input -->
+    <div>
+      <label for="name" class="block font-montserrat font-medium text-[15px] text-[#C4C4C4] mb-2 ml-5">이름</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        placeholder="이름을 입력하세요"
+        class="w-full h-[58px] px-5 border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] focus:outline-none focus:border-primary transition-colors"
+      />
+    </div>
+
+    <!-- Email Input (Optional) -->
+    <div>
+      <label for="email" class="block font-montserrat font-medium text-[15px] text-[#C4C4C4] mb-2 ml-5">이메일(선택)</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="abcd@email.com"
+        class="w-full h-[58px] px-5 border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] text-[#C4C4C4] focus:outline-none focus:border-primary transition-colors"
+      />
+    </div>
+
+    <!-- Phone Input (Optional) -->
+    <div>
+      <label for="phone" class="block font-montserrat font-medium text-[15px] text-[#C4C4C4] mb-2 ml-5">전화번호(선택)</label>
+      <input
+        type="tel"
+        id="phone"
+        name="phone"
+        placeholder="010-0000-0000"
+        class="w-full h-[58px] px-5 border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] text-[#C4C4C4] focus:outline-none focus:border-primary transition-colors"
+      />
+    </div>
+
+    <!-- Birthdate Input (Optional) -->
+    <div>
+      <label for="birthdate" class="block font-montserrat font-medium text-[15px] text-[#C4C4C4] mb-2 ml-5">생년월일(선택)</label>
+      <input
+        type="date"
+        id="birthdate"
+        name="birthdate"
+        placeholder="0000-00-00"
+        class="w-full h-[58px] px-5 border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] text-[#C4C4C4] focus:outline-none focus:border-primary transition-colors"
+      />
+    </div>
+
+    <!-- Register Button -->
+    <button
+      type="submit"
+      class="w-full h-[54px] bg-primary border border-[#111111] rounded-[70px] font-satoshi font-medium text-[16px] text-[#111111] hover:bg-[#a0c900] transition-colors flex items-center justify-center gap-2 mt-8"
+    >
+      가입하기
+    </button>
+  </form>
+
+  <!-- Login Link -->
+  <p class="text-center font-noto font-medium text-[16px] text-[#878787] mt-6">
+    이미 계정이 있으신가요? <a href="/users/login" class="text-[#111111] hover:underline">로그인</a>
+  </p>
+
+  <!-- Error Message -->
+  {% if error %}
+    <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+      <p class="text-red-600 text-center font-medium">{{ error }}</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Footer -->
+{% set active = 'none' %}
+{% include 'components/footer.html' %}
+{% endblock %}
