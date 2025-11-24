@@ -87,33 +87,10 @@
       <p class="absolute left-[50%] -translate-x-1/2 top-[620px] text-warning text-center font-medium">{{ error }}</p>
     {% endif %}
 
-    <!-- Default Footer (top: 839px) -->
-    <div class="absolute w-full h-[95px] left-0 top-[839px] bg-white shadow-[0_-17px_33px_-9px_rgba(0,0,0,0.15)] rounded-b-[63px]">
-
-      <!-- Vector (Home) - left: 13.55%, right: 79.71% -->
-      <a href="/" class="absolute left-[13.55%] top-[calc(50%-14px)] h-[28px] w-[28px] border-[3.5px] border-black rounded-lg"></a>
-
-      <!-- Group 17 (List) - left: 29.67%, right: 64.02% -->
-      <a href="/transactions" class="absolute left-[29.67%] top-[calc(50%-13.5px)] h-[27px]">
-        <div class="flex flex-col gap-[4px]">
-          <div class="w-[27px] h-[3.5px] bg-black"></div>
-          <div class="w-[27px] h-[3.5px] bg-black"></div>
-        </div>
-      </a>
-
-      <!-- Group 16 (Plus Button) - left: 184px, top: 14px -->
-      <a href="/receipts/upload" class="absolute left-[184px] top-[14px] w-[60px] h-[60px]">
-        <div class="w-full h-full bg-primary rounded-full flex items-center justify-center shadow-lg">
-          <span class="text-white text-[40px] font-bold leading-none mb-1">+</span>
-        </div>
-      </a>
-
-      <!-- Group (Chart) - left: 64.02%, right: 29.21% -->
-      <a href="/reports" class="absolute left-[64.02%] top-[calc(50%-11.6px)] h-[23.2px] w-[27px] border-[3.5px] border-black rounded"></a>
-
-      <!-- Vector (Profile) - left: 81.07%, right: 13.47% -->
-      <a href="/users/profile" class="absolute left-[81.07%] top-[calc(50%-12.5px)] h-[25px] w-[25px] border-[3.5px] border-black rounded-full"></a>
-
+    <!-- Footer -->
+    <div class="absolute w-full left-0 top-[839px] rounded-b-[63px] overflow-hidden">
+      {% set active = 'default' %}
+      {% include 'components/footer.html' %}
     </div>
 
   </div>
