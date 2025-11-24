@@ -2,60 +2,60 @@
 {% block title %}회원가입 | OpenSW5{% endblock %}
 
 {% block content %}
-<div class="flex justify-center items-center min-h-[70vh]">
-  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-    <h2 class="text-2xl font-semibold text-center mb-6">회원가입</h2>
+<div class="flex justify-center items-center min-h-[70vh] bg-background">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md border border-gray-light">
+    <h2 class="text-2xl font-semibold text-center mb-6 text-text">회원가입</h2>
 
     <form method="post" action="/users/register" class="space-y-4">
       <div>
-        <label for="username" class="block text-sm font-medium text-gray-700">아이디 *</label>
+        <label for="username" class="block text-sm font-medium text-text">아이디 *</label>
         <input id="username" name="username" required
-               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"/>
+               class="w-full px-3 py-2 border border-gray-light rounded-md focus:outline-none focus:ring-2 focus:ring-primary"/>
       </div>
 
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">비밀번호 *</label>
+        <label for="password" class="block text-sm font-medium text-text">비밀번호 *</label>
         <input type="password" id="password" name="password" required
-               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"/>
+               class="w-full px-3 py-2 border border-gray-light rounded-md focus:outline-none focus:ring-2 focus:ring-primary"/>
       </div>
 
       <div>
-        <label for="name" class="block text-sm font-medium text-gray-700">이름 *</label>
+        <label for="name" class="block text-sm font-medium text-text">이름 *</label>
         <input id="name" name="name" required
-               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"/>
+               class="w-full px-3 py-2 border border-gray-light rounded-md focus:outline-none focus:ring-2 focus:ring-primary"/>
       </div>
 
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-700">이메일 (선택)</label>
+        <label for="email" class="block text-sm font-medium text-text">이메일 (선택)</label>
         <input type="email" id="email" name="email"
-               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"/>
+               class="w-full px-3 py-2 border border-gray-light rounded-md focus:outline-none focus:ring-2 focus:ring-primary"/>
       </div>
 
       <div>
-        <label for="phone" class="block text-sm font-medium text-gray-700">전화번호 (선택)</label>
+        <label for="phone" class="block text-sm font-medium text-text">전화번호 (선택)</label>
         <input id="phone" name="phone"
-               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"/>
+               class="w-full px-3 py-2 border border-gray-light rounded-md focus:outline-none focus:ring-2 focus:ring-primary"/>
       </div>
 
       <div>
-        <label for="birthdate" class="block text-sm font-medium text-gray-700">생년월일 (선택)</label>
+        <label for="birthdate" class="block text-sm font-medium text-text">생년월일 (선택)</label>
         <input type="date" id="birthdate" name="birthdate"
-               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"/>
+               class="w-full px-3 py-2 border border-gray-light rounded-md focus:outline-none focus:ring-2 focus:ring-primary"/>
       </div>
 
       <button type="submit"
-              class="w-full bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition">
+              class="w-full bg-primary text-text py-2 rounded-md font-semibold hover:bg-primary/90 transition">
         가입하기
       </button>
     </form>
 
     {% if error %}
-      <p class="text-red-600 text-center mt-4">{{ error }}</p>
+      <p class="text-warning text-center mt-4">{{ error }}</p>
     {% endif %}
 
-    <p class="text-center text-sm text-gray-600 mt-6">
+    <p class="text-center text-sm text-gray mt-6">
       이미 계정이 있으신가요?
-      <a href="/users/login" class="text-indigo-600 hover:underline font-medium">로그인</a>
+      <a href="/users/login" class="text-primary hover:underline font-medium">로그인</a>
     </p>
   </div>
 </div>
