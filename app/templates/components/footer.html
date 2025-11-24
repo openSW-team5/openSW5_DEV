@@ -1,53 +1,86 @@
 {# Footer Component (Bottom Tab Bar) #}
-{# 사용법: include 'components/footer.html' with active='home' #}
+{# 사용법: {% set active = 'home' %} {% include 'components/footer.html' %} #}
 {# 활성 탭: active='home' | 'wallet' | 'chart' | 'notification' | 'default' #}
 
 {% set active = active|default('default') %}
 
-<nav class="absolute bottom-0 left-0 w-full h-[95px] bg-white shadow-[0_-17px_33px_-9px_rgba(0,0,0,0.15)] rounded-b-[63px]">
-  <div class="relative w-full h-full">
+{# Rectangle 3 - Background #}
+<nav class="relative w-full h-[95px] bg-white shadow-[0_-17px_33px_-9px_rgba(0,0,0,0.15)]">
 
-    {# Home Icon - left: 13.55% (58px in 428px) #}
-    <a href="/" class="absolute left-[58px] top-1/2 -translate-y-1/2">
-      <div class="w-[28px] h-[28px] border-[3.5px] {% if active == 'home' %}border-primary{% else %}border-black{% endif %} rounded-lg"></div>
-      {% if active == 'home' %}
-      <div class="absolute left-1/2 -translate-x-1/2 bottom-[-15px] w-[15px] h-[3px] bg-primary rounded-full"></div>
-      {% endif %}
-    </a>
-
-    {# List Icon - left: 29.67% (127px in 428px) #}
-    <a href="/transactions" class="absolute left-[127px] top-1/2 -translate-y-1/2">
-      <div class="flex flex-col gap-[4.5px]">
-        <div class="w-[27px] h-[3.5px] {% if active == 'wallet' %}bg-primary{% else %}bg-black{% endif %} rounded"></div>
-        <div class="w-[27px] h-[3.5px] {% if active == 'wallet' %}bg-primary{% else %}bg-black{% endif %} rounded"></div>
-      </div>
-      {% if active == 'wallet' %}
-      <div class="absolute left-1/2 -translate-x-1/2 bottom-[-15px] w-[15px] h-[3px] bg-primary rounded-full"></div>
-      {% endif %}
-    </a>
-
-    {# Plus Button - center: 42.99% (184px in 428px) #}
-    <a href="/receipts/upload" class="absolute left-[184px] -top-[6px]">
-      <div class="w-[60px] h-[60px] bg-primary rounded-full flex items-center justify-center shadow-lg">
-        <span class="text-white text-[40px] font-bold leading-none mb-1">+</span>
-      </div>
-    </a>
-
-    {# Chart Icon - left: 64.02% (274px in 428px) #}
-    <a href="/reports" class="absolute left-[274px] top-1/2 -translate-y-1/2">
-      <div class="w-[27px] h-[23px] border-[3.5px] {% if active == 'chart' %}border-primary{% else %}border-black{% endif %} rounded"></div>
-      {% if active == 'chart' %}
-      <div class="absolute left-1/2 -translate-x-1/2 bottom-[-15px] w-[15px] h-[3px] bg-primary rounded-full"></div>
-      {% endif %}
-    </a>
-
-    {# Profile Icon - left: 81.07% (347px in 428px) #}
-    <a href="/users/profile" class="absolute left-[347px] top-1/2 -translate-y-1/2">
-      <div class="w-[25px] h-[25px] border-[3.5px] {% if active == 'notification' %}border-primary{% else %}border-black{% endif %} rounded-full"></div>
-      {% if active == 'notification' %}
-      <div class="absolute left-1/2 -translate-x-1/2 bottom-[-15px] w-[15px] h-[3px] bg-primary rounded-full"></div>
-      {% endif %}
-    </a>
-
+  {# Plus Button #}
+  <div class="absolute w-[60px] h-[60px] left-[184px] top-[14px]">
+    <svg class="w-full h-full" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="30" fill="#B4DE00"/>
+      <path d="M26.7227 42V19H33.2269V42H26.7227ZM18 33.5368V27.4632H42V33.5368H18Z" fill="white"/>
+    </svg>
   </div>
+
+  {# Home Icon #}
+  {% if active == 'home' %}
+  <a href="/" class="absolute left-[12.62%] right-[79.67%] top-[calc(50%-44px/2-8.5px)] h-[44px]">
+    <svg class="w-full h-full" viewBox="0 0 37 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.75 26.3606H23.75M27.4167 33.75H9.08333C7.13841 33.75 5.27315 32.9715 3.89788 31.5857C2.52262 30.1999 1.75 28.3204 1.75 26.3606V14.737C1.74997 13.4665 2.07508 12.2173 2.69393 11.1103C3.31277 10.0033 4.20444 9.07573 5.28283 8.41725L14.4495 2.81977C15.5955 2.11999 16.91 1.75 18.25 1.75C19.59 1.75 20.9045 2.11999 22.0505 2.81977L31.2172 8.41725C32.2953 9.07557 33.1868 10.0028 33.8056 11.1095C34.4245 12.2162 34.7497 13.4649 34.75 14.7352V26.3606C34.75 28.3204 33.9774 30.1999 32.6021 31.5857C31.2268 32.9715 29.3616 33.75 27.4167 33.75Z" stroke="#B4DE00" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="12.25" y1="42.25" x2="24.25" y2="42.25" stroke="#B4DE00" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </a>
+  {% else %}
+  <a href="/" class="absolute left-[13.55%] right-[79.71%] top-[calc(50%-28px/2-1.5px)] h-[28px]">
+    <svg class="w-full h-full" viewBox="0 0 33 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.3662 23.2843H20.9823M24.1877 29.75H8.16077C6.46053 29.75 4.82993 29.0688 3.62767 27.8562C2.42542 26.6437 1.75 24.9991 1.75 23.2843V13.1137C1.74998 12.0019 2.03418 10.9089 2.57518 9.94027C3.11617 8.97161 3.89567 8.16001 4.83839 7.58384L12.8519 2.68605C13.8537 2.07374 15.0028 1.75 16.1742 1.75C17.3457 1.75 18.4948 2.07374 19.4966 2.68605L27.5101 7.58384C28.4526 8.15987 29.2319 8.97122 29.7729 9.93956C30.3139 10.9079 30.5982 12.0006 30.5985 13.112V23.2843C30.5985 24.9991 29.9231 26.6437 28.7208 27.8562C27.5186 29.0688 25.888 29.75 24.1877 29.75Z" stroke="black" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+  {% endif %}
+
+  {# Chart (List Icon) #}
+  {% if active == 'chart' %}
+  <a href="/transactions" class="absolute left-[29.91%] right-[62.38%] top-[calc(50%-40px/2-6.43px)] h-[40px]">
+    <svg class="w-full h-full" viewBox="0 0 33 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="10.5" y1="38.5" x2="22.5" y2="38.5" stroke="#B4DE00" stroke-width="3" stroke-linecap="round"/>
+      <path d="M3.66667 32.1316H29.3333C31.3555 32.1316 33 30.5304 33 28.5614V3.57018C33 1.60122 31.3555 0 29.3333 0H3.66667C1.6445 0 0 1.60122 0 3.57018V28.5614C0 30.5304 1.6445 32.1316 3.66667 32.1316ZM3.66667 3.57018H29.3333L29.3352 28.5614H3.66667V3.57018Z" fill="#B4DE00"/>
+      <path d="M19.3473 15.4552L12.014 11.885L7.526 20.623L10.8077 22.2189L13.653 16.6762L20.9863 20.2463L25.4743 11.5083L22.1927 9.91248L19.3473 15.4552Z" fill="#B4DE00"/>
+    </svg>
+  </a>
+  {% else %}
+  <a href="/transactions" class="absolute left-[29.67%] right-[64.02%] top-[calc(50%-27px/2-2px)] h-[27px]">
+    <svg class="w-full h-full" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 27H24C25.6545 27 27 25.6545 27 24V3C27 1.3455 25.6545 0 24 0H3C1.3455 0 0 1.3455 0 3V24C0 25.6545 1.3455 27 3 27ZM3 3H24L24.0015 24H3V3Z" fill="black"/>
+      <path d="M15.8295 12.987L9.82947 9.98697L6.15747 17.3295L8.84247 18.6705L11.1705 14.013L17.1705 17.013L20.8425 9.67047L18.1575 8.32947L15.8295 12.987Z" fill="black"/>
+    </svg>
+  </a>
+  {% endif %}
+
+  {# Wallet (Reports Icon) #}
+  {% if active == 'wallet' %}
+  <a href="/reports" class="absolute left-[63.08%] right-[29.91%] top-[calc(50%-38px/2-5.47px)] h-[38px]">
+    <svg class="w-full h-full" viewBox="0 0 34 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1.75 8.26429H31.75M1.75 5.00714C1.75 4.14329 2.06607 3.31483 2.62868 2.70399C3.19129 2.09316 3.95435 1.75 4.75 1.75H28.75C29.5456 1.75 30.3087 2.09316 30.8713 2.70399C31.4339 3.31483 31.75 4.14329 31.75 5.00714V24.55C31.75 25.4138 31.4339 26.2423 30.8713 26.8531C30.3087 27.464 29.5456 27.8071 28.75 27.8071H4.75C3.95435 27.8071 3.19129 27.464 2.62868 26.8531C2.06607 26.2423 1.75 25.4138 1.75 24.55V5.00714Z" stroke="#B4DE00" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M1.75 14.7786H12.25C12.25 16.4071 13.15 19.6643 16.75 19.6643C20.35 19.6643 21.25 16.4071 21.25 14.7786H31.75" stroke="#B4DE00" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="10.25" y1="36.25" x2="22.25" y2="36.25" stroke="#B4DE00" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </a>
+  {% else %}
+  <a href="/reports" class="absolute left-[64.02%] right-[29.21%] top-[calc(50%-23.2px/2-3.9px)] h-[23.2px]">
+    <svg class="w-full h-full" viewBox="0 0 33 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1.75 7.55H30.75M1.75 4.65C1.75 3.88087 2.05553 3.14325 2.59939 2.59939C3.14325 2.05553 3.88087 1.75 4.65 1.75H27.85C28.6191 1.75 29.3568 2.05553 29.9006 2.59939C30.4445 3.14325 30.75 3.88087 30.75 4.65V22.05C30.75 22.8191 30.4445 23.5568 29.9006 24.1006C29.3568 24.6445 28.6191 24.95 27.85 24.95H4.65C3.88087 24.95 3.14325 24.6445 2.59939 24.1006C2.05553 23.5568 1.75 22.8191 1.75 22.05V4.65Z" stroke="black" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M1.75 13.35H11.9C11.9 14.8 12.77 17.7 16.25 17.7C19.73 17.7 20.6 14.8 20.6 13.35H30.75" stroke="black" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+  {% endif %}
+
+  {# Bell (Profile Icon) #}
+  {% if active == 'notification' %}
+  <a href="/users/profile" class="absolute left-[80.84%] right-[12.15%] top-[calc(50%-45px/2-9px)] h-[45px]">
+    <svg class="w-full h-full" viewBox="0 0 34 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19.6335 33.1056C19.3404 33.6057 18.9199 34.0209 18.4138 34.3095C17.9078 34.5981 17.3341 34.75 16.7501 34.75C16.1662 34.75 15.5924 34.5981 15.0864 34.3095C14.5804 34.0209 14.1598 33.6057 13.8668 33.1056M26.7501 11.6518C26.7501 9.02565 25.6966 6.5071 23.8212 4.65016C21.9458 2.79322 19.4023 1.75 16.7501 1.75C14.098 1.75 11.5544 2.79322 9.67905 4.65016C7.80369 6.5071 6.75012 9.02565 6.75012 11.6518C6.75012 23.2038 1.75012 26.5044 1.75012 26.5044H31.7501C31.7501 26.5044 26.7501 23.2038 26.7501 11.6518Z" stroke="#B4DE00" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="10.2501" y1="43.25" x2="22.2501" y2="43.25" stroke="#B4DE00" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </a>
+  {% else %}
+  <a href="/users/profile" class="absolute left-[81.07%] right-[13.47%] top-[calc(50%-25px/2-3px)] h-[25px]">
+    <svg class="w-full h-full" viewBox="0 0 27 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15.6594 25.5042C15.4315 25.8831 15.1044 26.1976 14.7108 26.4163C14.3172 26.6349 13.871 26.75 13.4168 26.75C12.9626 26.75 12.5164 26.6349 12.1228 26.4163C11.7292 26.1976 11.4021 25.8831 11.1742 25.5042M21.1946 9.25133C21.1946 7.26185 20.3751 5.35386 18.9165 3.94709C17.4579 2.54032 15.4796 1.75 13.4168 1.75C11.354 1.75 9.37569 2.54032 7.91707 3.94709C6.45845 5.35386 5.63901 7.26185 5.63901 9.25133C5.63901 18.0029 1.75012 20.5033 1.75012 20.5033H25.0835C25.0835 20.5033 21.1946 18.0029 21.1946 9.25133Z" stroke="black" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+  {% endif %}
+
 </nav>
