@@ -22,6 +22,13 @@ def home(request: Request):
         {"request": request, "title": "Home", "msg": "Hello FastAPI + Jinja2!"}
     )
 
+@app.get("/transactions", response_class=HTMLResponse)
+def transactions_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/transactions.html",
+        {"request": request, "title": "거래내역"}
+    )
+
 # ✅ 라우터 등록
 app.include_router(health.router)
 app.include_router(receipts.router)
