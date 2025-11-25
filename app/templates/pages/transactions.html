@@ -1,8 +1,221 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- 거래내역 페이지 -->
-<div class="container mx-auto">
-  <!-- TODO: 거래내역 목록 추가 -->
+<!-- Navbar -->
+{% set variant = 'default' %}
+{% include 'components/navbar.html' %}
+
+<div class="max-w-md mx-auto px-5 pb-[120px] pt-[120px]">
+  <!-- Header with Year Selector -->
+  <div class="flex items-center justify-center mb-6 relative">
+    <select class="absolute left-0 font-montserrat font-semibold text-[15px] text-text bg-transparent border-none outline-none appearance-none">
+      <option>Year</option>
+      <option>2024</option>
+      <option>2023</option>
+    </select>
+    <svg class="absolute left-[46px] top-1/2 transform -translate-y-1/2 pointer-events-none" width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M10.9375 4.375L7 8.3125L3.0625 4.375" stroke="#000000" stroke-width="1.5"/>
+    </svg>
+    <h1 class="font-montserrat font-bold text-[25px] text-text">통계</h1>
+  </div>
+
+  <!-- Chart Card -->
+  <div class="bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-6 mb-8">
+    <!-- Chart with grid lines -->
+    <div class="relative h-[183px]">
+      <!-- Y-axis labels -->
+      <div class="absolute left-0 top-0 bottom-0 w-[30px] flex flex-col justify-between text-right pr-3">
+        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦40K</span>
+        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦30K</span>
+        <span class="font-montserrat font-semibold text-[10px] text-text">￦20K</span>
+        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦10K</span>
+        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦5K</span>
+        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦1K</span>
+        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦0.5K</span>
+      </div>
+
+      <!-- Chart area -->
+      <div class="absolute left-[50px] right-0 top-0 bottom-0">
+        <!-- Grid lines -->
+        <div class="absolute inset-0 flex flex-col justify-between">
+          <div class="border-t border-dashed border-[#F4F4F4]"></div>
+          <div class="border-t border-dashed border-[#F4F4F4]"></div>
+          <div class="border-t border-dashed border-[#F4F4F4]"></div>
+          <div class="border-t border-dashed border-[#F4F4F4]"></div>
+          <div class="border-t border-dashed border-[#F4F4F4]"></div>
+          <div class="border-t border-dashed border-[#F4F4F4]"></div>
+          <div class="border-t border-dashed border-[#F4F4F4]"></div>
+        </div>
+
+        <!-- Chart line (simplified) -->
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 272 152" preserveAspectRatio="none">
+          <!-- Gradient fill -->
+          <defs>
+            <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:rgba(180, 222, 0, 0.47);stop-opacity:1" />
+              <stop offset="100%" style="stop-color:rgba(196, 196, 196, 0);stop-opacity:0" />
+            </linearGradient>
+          </defs>
+          <path d="M0 100 L68 80 L136 60 L204 40 L272 30 L272 152 L0 152 Z" fill="url(#chartGradient)"/>
+          <path d="M0 100 L68 80 L136 60 L204 40 L272 30" stroke="#B4DE00" stroke-width="2" fill="none"/>
+          <circle cx="272" cy="30" r="4" fill="white" stroke="#B4DE00" stroke-width="2"/>
+        </svg>
+
+        <!-- X-axis labels -->
+        <div class="absolute bottom-[-20px] left-0 right-0 flex justify-between px-2">
+          <span class="font-montserrat font-semibold text-[10px] text-gray-light">Jan</span>
+          <span class="font-montserrat font-semibold text-[10px] text-gray-light">Feb</span>
+          <span class="font-montserrat font-semibold text-[10px] text-gray-light">Mar</span>
+          <span class="font-montserrat font-semibold text-[10px] text-text">Apr</span>
+          <span class="font-montserrat font-semibold text-[10px] text-gray-light">May</span>
+        </div>
+
+        <!-- Tooltip -->
+        <div class="absolute top-[20px] right-[10px] bg-white px-3 py-1 rounded shadow-sm">
+          <span class="font-montserrat font-semibold text-[15px] text-text">￦ 20,000</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Header with View Toggle -->
+  <div class="flex items-center justify-between mb-5">
+    <button class="w-[35px] h-[35px] flex items-center justify-center">
+      <svg width="35" height="35" viewBox="0 0 35 35" fill="none">
+        <circle cx="17.5" cy="17.5" r="16.5" stroke="#000000" stroke-width="2"/>
+        <circle cx="17.5" cy="17.5" r="8" stroke="#000000" stroke-width="2"/>
+      </svg>
+    </button>
+
+    <h2 class="font-montserrat font-bold text-[25px] text-text">History</h2>
+
+    <!-- Month/List Toggle -->
+    <div class="w-[71px] h-[29px] bg-[#F0F0F0] rounded-[10px] flex relative">
+      <button class="w-[30px] h-[25px] m-[2px] rounded-[10px] flex items-center justify-center">
+        <svg width="23" height="23" viewBox="0 0 23 23" fill="none">
+          <path d="M5.75 5.75H17.25V4.3125C17.25 4.17147 17.194 4.03644 17.0944 3.93689C16.9949 3.83735 16.8599 3.78125 16.7188 3.78125H6.28125C6.14022 3.78125 6.00519 3.83735 5.90564 3.93689C5.8061 4.03644 5.75 4.17147 5.75 4.3125V5.75Z" fill="#000000" opacity="0.2"/>
+          <path d="M16.7188 3.78125H6.28125C5.98647 3.78125 5.75 4.01772 5.75 4.3125V18.6875C5.75 18.9823 5.98647 19.2188 6.28125 19.2188H16.7188C17.0135 19.2188 17.25 18.9823 17.25 18.6875V4.3125C17.25 4.01772 17.0135 3.78125 16.7188 3.78125Z" stroke="#000000" stroke-width="1.5"/>
+          <path d="M14.375 2.875V5.75M8.625 2.875V5.75M5.75 8.625H17.25" stroke="#000000" stroke-width="1.5"/>
+        </svg>
+      </button>
+      <button class="w-[30px] h-[25px] m-[2px] rounded-[10px] bg-black bg-opacity-[0.39] flex items-center justify-center">
+        <svg width="23" height="23" viewBox="0 0 23 23" fill="none">
+          <path d="M8.625 5.75H17.25V4.3125C17.25 3.98516 16.9898 3.78125 16.6625 3.78125H8.625V5.75Z" fill="white" opacity="0.2"/>
+          <path d="M6.28125 5.75H17.25M6.28125 11.5H17.25M6.28125 17.25H17.25" stroke="white" stroke-width="1.5"/>
+          <path d="M4.3125 6.71875C4.71809 6.71875 5.04688 6.38996 5.04688 5.98438C5.04688 5.57879 4.71809 5.25 4.3125 5.25C3.90691 5.25 3.57812 5.57879 3.57812 5.98438C3.57812 6.38996 3.90691 6.71875 4.3125 6.71875Z" fill="white"/>
+          <path d="M4.3125 12.4688C4.71809 12.4688 5.04688 12.14 5.04688 11.7344C5.04688 11.3288 4.71809 11 4.3125 11C3.90691 11 3.57812 11.3288 3.57812 11.7344C3.57812 12.14 3.90691 12.4688 4.3125 12.4688Z" fill="white"/>
+          <path d="M4.3125 18.2188C4.71809 18.2188 5.04688 17.89 5.04688 17.4844C5.04688 17.0788 4.71809 16.75 4.3125 16.75C3.90691 16.75 3.57812 17.0788 3.57812 17.4844C3.57812 17.89 3.90691 18.2188 4.3125 18.2188Z" fill="white"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Today Section -->
+  <div class="mb-5">
+    <h3 class="font-montserrat font-medium text-[20px] text-text text-center mb-4">Today</h3>
+
+    <!-- Transaction Cards -->
+    <div id="today-transactions" class="space-y-4">
+      <!-- Transaction cards will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Yesterday Section -->
+  <div class="mb-5">
+    <h3 class="font-montserrat font-medium text-[20px] text-text text-center mb-4">Yesterday</h3>
+
+    <div id="yesterday-transactions" class="space-y-4">
+      <!-- Transaction cards will be loaded here -->
+    </div>
+  </div>
 </div>
+
+<!-- Footer -->
+{% set active = 'chart' %}
+{% include 'components/footer.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  const todayContainer = document.getElementById('today-transactions');
+  const yesterdayContainer = document.getElementById('yesterday-transactions');
+
+  // Load receipts from API
+  async function loadReceipts() {
+    try {
+      const response = await fetch('/receipts');
+      const result = await response.json();
+
+      if (result.status === 'ok' && result.data) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        const todayReceipts = [];
+        const yesterdayReceipts = [];
+
+        result.data.forEach(receipt => {
+          const receiptDate = new Date(receipt.purchased_at);
+          receiptDate.setHours(0, 0, 0, 0);
+
+          if (receiptDate.getTime() === today.getTime()) {
+            todayReceipts.push(receipt);
+          } else if (receiptDate.getTime() === yesterday.getTime()) {
+            yesterdayReceipts.push(receipt);
+          }
+        });
+
+        renderTransactions(todayReceipts, todayContainer);
+        renderTransactions(yesterdayReceipts, yesterdayContainer);
+      }
+    } catch (error) {
+      console.error('Error loading receipts:', error);
+    }
+  }
+
+  function renderTransactions(receipts, container) {
+    if (receipts.length === 0) {
+      container.innerHTML = '<p class="text-center text-gray font-roboto text-[14px]">거래내역이 없습니다</p>';
+      return;
+    }
+
+    const html = receipts.map(receipt => {
+      const amount = receipt.total.toLocaleString();
+      const isExpense = receipt.total > 0; // Assuming positive = expense
+
+      return `
+        <div class="bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-5 cursor-pointer hover:shadow-lg transition-shadow"
+             onclick="window.location.href='/receipt/${receipt.id}'">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <!-- Icon -->
+              <div class="w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                  <path d="M3 9L5 3H19L21 9M3 9V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V9M3 9H21M9 13C9 14.6569 10.3431 16 12 16C13.6569 16 15 14.6569 15 13" stroke="#828282" stroke-width="2"/>
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-montserrat font-semibold text-[20px] text-text">${receipt.merchant}</h4>
+                <p class="font-montserrat text-[15px] text-[#727272]">${receipt.status === 'CONFIRMED' ? 'Food' : 'Pending'}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-montserrat font-semibold text-[20px] ${isExpense ? 'text-warning' : 'text-success'}">
+                ${isExpense ? '-' : '+'}${amount}원
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = html;
+  }
+
+  // Load receipts on page load
+  await loadReceipts();
+});
+</script>
+
 {% endblock %}
