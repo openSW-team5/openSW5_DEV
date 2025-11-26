@@ -1,158 +1,159 @@
 {% extends "base.html" %}
 
-{% block title %}회원가입 | OpenSW5{% endblock %}
-
 {% block content %}
-<div class="flex justify-center items-center min-h-screen bg-background">
-  <!-- 회원가입 컨테이너 -->
-  <div class="relative w-[428px] h-[926px] bg-white rounded-[63px] shadow-2xl overflow-hidden">
+<!-- Navbar (베리언트3) -->
+<nav class="absolute w-[362px] h-[62px] left-[37px] top-[33px] z-50">
+  <!-- Back Button -->
+  <a href="/users/login" class="absolute left-0 top-[5px] w-[50px] h-[50px] flex items-center justify-center">
+    <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+      <path d="M31.25 9.375L15.625 25L31.25 40.625" stroke="#000000" stroke-width="3"/>
+    </svg>
+  </a>
 
-    <!-- 베리언트3 navbar (녹색 테두리) -->
-    <div class="absolute w-[362px] h-[62px] left-[37px] top-[33px]">
-      <!-- Back Button -->
-      <a href="/users/login" class="absolute left-0 right-[86.19%] top-[5px] h-[50px] flex items-center justify-center">
-        <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
-          <path d="M31.25 9.375L15.625 25L31.25 40.625" stroke="#000000" stroke-width="3"/>
-        </svg>
-      </a>
+  <!-- Logo -->
+  <div class="absolute left-[28.18%] right-[30.11%] top-[30.65%] bottom-[33.87%]">
+    <span class="font-yidstreet font-bold text-[17px] leading-[22px] flex items-center justify-center text-center text-black w-full h-full">
+      SmartLedger
+    </span>
+  </div>
 
-      <!-- Logo -->
-      <div class="absolute left-[28.18%] right-[30.11%] top-[30.65%] bottom-[33.87%]">
-        <span class="font-yidstreet font-bold text-[17px] leading-[22px] flex items-center justify-center text-center text-black w-full h-full">
-          SmartLedger
-        </span>
-      </div>
+  <!-- Ellipse 2 (녹색 테두리) -->
+  <div class="absolute left-[82.87%] right-0 top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"></div>
 
-      <!-- Ellipse 2 (녹색 테두리) -->
-      <div class="absolute left-[82.87%] right-0 top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"></div>
+  <!-- Ellipse 1 (회색 배경) -->
+  <div class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%] bg-gray-light rounded-full"></div>
+</nav>
 
-      <!-- Ellipse 1 (회색 배경) -->
-      <div class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%] bg-gray-light rounded-full"></div>
+<!-- Footer -->
+<div class="absolute bottom-0 left-0 right-0">
+  {% set active = 'default' %}
+  {% include 'components/footer.html' %}
+</div>
+
+<!-- Scrollable Content Area -->
+<div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
+  <div class="relative" style="min-height: 800px; padding-bottom: 100px;">
+    <!-- 회원가입 Title -->
+    <h1 class="absolute w-[160px] h-[52px] left-[calc(50%-160px/2)] top-[12px] font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black">
+      회원가입
+    </h1>
+
+  <!-- Form -->
+  <form method="post" action="/users/register">
+    <!-- ID Label -->
+    <label for="username" class="absolute left-[54px] top-[76px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
+    ID
+  </label>
+
+    <!-- ID Input (Rectangle 14) -->
+    <input
+      type="text"
+      id="username"
+      name="username"
+      required
+      placeholder="아이디를 입력하세요"
+      class="absolute w-[357px] h-[58px] left-[calc(50%-357px/2+0.5px)] top-[85px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+      style="box-sizing: border-box; padding: 0 20px;"
+    />
+
+    <!-- Password Label -->
+    <label for="password" class="absolute left-[55px] top-[155px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
+      Password
+    </label>
+
+    <!-- Password Input (Rectangle 15) -->
+    <input
+      type="password"
+      id="password"
+      name="password"
+      required
+      placeholder="비밀번호를 입력하세요"
+      class="absolute w-[357px] h-[58px] left-[36px] top-[164px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+      style="box-sizing: border-box; padding: 0 20px;"
+    />
+
+    <!-- 이름 Label -->
+    <label for="name" class="absolute left-[56px] top-[234px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
+      이름
+    </label>
+
+    <!-- 이름 Input (Rectangle 16) -->
+    <input
+      type="text"
+      id="name"
+      name="name"
+      required
+      placeholder="이름을 입력하세요"
+      class="absolute w-[357px] h-[58px] left-[37px] top-[243px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+      style="box-sizing: border-box; padding: 0 20px;"
+    />
+
+    <!-- 이메일(선택) Label -->
+    <label for="email" class="absolute left-[55px] top-[313px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
+      이메일(선택)
+    </label>
+
+    <!-- 이메일 Input (Rectangle 17) -->
+    <input
+      type="email"
+      id="email"
+      name="email"
+      placeholder="abcd@email.com"
+      class="absolute w-[357px] h-[58px] left-[36px] top-[322px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+      style="box-sizing: border-box; padding: 0 20px;"
+    />
+
+    <!-- 전화번호(선택) Label -->
+    <label for="phone" class="absolute left-[55px] top-[392px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
+      전화번호(선택)
+    </label>
+
+    <!-- 전화번호 Input (Rectangle 17) -->
+    <input
+      type="tel"
+      id="phone"
+      name="phone"
+      placeholder="010-0000-0000"
+      class="absolute w-[357px] h-[58px] left-[36px] top-[401px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+      style="box-sizing: border-box; padding: 0 20px;"
+    />
+
+    <!-- 생년월일(선택) Label -->
+    <label for="birthdate" class="absolute left-[54px] top-[471px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
+      생년월일(선택)
+    </label>
+
+    <!-- 생년월일 Input (Rectangle 17) -->
+    <input
+      type="date"
+      id="birthdate"
+      name="birthdate"
+      placeholder="0000-00-00"
+      class="absolute w-[357px] h-[58px] left-[35px] top-[480px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+      style="box-sizing: border-box; padding: 0 20px;"
+    />
+
+    <!-- 가입하기 버튼 (Google Button Container) -->
+    <button
+      type="submit"
+      class="absolute w-[351px] h-[54px] left-[calc(50%-351px/2+3.5px)] top-[614px] bg-[#B4DE00] border border-[#111111] rounded-[70px] flex flex-row justify-center items-center font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-[#a0c900] transition-colors"
+      style="box-sizing: border-box; padding: 16px 10px; gap: 8px;"
+    >
+      가입하기
+    </button>
+  </form>
+
+  <!-- 이미 계정이 있으신가요? 로그인 -->
+  <p class="absolute w-[225px] h-[19px] left-[103px] top-[680px] font-noto font-medium text-[16px] leading-[19px] text-center text-[#878787] mb-8">
+    이미 계정이 있으신가요? <a href="/users/login" class="hover:underline" style="color: #0024F3;">로그인</a>
+  </p>
+
+  <!-- Error Message -->
+  {% if error %}
+    <div class="absolute left-[35px] right-[35px] top-[720px] p-4 bg-red-50 border border-red-200 rounded-lg mb-8">
+      <p class="text-red-600 text-center font-medium">{{ error }}</p>
     </div>
-
-    <!-- 회원가입 타이틀 -->
-    <div class="absolute w-[160px] h-[52px] left-[calc(50%-80px)] top-[107px]">
-      <h2 class="font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black">회원가입</h2>
-    </div>
-
-    <!-- Form -->
-    <form method="post" action="/users/register">
-      <!-- ID 라벨 -->
-      <label for="username" class="absolute left-[54px] top-[171px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1">
-        ID
-      </label>
-
-      <!-- ID Input -->
-      <input
-        type="text"
-        id="username"
-        name="username"
-        required
-        placeholder="아이디"
-        style="box-sizing: border-box;"
-        class="absolute w-[357px] h-[58px] left-[calc(50%-178.5px)] top-[180px] border-[3px] border-[#C4C4C4] rounded-[15px] px-4 focus:outline-none focus:border-primary font-montserrat"
-      />
-
-      <!-- Password 라벨 -->
-      <label for="password" class="absolute left-[54px] top-[250px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1">
-        Password
-      </label>
-
-      <!-- Password Input -->
-      <input
-        type="password"
-        id="password"
-        name="password"
-        required
-        placeholder="비밀번호"
-        style="box-sizing: border-box;"
-        class="absolute w-[357px] h-[58px] left-[35px] top-[259px] border-[3px] border-[#C4C4C4] rounded-[15px] px-4 focus:outline-none focus:border-primary font-montserrat"
-      />
-
-      <!-- 이름 라벨 -->
-      <label for="name" class="absolute left-[54px] top-[329px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1">
-        이름
-      </label>
-
-      <!-- 이름 Input -->
-      <input
-        type="text"
-        id="name"
-        name="name"
-        required
-        placeholder="이름"
-        style="box-sizing: border-box;"
-        class="absolute w-[357px] h-[58px] left-[35px] top-[338px] border-[3px] border-[#C4C4C4] rounded-[15px] px-4 focus:outline-none focus:border-primary font-montserrat"
-      />
-
-      <!-- 이메일(선택) 라벨 -->
-      <label for="email" class="absolute left-[54px] top-[408px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1">
-        이메일(선택)
-      </label>
-
-      <!-- 이메일 Input -->
-      <input
-        type="email"
-        id="email"
-        name="email"
-        placeholder="이메일"
-        style="box-sizing: border-box;"
-        class="absolute w-[357px] h-[58px] left-[35px] top-[417px] border-[3px] border-[#C4C4C4] rounded-[15px] px-4 focus:outline-none focus:border-primary font-montserrat"
-      />
-
-      <!-- 전화번호(선택) 라벨 -->
-      <label for="phone" class="absolute left-[54px] top-[487px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1">
-        전화번호(선택)
-      </label>
-
-      <!-- 전화번호 Input -->
-      <input
-        type="text"
-        id="phone"
-        name="phone"
-        placeholder="전화번호"
-        style="box-sizing: border-box;"
-        class="absolute w-[357px] h-[58px] left-[35px] top-[496px] border-[3px] border-[#C4C4C4] rounded-[15px] px-4 focus:outline-none focus:border-primary font-montserrat"
-      />
-
-      <!-- 생년월일(선택) 라벨 -->
-      <label for="birthdate" class="absolute left-[54px] top-[566px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1">
-        생년월일(선택)
-      </label>
-
-      <!-- 생년월일 Input -->
-      <input
-        type="date"
-        id="birthdate"
-        name="birthdate"
-        style="box-sizing: border-box;"
-        class="absolute w-[357px] h-[58px] left-[35px] top-[575px] border-[3px] border-[#C4C4C4] rounded-[15px] px-4 focus:outline-none focus:border-primary font-montserrat"
-      />
-
-      <!-- 가입하기 버튼 -->
-      <button
-        type="submit"
-        class="absolute w-[351px] h-[54px] left-[calc(50%-175.5px)] top-[709px] bg-primary border border-text rounded-[70px] flex items-center justify-center font-satoshi font-medium text-[16px] leading-[22px] text-text"
-      >
-        가입하기
-      </button>
-    </form>
-
-    <!-- 로그인 링크 -->
-    <p class="absolute w-[268px] h-[19px] left-[calc(50%-134px)] top-[775px] font-sans font-medium text-[16px] leading-[19px] text-center text-gray">
-      이미 계정이 있으신가요? <a href="/users/login" class="hover:underline" style="color: #0024F3;">로그인</a>
-    </p>
-
-    {% if error %}
-      <p class="absolute left-[50%] -translate-x-1/2 top-[810px] text-warning text-center font-medium">{{ error }}</p>
-    {% endif %}
-
-    <!-- Footer -->
-    <div class="absolute w-full left-0 top-[839px] rounded-b-[63px] overflow-hidden">
-      {% set active = 'default' %}
-      {% include 'components/footer.html' %}
-    </div>
-
+  {% endif %}
   </div>
 </div>
 {% endblock %}
