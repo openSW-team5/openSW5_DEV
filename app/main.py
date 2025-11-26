@@ -29,6 +29,13 @@ def transactions_page(request: Request):
         {"request": request, "title": "거래내역"}
     )
 
+@app.get("/search", response_class=HTMLResponse)
+def search_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/search.html",
+        {"request": request, "title": "검색"}
+    )
+
 # ✅ 라우터 등록
 app.include_router(health.router)
 app.include_router(receipts.router)
