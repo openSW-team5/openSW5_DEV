@@ -1,229 +1,677 @@
-{% set navbar_variant = 'default' %}
-{% set footer_active = 'home' %}
-{% extends "base.html" %}
-
-{% block content %}
+{% set navbar_variant = 'default' %} {% set footer_active = 'home' %} {% extends
+"base.html" %} {% block content %}
 <div class="px-[35px] py-6">
-  <!-- Balance Card -->
-  <div class="relative w-[357px] h-[179px] mb-[18px]">
-    <!-- Rectangle 2 (Background) -->
-    <div class="absolute inset-0 bg-[#151515] rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)]"></div>
+  <!-- Card/Payment Method Section with Swipe -->
+  <div class="mb-[18px]">
+    <div class="relative w-full overflow-hidden">
+      <!-- Swipeable Container -->
+      <div
+        id="cardContainer"
+        class="flex gap-4 transition-transform duration-300 ease-out"
+        style="transform: translateX(0px)"
+      >
+        <!-- Card 1 (Mastercard) -->
+        <div class="flex-shrink-0 relative w-[357px] h-[179px]">
+          <div
+            class="absolute inset-0 bg-[#151515] rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)]"
+          ></div>
 
-    <!-- Balance Label -->
-    <div class="absolute left-[22px] top-[102px] font-montserrat font-semibold text-[20px] leading-[24px] text-white">
-      Balance
-    </div>
+          <!-- Balance label -->
+          <div
+            class="absolute left-[6.16%] top-[56.98%] font-montserrat font-semibold text-[20px] leading-[24px] flex items-center text-white"
+          >
+            Balance
+          </div>
 
-    <!-- Amount -->
-    <div class="absolute left-[22px] top-[127px] font-montserrat font-semibold text-[26px] leading-[32px] text-white">
-      $ 20,000
-    </div>
+          <!-- Balance amount -->
+          <div
+            class="absolute left-[6.16%] top-[70.95%] font-montserrat font-semibold text-[26px] leading-[32px] flex items-center text-white"
+          >
+            250,000원
+          </div>
 
-    <!-- Card Number Dots -->
-    <div class="absolute left-[306px] top-[19px] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"></div>
-    <div class="absolute left-[295px] top-[19px] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"></div>
-    <div class="absolute left-[284px] top-[19px] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"></div>
+          <!-- Card number dots (Ellipse 13, 12, 11) -->
+          <div
+            class="absolute left-[85.99%] top-[10.61%] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"
+          ></div>
+          <div
+            class="absolute left-[89.08%] top-[10.61%] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"
+          ></div>
+          <div
+            class="absolute left-[92.16%] top-[10.61%] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"
+          ></div>
 
-    <!-- Card Number -->
-    <div class="absolute left-[275px] top-[29px] font-montserrat text-[16px] leading-[20px] text-white">
-      3284
-    </div>
+          <!-- Card number -->
+          <div
+            class="absolute left-[83.47%] top-[16.2%] font-montserrat font-normal text-[16px] leading-[20px] flex items-center text-white"
+          >
+            3284
+          </div>
 
-    <!-- Mastercard Logo -->
-    <div class="absolute left-[282px] top-[123px] w-[42px] h-[33px]">
-      <svg width="42" height="33" viewBox="0 0 42 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Background white rectangle -->
-        <rect x="2.13" y="27.95" width="37.74" height="0.93" fill="#FFFFFF"/>
-        <!-- Orange intersection -->
-        <circle cx="21" cy="13.28" r="11.34" fill="#FF5F00"/>
-        <!-- Red circle -->
-        <circle cx="10.5" cy="13.28" r="10.5" fill="#EB001B"/>
-        <!-- Orange circle -->
-        <circle cx="31.5" cy="13.28" r="10.5" fill="#F79E1B"/>
-      </svg>
+          <!-- Mastercard logo -->
+          <div class="absolute left-[78.99%] top-[68.72%] w-[42px] h-[33px]">
+            <svg
+              width="42"
+              height="33"
+              viewBox="0 0 42 33"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clip-path="url(#clip0_310_637)">
+                <path d="M7.63547 32.836V30.6519C7.63547 29.8145 7.13114 29.2686 6.2667 29.2686C5.83456 29.2686 5.36632 29.4142 5.04213 29.8874C4.79013 29.487 4.43002 29.2686 3.88976 29.2686C3.52948 29.2686 3.16953 29.3777 2.88127 29.7781V29.3414H2.12494V32.836H2.88127V30.9066C2.88127 30.2879 3.20545 29.9965 3.70978 29.9965C4.21378 29.9965 4.46611 30.3242 4.46611 30.9066V32.836H5.22244V30.9066C5.22244 30.2879 5.58239 29.9965 6.05063 29.9965C6.55496 29.9965 6.80695 30.3242 6.80695 30.9066V32.836H7.63547ZM18.8362 29.3414H17.6118V28.2857H16.8555V29.3414H16.1712V30.0329H16.8553V31.6348C16.8553 32.4357 17.1795 32.9088 18.0439 32.9088C18.3681 32.9088 18.7281 32.7997 18.9804 32.6541L18.7642 31.9988C18.5481 32.1444 18.2961 32.1808 18.1159 32.1808C17.7558 32.1808 17.6118 31.9625 17.6118 31.5983V30.0329H18.8362V29.3414ZM25.2471 29.2684C24.8149 29.2684 24.5269 29.487 24.3467 29.7781V29.3414H23.5904V32.836H24.3467V30.8703C24.3467 30.2879 24.5987 29.9602 25.0669 29.9602C25.211 29.9602 25.3911 29.9967 25.5352 30.033L25.7513 29.305C25.6072 29.2686 25.3911 29.2686 25.2471 29.2686V29.2684ZM15.5589 29.6325C15.1986 29.3777 14.6944 29.2686 14.1542 29.2686C13.2899 29.2686 12.7137 29.7053 12.7137 30.397C12.7137 30.9796 13.1458 31.3071 13.9022 31.4164L14.2623 31.4529C14.6585 31.5255 14.8746 31.6348 14.8746 31.8169C14.8746 32.0716 14.5865 32.2536 14.0821 32.2536C13.578 32.2536 13.1818 32.0716 12.9296 31.8897L12.5695 32.472C12.9657 32.7632 13.506 32.9088 14.046 32.9088C15.0545 32.9088 15.6309 32.4357 15.6309 31.7804C15.6309 31.1615 15.1627 30.8338 14.4423 30.7247L14.0821 30.6882C13.758 30.6517 13.506 30.5791 13.506 30.3607C13.506 30.1058 13.758 29.9602 14.1542 29.9602C14.5865 29.9602 15.0186 30.1421 15.2347 30.2514L15.5589 29.6325ZM35.6557 29.2686C35.2234 29.2686 34.9353 29.487 34.7552 29.7781V29.3414H33.9988V32.836H34.7552V30.8703C34.7552 30.2879 35.0073 29.9602 35.4754 29.9602C35.6196 29.9602 35.7998 29.9967 35.9438 30.033L36.1599 29.305C36.0158 29.2686 35.7998 29.2686 35.6557 29.2686ZM26.0034 31.0887C26.0034 32.1444 26.7236 32.9088 27.8403 32.9088C28.3444 32.9088 28.7045 32.7997 29.0647 32.5085L28.7045 31.8897C28.4164 32.108 28.1284 32.2172 27.8042 32.2172C27.1919 32.2172 26.7597 31.7804 26.7597 31.0887C26.7597 30.4335 27.1919 29.9965 27.8042 29.9602C28.1284 29.9602 28.4164 30.0693 28.7045 30.2879L29.0647 29.669C28.7045 29.3777 28.3444 29.2686 27.8403 29.2686C26.7236 29.2686 26.0034 30.033 26.0034 31.0887ZM32.9905 31.0887V29.3414H32.2342V29.7781C31.982 29.4506 31.6219 29.2686 31.1537 29.2686C30.1813 29.2686 29.4249 30.033 29.4249 31.0887C29.4249 32.1444 30.1813 32.9088 31.1537 32.9088C31.6578 32.9088 32.0181 32.7269 32.2342 32.3992V32.836H32.9905V31.0887ZM30.2172 31.0887C30.2172 30.4698 30.6134 29.9602 31.2616 29.9602C31.8739 29.9602 32.3062 30.4335 32.3062 31.0887C32.3062 31.7076 31.8739 32.2172 31.2616 32.2172C30.6134 32.1807 30.2172 31.7076 30.2172 31.0887ZM21.1774 29.2686C20.1689 29.2686 19.4485 29.9965 19.4485 31.0887C19.4485 32.1808 20.1687 32.9088 21.2133 32.9088C21.7174 32.9088 22.2218 32.7632 22.618 32.4357L22.2577 31.8897C21.9696 32.108 21.6095 32.2536 21.2494 32.2536C20.7811 32.2536 20.3129 32.0353 20.2048 31.4162H22.762V31.1252C22.7981 29.9965 22.1498 29.2686 21.1772 29.2686H21.1774ZM21.1774 29.9237C21.6454 29.9237 21.9698 30.2151 22.0416 30.7612H20.2409C20.3129 30.2879 20.6371 29.9237 21.1774 29.9237ZM39.9415 31.0887V27.958H39.1852V29.7781C38.933 29.4506 38.5729 29.2686 38.1047 29.2686C37.1323 29.2686 36.3759 30.033 36.3759 31.0887C36.3759 32.1444 37.1323 32.9088 38.1047 32.9088C38.609 32.9088 38.9691 32.7269 39.1852 32.3992V32.836H39.9415V31.0887ZM37.1684 31.0887C37.1684 30.4698 37.5644 29.9602 38.2128 29.9602C38.8251 29.9602 39.2572 30.4335 39.2572 31.0887C39.2572 31.7076 38.8251 32.2172 38.2128 32.2172C37.5644 32.1807 37.1684 31.7076 37.1684 31.0887ZM11.8852 31.0887V29.3414H11.1289V29.7781C10.8767 29.4506 10.5166 29.2686 10.0483 29.2686C9.07594 29.2686 8.31961 30.033 8.31961 31.0887C8.31961 32.1444 9.07594 32.9088 10.0483 32.9088C10.5527 32.9088 10.9128 32.7269 11.1289 32.3992V32.836H11.8852V31.0887ZM9.07594 31.0887C9.07594 30.4698 9.47215 29.9602 10.1204 29.9602C10.7326 29.9602 11.1649 30.4335 11.1649 31.0887C11.1649 31.7076 10.7326 32.2172 10.1204 32.2172C9.47215 32.1807 9.07594 31.7076 9.07594 31.0887Z" fill="white"/>
+                <path d="M15.3067 2.80298H26.6516V23.4074H15.3067V2.80298Z" fill="#FF5F00"/>
+                <path d="M16.0271 13.1053C16.0271 8.91895 17.9719 5.20571 20.9611 2.80301C18.7643 1.05567 15.9912 0 12.9659 0C5.79846 0 0 5.8609 0 13.1053C0 20.3496 5.79846 26.2106 12.9657 26.2106C15.991 26.2106 18.7642 25.155 20.9611 23.4074C17.9719 21.0412 16.0271 17.2917 16.0271 13.1053Z" fill="#EB001B"/>
+                <path d="M41.9583 13.1053C41.9583 20.3496 36.1598 26.2106 28.9926 26.2106C25.9673 26.2106 23.1942 25.155 20.9972 23.4074C24.0225 21.0049 25.9314 17.2917 25.9314 13.1053C25.9314 8.91895 23.9864 5.20571 20.9972 2.80301C23.194 1.05567 25.9673 0 28.9926 0C36.1598 0 41.9585 5.89738 41.9585 13.1053H41.9583Z" fill="#F79E1B"/>
+              </g>
+              <defs>
+                <clipPath id="clip0_310_637">
+                  <rect width="42" height="33" fill="white"/>
+                </clipPath>
+              </defs>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Card 2 (Visa) -->
+        <div class="flex-shrink-0 relative w-[357px] h-[179px]">
+          <div
+            class="absolute inset-0 bg-[#1a365d] rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)]"
+          ></div>
+
+          <!-- Balance label -->
+          <div
+            class="absolute left-[6.16%] top-[56.98%] font-montserrat font-semibold text-[20px] leading-[24px] flex items-center text-white"
+          >
+            Balance
+          </div>
+
+          <!-- Balance amount -->
+          <div
+            class="absolute left-[6.16%] top-[70.95%] font-montserrat font-semibold text-[26px] leading-[32px] flex items-center text-white"
+          >
+            180,000원
+          </div>
+
+          <!-- Card number dots -->
+          <div
+            class="absolute left-[85.99%] top-[10.61%] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"
+          ></div>
+          <div
+            class="absolute left-[89.08%] top-[10.61%] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"
+          ></div>
+          <div
+            class="absolute left-[92.16%] top-[10.61%] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"
+          ></div>
+
+          <!-- Card number -->
+          <div
+            class="absolute left-[83.47%] top-[16.2%] font-montserrat font-normal text-[16px] leading-[20px] flex items-center text-white"
+          >
+            5678
+          </div>
+
+          <!-- VISA logo -->
+          <div
+            class="absolute left-[78.99%] top-[68.72%] font-montserrat font-bold text-[18px] text-white"
+          >
+            VISA
+          </div>
+        </div>
+
+        <!-- Card 3 (Debit) -->
+        <div class="flex-shrink-0 relative w-[357px] h-[179px]">
+          <div
+            class="absolute inset-0 bg-[#2d3748] rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)]"
+          ></div>
+
+          <!-- Balance label -->
+          <div
+            class="absolute left-[6.16%] top-[56.98%] font-montserrat font-semibold text-[20px] leading-[24px] flex items-center text-white"
+          >
+            Balance
+          </div>
+
+          <!-- Balance amount -->
+          <div
+            class="absolute left-[6.16%] top-[70.95%] font-montserrat font-semibold text-[26px] leading-[32px] flex items-center text-white"
+          >
+            120,000원
+          </div>
+
+          <!-- Card number dots -->
+          <div
+            class="absolute left-[85.99%] top-[10.61%] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"
+          ></div>
+          <div
+            class="absolute left-[89.08%] top-[10.61%] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"
+          ></div>
+          <div
+            class="absolute left-[92.16%] top-[10.61%] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"
+          ></div>
+
+          <!-- Card number -->
+          <div
+            class="absolute left-[83.47%] top-[16.2%] font-montserrat font-normal text-[16px] leading-[20px] flex items-center text-white"
+          >
+            9012
+          </div>
+
+          <!-- DEBIT logo -->
+          <div
+            class="absolute left-[78.99%] top-[68.72%] font-montserrat font-bold text-[16px] text-white"
+          >
+            DEBIT
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Card Indicator Dots -->
-  <div class="flex justify-center gap-[12px] mb-[24px]">
-    <div class="w-[39px] h-[7px] bg-[#C4C4C4] rounded-[26px]"></div>
-    <div class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px]"></div>
-    <div class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px]"></div>
-    <div class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px]"></div>
+  <div class="flex justify-center gap-[4px] mb-[24px]">
+    <div
+      id="dot-0"
+      class="w-[39px] h-[7px] bg-[#C4C4C4] rounded-[26px] transition-all duration-300"
+    ></div>
+    <div
+      id="dot-1"
+      class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px] transition-all duration-300"
+    ></div>
+    <div
+      id="dot-2"
+      class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px] transition-all duration-300"
+    ></div>
   </div>
 
   <!-- Total Spent & Monthly Budget Card -->
-  <div class="relative w-[358px] h-[110px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[31px]">
+  <div
+    class="relative w-[358px] h-[110px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[31px]"
+  >
     <!-- Circular Progress (25%) -->
-    <div class="absolute left-[33px] top-[13px] w-[84px] h-[84px]">
+    <div class="absolute left-[9.22%] top-[11.82%] w-[84px] h-[84px]">
       <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
-      <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 84 84">
-        <circle cx="42" cy="42" r="30" stroke="transparent" stroke-width="12" fill="none"/>
-        <circle cx="42" cy="42" r="30" stroke="#63A1FF" stroke-width="24" fill="none"
-                stroke-dasharray="47.12 141.37" stroke-linecap="butt"/>
+      <svg
+        class="absolute inset-0 w-full h-full transform -rotate-90"
+        viewBox="0 0 84 84"
+      >
+        <circle
+          cx="42"
+          cy="42"
+          r="30"
+          stroke="transparent"
+          stroke-width="12"
+          fill="none"
+        />
+        <circle
+          cx="42"
+          cy="42"
+          r="30"
+          stroke="#AF4C4E"
+          stroke-width="24"
+          fill="none"
+          stroke-dasharray="47.12 141.37"
+          stroke-linecap="butt"
+        />
       </svg>
-      <div class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[15px] text-black">
+      <div
+        class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[15px] text-black"
+      >
         25.00%
       </div>
     </div>
 
-    <!-- Total spent -->
-    <div class="absolute left-[184px] top-[7px]">
-      <div class="font-montserrat text-[15px] leading-[18px] text-black mb-[3px]">Total spent</div>
-      <div class="font-montserrat font-semibold text-[20px] leading-[24px] text-black">250,000원</div>
+    <!-- Total spent label -->
+    <div class="absolute left-[51.40%] top-[17.27%] font-montserrat text-[14px] leading-[18px] flex items-center text-[#878787]">
+      사용금액
     </div>
 
-    <!-- Monthly budget -->
-    <div class="absolute left-[184px] top-[59px]">
-      <div class="font-montserrat text-[15px] leading-[18px] text-black mb-[3px]">Monthly budget</div>
-      <div class="font-montserrat font-semibold text-[20px] leading-[24px] text-black">1,000,000원</div>
+    <!-- Total spent amount -->
+    <div class="absolute left-[51.40%] top-[36.36%] font-montserrat font-semibold text-[22px] leading-[28px] flex items-center text-black">
+      250,000원
+    </div>
+
+    <!-- Monthly budget label -->
+    <div class="absolute left-[51.40%] top-[64.55%] font-montserrat text-[14px] leading-[18px] flex items-center text-[#878787]">
+      월예산
+    </div>
+
+    <!-- Monthly budget amount -->
+    <div class="absolute left-[51.40%] top-[83.64%] font-montserrat font-semibold text-[22px] leading-[28px] flex items-center text-black">
+      1,000,000원
     </div>
   </div>
 
   <!-- Spendings Title -->
   <div class="flex justify-center items-center mb-[13px]">
-    <h2 class="font-montserrat font-bold text-[25px] leading-[30px] text-black">Spendings</h2>
+    <h2 class="font-montserrat font-bold text-[25px] leading-[30px] text-black">
+      Spendings
+    </h2>
   </div>
 
-  <!-- Month Selector -->
-  <div class="flex justify-center items-center gap-[4px] mb-[18px]">
-    <select class="font-montserrat font-medium text-[20px] leading-[24px] text-black bg-transparent border-none outline-none appearance-none cursor-pointer">
-      <option>October</option>
-      <option>September</option>
-      <option>August</option>
-    </select>
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
-    </svg>
+  <!-- Month Navigation -->
+  <div class="mb-[18px]">
+    <div class="flex items-center justify-between">
+      <button id="prevMonthBtn" class="w-[35px] h-[35px] flex items-center justify-center">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);">
+          <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
+        </svg>
+      </button>
+      <h3 id="currentMonth" class="font-montserrat font-medium text-[20px] text-black">October</h3>
+      <button id="nextMonthBtn" class="w-[35px] h-[35px] flex items-center justify-center">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg);">
+          <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
   <!-- Food Card -->
-  <div class="relative w-[358px] h-[86px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[14px]">
-    <!-- Circular Progress (50%) -->
-    <div class="absolute left-[17px] top-[11px] w-[64px] h-[64px]">
-      <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
-      <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 64 64">
-        <circle cx="32" cy="32" r="24" stroke="transparent" stroke-width="12" fill="none"/>
-        <circle cx="32" cy="32" r="24" stroke="#AF4C4E" stroke-width="18" fill="none"
-                stroke-dasharray="75.4 75.4" stroke-linecap="butt"/>
-      </svg>
-      <div class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[12px] text-black">
-        50.00%
-      </div>
-    </div>
-
+  <div
+    class="relative w-[358px] h-[86px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[14px]"
+  >
     <!-- Food Icon -->
-    <div class="absolute left-[87px] top-[17px] w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center">
-      <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div
+      class="absolute left-[24px] top-[17px] w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center"
+    >
+      <svg
+        width="33"
+        height="33"
+        viewBox="0 0 33 33"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <g opacity="0.2">
-          <path d="M10.5 6.5V26.5M10.5 6.5C10.5 5.39543 9.60457 4.5 8.5 4.5C7.39543 4.5 6.5 5.39543 6.5 6.5V16.5C6.5 17.6046 7.39543 18.5 8.5 18.5C9.60457 18.5 10.5 17.6046 10.5 16.5V6.5ZM18.5 9.5V26.5M18.5 9.5C19.6046 9.5 20.5 8.60457 20.5 7.5C20.5 6.39543 19.6046 5.5 18.5 5.5C17.3954 5.5 16.5 6.39543 16.5 7.5C16.5 8.60457 17.3954 9.5 18.5 9.5Z" fill="#828282"/>
+          <path
+            d="M10.5 6.5V26.5M10.5 6.5C10.5 5.39543 9.60457 4.5 8.5 4.5C7.39543 4.5 6.5 5.39543 6.5 6.5V16.5C6.5 17.6046 7.39543 18.5 8.5 18.5C9.60457 18.5 10.5 17.6046 10.5 16.5V6.5ZM18.5 9.5V26.5M18.5 9.5C19.6046 9.5 20.5 8.60457 20.5 7.5C20.5 6.39543 19.6046 5.5 18.5 5.5C17.3954 5.5 16.5 6.39543 16.5 7.5C16.5 8.60457 17.3954 9.5 18.5 9.5Z"
+            fill="#828282"
+          />
         </g>
-        <path d="M10.5 6.5V26.5M10.5 6.5C10.5 5.39543 9.60457 4.5 8.5 4.5C7.39543 4.5 6.5 5.39543 6.5 6.5V16.5C6.5 17.6046 7.39543 18.5 8.5 18.5C9.60457 18.5 10.5 17.6046 10.5 16.5V6.5ZM18.5 9.5V26.5M18.5 9.5C19.6046 9.5 20.5 8.60457 20.5 7.5C20.5 6.39543 19.6046 5.5 18.5 5.5C17.3954 5.5 16.5 6.39543 16.5 7.5C16.5 8.60457 17.3954 9.5 18.5 9.5Z" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+        <path
+          d="M10.5 6.5V26.5M10.5 6.5C10.5 5.39543 9.60457 4.5 8.5 4.5C7.39543 4.5 6.5 5.39543 6.5 6.5V16.5C6.5 17.6046 7.39543 18.5 8.5 18.5C9.60457 18.5 10.5 17.6046 10.5 16.5V6.5ZM18.5 9.5V26.5M18.5 9.5C19.6046 9.5 20.5 8.60457 20.5 7.5C20.5 6.39543 19.6046 5.5 18.5 5.5C17.3954 5.5 16.5 6.39543 16.5 7.5C16.5 8.60457 17.3954 9.5 18.5 9.5Z"
+          stroke="#000000"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
       </svg>
     </div>
 
     <!-- Food Title -->
-    <div class="absolute left-[155px] top-[9px] font-yidstreet font-bold text-[18px] leading-[23px] text-black">
+    <div
+      class="absolute left-[92px] top-[15px] font-yidstreet font-bold text-[18px] leading-[23px] text-black"
+    >
       Food
     </div>
 
-    <!-- Left to spend -->
-    <div class="absolute left-[155px] top-[37px]">
-      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Left to spend</div>
-      <div class="font-roboto font-bold text-[18px] leading-[21px] text-black">100,000원</div>
+    <!-- Budget Info -->
+    <div class="absolute left-[92px] top-[41px] flex items-center gap-2">
+      <div>
+        <span class="font-roboto font-medium text-[12px] text-[#878787]"
+          >예산:
+        </span>
+        <span class="font-roboto font-bold text-[14px] text-black"
+          >200,000원</span
+        >
+      </div>
+      <div class="w-[1px] h-[12px] bg-[#E5E5E5]"></div>
+      <div>
+        <span class="font-roboto font-medium text-[12px] text-[#878787]"
+          >사용:
+        </span>
+        <span class="font-roboto font-bold text-[14px] text-black"
+          >100,000원</span
+        >
+      </div>
     </div>
 
-    <!-- Monthly budget -->
-    <div class="absolute left-[258px] top-[37px]">
-      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Monthly budget</div>
-      <div class="font-roboto font-bold text-[18px] leading-[21px] text-black">200,000원</div>
+    <!-- Circular Progress (50%) -->
+    <div class="absolute right-[20px] top-[11px] w-[64px] h-[64px]">
+      <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
+      <svg
+        class="absolute inset-0 w-full h-full transform -rotate-90"
+        viewBox="0 0 64 64"
+      >
+        <circle
+          cx="32"
+          cy="32"
+          r="24"
+          stroke="transparent"
+          stroke-width="12"
+          fill="none"
+        />
+        <circle
+          cx="32"
+          cy="32"
+          r="24"
+          stroke="#AF4C4E"
+          stroke-width="18"
+          fill="none"
+          stroke-dasharray="75.4 75.4"
+          stroke-linecap="butt"
+        />
+      </svg>
+      <div
+        class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[12px] text-black"
+      >
+        50%
+      </div>
     </div>
   </div>
 
   <!-- Shop Card -->
-  <div class="relative w-[358px] h-[86px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[14px]">
-    <!-- Circular Progress (20%) -->
-    <div class="absolute left-[17px] top-[11px] w-[64px] h-[64px]">
-      <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
-      <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 64 64">
-        <circle cx="32" cy="32" r="24" stroke="transparent" stroke-width="12" fill="none"/>
-        <circle cx="32" cy="32" r="24" stroke="#4CAF50" stroke-width="18" fill="none"
-                stroke-dasharray="30.16 120.64" stroke-linecap="butt"/>
-      </svg>
-      <div class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[12px] text-black">
-        20.00%
-      </div>
-    </div>
-
+  <div
+    class="relative w-[358px] h-[86px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[14px]"
+  >
     <!-- Shop Icon -->
-    <div class="absolute left-[87px] top-[17px] w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center">
-      <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div
+      class="absolute left-[24px] top-[17px] w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center"
+    >
+      <svg
+        width="38"
+        height="38"
+        viewBox="0 0 38 38"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <g opacity="0.2">
-          <path d="M6 14L9 6H29L32 14M6 14V30C6 31.1046 6.89543 32 8 32H30C31.1046 32 32 31.1046 32 30V14M6 14H32M14 18C14 20.2091 15.7909 22 18 22H20C22.2091 22 24 20.2091 24 18" fill="#000000"/>
+          <path
+            d="M6 14L9 6H29L32 14M6 14V30C6 31.1046 6.89543 32 8 32H30C31.1046 32 32 31.1046 32 30V14M6 14H32M14 18C14 20.2091 15.7909 22 18 22H20C22.2091 22 24 20.2091 24 18"
+            fill="#000000"
+          />
         </g>
-        <path d="M6 14L9 6H29L32 14M6 14V30C6 31.1046 6.89543 32 8 32H30C31.1046 32 32 31.1046 32 30V14M6 14H32M14 18C14 20.2091 15.7909 22 18 22H20C22.2091 22 24 20.2091 24 18" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path
+          d="M6 14L9 6H29L32 14M6 14V30C6 31.1046 6.89543 32 8 32H30C31.1046 32 32 31.1046 32 30V14M6 14H32M14 18C14 20.2091 15.7909 22 18 22H20C22.2091 22 24 20.2091 24 18"
+          stroke="#000000"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     </div>
 
     <!-- Shop Title -->
-    <div class="absolute left-[155px] top-[9px] font-yidstreet font-bold text-[18px] leading-[23px] text-black">
+    <div
+      class="absolute left-[92px] top-[15px] font-yidstreet font-bold text-[18px] leading-[23px] text-black"
+    >
       Shop
     </div>
 
-    <!-- Left to spend -->
-    <div class="absolute left-[155px] top-[37px]">
-      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Left to spend</div>
-      <div class="font-roboto font-bold text-[18px] leading-[21px] text-black">30,000원</div>
+    <!-- Budget Info -->
+    <div class="absolute left-[92px] top-[41px] flex items-center gap-2">
+      <div>
+        <span class="font-roboto font-medium text-[12px] text-[#878787]"
+          >예산:
+        </span>
+        <span class="font-roboto font-bold text-[14px] text-black"
+          >150,000원</span
+        >
+      </div>
+      <div class="w-[1px] h-[12px] bg-[#E5E5E5]"></div>
+      <div>
+        <span class="font-roboto font-medium text-[12px] text-[#878787]"
+          >사용:
+        </span>
+        <span class="font-roboto font-bold text-[14px] text-black"
+          >30,000원</span
+        >
+      </div>
     </div>
 
-    <!-- Monthly budget -->
-    <div class="absolute left-[258px] top-[37px]">
-      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Monthly budget</div>
-      <div class="font-roboto font-bold text-[18px] leading-[21px] text-black">150,000원</div>
+    <!-- Circular Progress (20%) -->
+    <div class="absolute right-[20px] top-[11px] w-[64px] h-[64px]">
+      <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
+      <svg
+        class="absolute inset-0 w-full h-full transform -rotate-90"
+        viewBox="0 0 64 64"
+      >
+        <circle
+          cx="32"
+          cy="32"
+          r="24"
+          stroke="transparent"
+          stroke-width="12"
+          fill="none"
+        />
+        <circle
+          cx="32"
+          cy="32"
+          r="24"
+          stroke="#4CAF50"
+          stroke-width="18"
+          fill="none"
+          stroke-dasharray="30.16 120.64"
+          stroke-linecap="butt"
+        />
+      </svg>
+      <div
+        class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[12px] text-black"
+      >
+        20%
+      </div>
     </div>
   </div>
 
   <!-- Transportation Card -->
-  <div class="relative w-[358px] h-[86px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)]">
-    <!-- Circular Progress (80%) -->
-    <div class="absolute left-[17px] top-[11px] w-[64px] h-[64px]">
-      <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
-      <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 64 64">
-        <circle cx="32" cy="32" r="24" stroke="transparent" stroke-width="12" fill="none"/>
-        <circle cx="32" cy="32" r="24" stroke="#AF4C4E" stroke-width="18" fill="none"
-                stroke-dasharray="120.64 30.16" stroke-linecap="butt"/>
-      </svg>
-      <div class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[12px] text-black">
-        80.00%
-      </div>
-    </div>
-
+  <div
+    class="relative w-[358px] h-[86px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)]"
+  >
     <!-- Transportation Icon -->
-    <div class="absolute left-[87px] top-[17px] w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center">
-      <svg width="38" height="33" viewBox="0 0 38 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div
+      class="absolute left-[24px] top-[17px] w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center"
+    >
+      <svg
+        width="38"
+        height="33"
+        viewBox="0 0 38 33"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <g opacity="0.2">
-          <path d="M8 24C8 25.1046 8.89543 26 10 26C11.1046 26 12 25.1046 12 24M26 24C26 25.1046 26.8954 26 28 26C29.1046 26 30 25.1046 30 24M6 11L8 6H30L32 11M6 11V22C6 23.1046 6.89543 24 8 24H30C31.1046 24 32 23.1046 32 22V11M6 11H32" fill="#000000"/>
+          <path
+            d="M8 24C8 25.1046 8.89543 26 10 26C11.1046 26 12 25.1046 12 24M26 24C26 25.1046 26.8954 26 28 26C29.1046 26 30 25.1046 30 24M6 11L8 6H30L32 11M6 11V22C6 23.1046 6.89543 24 8 24H30C31.1046 24 32 23.1046 32 22V11M6 11H32"
+            fill="#000000"
+          />
         </g>
-        <path d="M8 24C8 25.1046 8.89543 26 10 26C11.1046 26 12 25.1046 12 24M26 24C26 25.1046 26.8954 26 28 26C29.1046 26 30 25.1046 30 24M6 11L8 6H30L32 11M6 11V22C6 23.1046 6.89543 24 8 24H30C31.1046 24 32 23.1046 32 22V11M6 11H32" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path
+          d="M8 24C8 25.1046 8.89543 26 10 26C11.1046 26 12 25.1046 12 24M26 24C26 25.1046 26.8954 26 28 26C29.1046 26 30 25.1046 30 24M6 11L8 6H30L32 11M6 11V22C6 23.1046 6.89543 24 8 24H30C31.1046 24 32 23.1046 32 22V11M6 11H32"
+          stroke="#000000"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     </div>
 
     <!-- Transportation Title -->
-    <div class="absolute left-[155px] top-[9px] font-yidstreet font-bold text-[18px] leading-[23px] text-[#878787]">
+    <div
+      class="absolute left-[92px] top-[15px] font-yidstreet font-bold text-[18px] leading-[23px] text-[#878787]"
+    >
       Transportation
     </div>
 
-    <!-- Left to spend -->
-    <div class="absolute left-[155px] top-[37px]">
-      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Left to spend</div>
-      <div class="font-roboto font-bold text-[18px] leading-[21px] text-[#878787]">120,000원</div>
+    <!-- Budget Info -->
+    <div class="absolute left-[92px] top-[41px] flex items-center gap-2">
+      <div>
+        <span class="font-roboto font-medium text-[12px] text-[#878787]"
+          >예산:
+        </span>
+        <span class="font-roboto font-bold text-[14px] text-[#878787]"
+          >150,000원</span
+        >
+      </div>
+      <div class="w-[1px] h-[12px] bg-[#E5E5E5]"></div>
+      <div>
+        <span class="font-roboto font-medium text-[12px] text-[#878787]"
+          >사용:
+        </span>
+        <span class="font-roboto font-bold text-[14px] text-[#878787]"
+          >120,000원</span
+        >
+      </div>
     </div>
 
-    <!-- Monthly budget -->
-    <div class="absolute left-[258px] top-[37px]">
-      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Monthly budget</div>
-      <div class="font-roboto font-bold text-[18px] leading-[21px] text-[#878787]">150,000원</div>
+    <!-- Circular Progress (80%) -->
+    <div class="absolute right-[20px] top-[11px] w-[64px] h-[64px]">
+      <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
+      <svg
+        class="absolute inset-0 w-full h-full transform -rotate-90"
+        viewBox="0 0 64 64"
+      >
+        <circle
+          cx="32"
+          cy="32"
+          r="24"
+          stroke="transparent"
+          stroke-width="12"
+          fill="none"
+        />
+        <circle
+          cx="32"
+          cy="32"
+          r="24"
+          stroke="#AF4C4E"
+          stroke-width="18"
+          fill="none"
+          stroke-dasharray="120.64 30.16"
+          stroke-linecap="butt"
+        />
+      </svg>
+      <div
+        class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[12px] text-black"
+      >
+        80%
+      </div>
     </div>
   </div>
 </div>
+
+<script>
+  // Card swipe functionality
+  let currentCardIndex = 0;
+  const totalCards = 3;
+  let startX = 0;
+  let currentX = 0;
+  let isDragging = false;
+
+  const cardContainer = document.getElementById("cardContainer");
+  const dots = [
+    document.getElementById("dot-0"),
+    document.getElementById("dot-1"),
+    document.getElementById("dot-2"),
+  ];
+
+  function updateDots() {
+    dots.forEach((dot, index) => {
+      if (index === currentCardIndex) {
+        dot.classList.remove("w-[7px]");
+        dot.classList.add("w-[39px]");
+      } else {
+        dot.classList.remove("w-[39px]");
+        dot.classList.add("w-[7px]");
+      }
+    });
+  }
+
+  function updateCardPosition() {
+    const offset = -currentCardIndex * (357 + 16); // card width + gap
+    cardContainer.style.transform = `translateX(${offset}px)`;
+  }
+
+  cardContainer.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+  });
+
+  cardContainer.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    currentX = e.touches[0].clientX;
+    const diff = currentX - startX;
+    const currentOffset = -currentCardIndex * (357 + 16);
+    cardContainer.style.transform = `translateX(${currentOffset + diff}px)`;
+  });
+
+  cardContainer.addEventListener("touchend", (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    const diff = currentX - startX;
+
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && currentCardIndex > 0) {
+        currentCardIndex--;
+      } else if (diff < 0 && currentCardIndex < totalCards - 1) {
+        currentCardIndex++;
+      }
+    }
+
+    updateCardPosition();
+    updateDots();
+  });
+
+  // Mouse events for desktop
+  cardContainer.addEventListener("mousedown", (e) => {
+    startX = e.clientX;
+    isDragging = true;
+    e.preventDefault();
+  });
+
+  cardContainer.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    currentX = e.clientX;
+    const diff = currentX - startX;
+    const currentOffset = -currentCardIndex * (357 + 16);
+    cardContainer.style.transform = `translateX(${currentOffset + diff}px)`;
+  });
+
+  cardContainer.addEventListener("mouseup", (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    const diff = currentX - startX;
+
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && currentCardIndex > 0) {
+        currentCardIndex--;
+      } else if (diff < 0 && currentCardIndex < totalCards - 1) {
+        currentCardIndex++;
+      }
+    }
+
+    updateCardPosition();
+    updateDots();
+  });
+
+  cardContainer.addEventListener("mouseleave", () => {
+    if (isDragging) {
+      isDragging = false;
+      updateCardPosition();
+      updateDots();
+    }
+  });
+
+  // Month navigation
+  let currentDate = new Date();
+  const currentMonthText = document.getElementById('currentMonth');
+  const prevMonthBtn = document.getElementById('prevMonthBtn');
+  const nextMonthBtn = document.getElementById('nextMonthBtn');
+
+  function updateMonthDisplay() {
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                       'July', 'August', 'September', 'October', 'November', 'December'];
+    currentMonthText.textContent = monthNames[currentDate.getMonth()];
+
+    // Here you can add logic to fetch and update data based on selected month
+    console.log("Selected month:", currentDate.getMonth() + 1, "Year:", currentDate.getFullYear());
+  }
+
+  prevMonthBtn.addEventListener('click', function() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    updateMonthDisplay();
+  });
+
+  nextMonthBtn.addEventListener('click', function() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    updateMonthDisplay();
+  });
+
+  // Initialize month display
+  updateMonthDisplay();
+</script>
 {% endblock %}
