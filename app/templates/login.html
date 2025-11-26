@@ -1,44 +1,62 @@
-{% extends "base.html" %}
-
-{% block title %}로그인 | OpenSW5{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}로그인 | OpenSW5{% endblock %} {%
+block content %}
 <div class="flex justify-center items-center min-h-screen bg-background">
   <!-- 로그인 컨테이너 -->
   <div class="relative w-[428px] h-[926px] bg-white rounded-[63px] shadow-2xl">
-
     <!-- 베리언트3 navbar -->
     <div class="absolute w-[362px] h-[62px] left-[37px] top-[33px]">
       <!-- Back Button -->
-      <a href="/" class="absolute left-0 right-[86.19%] top-[5px] h-[50px] flex items-center justify-center">
+      <a
+        href="/"
+        class="absolute left-0 right-[86.19%] top-[5px] h-[50px] flex items-center justify-center"
+      >
         <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
-          <path d="M31.25 9.375L15.625 25L31.25 40.625" stroke="#000000" stroke-width="3"/>
+          <path
+            d="M31.25 9.375L15.625 25L31.25 40.625"
+            stroke="#000000"
+            stroke-width="3"
+          />
         </svg>
       </a>
 
       <!-- Logo -->
-      <div class="absolute left-[28.18%] right-[30.11%] top-[30.65%] bottom-[33.87%]">
-        <span class="font-yidstreet font-bold text-[17px] leading-[22px] flex items-center justify-center text-center text-black w-full h-full">
+      <div
+        class="absolute left-[28.18%] right-[30.11%] top-[30.65%] bottom-[33.87%]"
+      >
+        <span
+          class="font-yidstreet font-bold text-[17px] leading-[22px] flex items-center justify-center text-center text-black w-full h-full"
+        >
           SmartLedger
         </span>
       </div>
 
       <!-- Ellipse 2 (녹색 테두리) -->
-      <div class="absolute left-[82.87%] right-0 top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"></div>
+      <div
+        class="absolute left-[82.87%] right-0 top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"
+      ></div>
 
       <!-- Ellipse 1 (회색 배경) -->
-      <div class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%] bg-gray-light rounded-full"></div>
+      <div
+        class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%] bg-gray-light rounded-full"
+      ></div>
     </div>
 
     <!-- 로그인 타이틀 -->
     <div class="absolute w-[120px] h-[52px] left-[calc(50%-60px)] top-[162px]">
-      <h2 class="font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black">로그인</h2>
+      <h2
+        class="font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black"
+      >
+        로그인
+      </h2>
     </div>
 
     <!-- Form -->
     <form method="post" action="/users/login">
       <!-- ID 라벨 -->
-      <label for="username" class="absolute left-[54px] top-[281px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1">
+      <label
+        for="username"
+        class="absolute left-[54px] top-[281px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1"
+      >
         ID
       </label>
 
@@ -49,12 +67,15 @@
         name="username"
         required
         placeholder="아이디"
-        style="box-sizing: border-box;"
+        style="box-sizing: border-box"
         class="absolute w-[357px] h-[58px] left-[calc(50%-178.5px)] top-[290px] border-[3px] border-[#C4C4C4] rounded-[15px] px-4 focus:outline-none focus:border-primary font-montserrat"
       />
 
       <!-- Password 라벨 -->
-      <label for="password" class="absolute left-[54px] top-[385px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1">
+      <label
+        for="password"
+        class="absolute left-[54px] top-[385px] font-montserrat font-medium text-[15px] leading-[18px] text-gray-light z-10 bg-white px-1"
+      >
         Password
       </label>
 
@@ -65,7 +86,7 @@
         name="password"
         required
         placeholder="비밀번호"
-        style="box-sizing: border-box;"
+        style="box-sizing: border-box"
         class="absolute w-[357px] h-[58px] left-[35px] top-[394px] border-[3px] border-[#C4C4C4] rounded-[15px] px-4 focus:outline-none focus:border-primary font-montserrat"
       />
 
@@ -79,20 +100,29 @@
     </form>
 
     <!-- 회원가입 링크 -->
-    <p class="absolute w-[192px] h-[19px] left-[119px] top-[568px] font-sans font-medium text-[16px] leading-[19px] text-center text-gray">
-      계정이 없으신가요? <a href="/users/register" class="hover:underline" style="color: #0024F3;">회원가입</a>
+    <p
+      class="absolute w-[192px] h-[19px] left-[119px] top-[568px] font-sans font-medium text-[16px] leading-[19px] text-center text-gray"
+    >
+      계정이 없으신가요?
+      <a href="/users/register" class="hover:underline" style="color: #0024f3"
+        >회원가입</a
+      >
     </p>
 
     {% if error %}
-      <p class="absolute left-[50%] -translate-x-1/2 top-[620px] text-warning text-center font-medium">{{ error }}</p>
+    <p
+      class="absolute left-[50%] -translate-x-1/2 top-[620px] text-warning text-center font-medium"
+    >
+      {{ error }}
+    </p>
     {% endif %}
 
     <!-- Footer -->
-    <div class="absolute w-full left-0 top-[839px] rounded-b-[63px] overflow-hidden">
-      {% set active = 'default' %}
-      {% include 'components/footer.html' %}
+    <div
+      class="absolute w-full left-0 top-[839px] rounded-b-[63px] overflow-hidden"
+    >
+      {% set active = 'default' %} {% include 'components/footer.html' %}
     </div>
-
   </div>
 </div>
 {% endblock %}
