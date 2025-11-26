@@ -1,13 +1,9 @@
+{% set navbar_variant = 'default' %}
+{% set footer_active = 'chart' %}
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Navbar -->
-{% set variant = 'default' %}
-{% include 'components/navbar.html' %}
-
-<!-- Scrollable Content Area -->
-<div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
-  <div class="px-5 py-6">
+<div class="px-5 py-6">
     <!-- Header with Year Selector -->
     <div class="flex items-center justify-center mb-6 relative">
       <!-- Year selector: left 55px -->
@@ -178,10 +174,6 @@
   </div>
   </div>
 </div>
-
-<!-- Footer -->
-{% set active = 'chart' %}
-{% include 'components/footer.html' %}
 
 <script>
 document.addEventListener('DOMContentLoaded', async function() {

@@ -25,7 +25,28 @@
   <body class="min-h-screen bg-gray-100">
     <!-- 웹앱 컨테이너: 모바일은 전체화면, PC는 중앙 고정폭 -->
     <div class="max-w-[428px] mx-auto bg-white min-h-screen shadow-xl relative">
+      <!-- Navbar -->
+      {% if navbar_variant is defined %}
+        {% set variant = navbar_variant %}
+        {% include 'components/navbar.html' %}
+      {% endif %}
+
+      <!-- Content Area -->
+      {% if navbar_variant is defined and footer_active is defined %}
+        <div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
+      {% endif %}
+
       {% block content %}{% endblock %}
+
+      {% if navbar_variant is defined and footer_active is defined %}
+        </div>
+      {% endif %}
+
+      <!-- Footer -->
+      {% if footer_active is defined %}
+        {% set active = footer_active %}
+        {% include 'components/footer.html' %}
+      {% endif %}
     </div>
 
     <script src="{{ url_for('static', path='js/app.js') }}"></script>

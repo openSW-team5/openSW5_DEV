@@ -1,16 +1,12 @@
+{% set navbar_variant = 'back' %}
+{% set back_url = '/transactions' %}
+{% set footer_active = 'chart' %}
 {% extends "base.html" %}
 
 {% block title %}검색 - Smart Ledger{% endblock %}
 
 {% block content %}
-<!-- Navbar -->
-{% set variant = 'back' %}
-{% set back_url = '/transactions' %}
-{% include 'components/navbar.html' %}
-
-<!-- Scrollable Content Area -->
-<div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
-  <div class="py-6">
+<div class="py-6">
 
   <!-- Search Input Container: padding-left: 84px, padding-right: 84px -->
   <div class="relative px-[84px] mt-[38px]">
@@ -37,11 +33,6 @@
   </div>
   </div>
 </div>
-
-<!-- Footer -->
-{% set active = 'chart' %}
-{% include 'components/footer.html' %}
-{% endblock %}
 
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
@@ -119,3 +110,4 @@ document.addEventListener('DOMContentLoaded', async function() {
   await loadReceipts();
 });
 </script>
+{% endblock %}

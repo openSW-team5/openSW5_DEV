@@ -1,9 +1,8 @@
+{% set navbar_variant = 'back' %}
+{% set footer_active = 'notification' %}
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Navbar -->
-{% set variant = 'back' %}
-{% include 'components/navbar.html' %}
 
 <div class="max-w-md mx-auto px-5 pb-24">
   <!-- User Profile Section -->
@@ -130,7 +129,4 @@
   </div>
 </div>
 
-<!-- Footer -->
-{% set active = 'user' %}
-{% include 'components/footer.html' %}
 {% endblock %}
