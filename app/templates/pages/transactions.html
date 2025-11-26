@@ -10,17 +10,18 @@
   <div class="px-5 py-6">
     <!-- Header with Year Selector -->
     <div class="flex items-center justify-center mb-6 relative">
-      <div class="flex items-center gap-[3px]">
-      <select id="yearSelect" class="font-montserrat font-semibold text-[15px] text-text bg-transparent border-none outline-none appearance-none cursor-pointer">
-        <option>2025</option>
-        <option>2024</option>
-        <option>2023</option>
-      </select>
-      <svg id="yearArrow" class="cursor-pointer" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
-      </svg>
-    </div>
-    <h1 class="font-montserrat font-bold text-[25px] text-text">통계</h1>
+      <!-- Year selector: left 55px -->
+      <div class="absolute left-[35px] flex items-center gap-[3px]">
+        <select id="yearSelect" class="font-montserrat font-semibold text-[15px] text-text bg-transparent border-none outline-none appearance-none cursor-pointer">
+          <option>2025</option>
+          <option>2024</option>
+          <option>2023</option>
+        </select>
+        <svg id="yearArrow" class="cursor-pointer" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
+        </svg>
+      </div>
+      <h1 class="font-montserrat font-bold text-[25px] text-text">통계</h1>
     </div>
 
   <!-- Chart Card -->
