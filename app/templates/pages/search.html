@@ -3,24 +3,14 @@
 {% block title %}검색 - Smart Ledger{% endblock %}
 
 {% block content %}
-<div class="relative max-w-md mx-auto bg-white min-h-screen pb-[95px]" style="padding-left: 20px; padding-right: 20px;">
-  <!-- Header -->
-  <div class="relative w-full pt-[33px] pb-[20px]">
-    <!-- Back Button -->
-    <a href="/transactions" class="absolute left-0 top-[38px] w-[50px] h-[50px] flex items-center justify-center">
-      <svg width="16" height="25" viewBox="0 0 16 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M15 1L1 12.5L15 24" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </a>
+<!-- Navbar -->
+{% set variant = 'back' %}
+{% include 'components/navbar.html' %}
 
-    <!-- SmartLedger Logo -->
-    <div class="w-full flex justify-center">
-      <h1 class="font-['Yde_street'] font-bold text-[17px] text-black">SmartLedger</h1>
-    </div>
-  </div>
+<div class="relative max-w-md mx-auto bg-white min-h-screen pb-[95px] pt-[95px]">
 
-  <!-- Search Input Container -->
-  <div class="relative px-[64px] mt-[20px]">
+  <!-- Search Input Container: padding-left: 84px, padding-right: 84px -->
+  <div class="relative px-[84px] mt-[38px]">
     <input
       type="text"
       id="searchInput"
@@ -29,16 +19,16 @@
       autofocus
     />
 
-    <!-- Filter Icon -->
-    <div class="absolute right-[64px] top-0">
+    <!-- Filter Icon: absolute right -->
+    <div class="absolute right-[84px] top-0 cursor-pointer">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);">
         <path d="M2 2L9 9L16 2" stroke="#ACB1C6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
   </div>
 
-  <!-- Search Results -->
-  <div id="searchResults" class="mt-[30px]">
+  <!-- Search Results: padding: 0 37px -->
+  <div id="searchResults" class="px-[37px] mt-[30px]">
     <p class="text-center text-[#ACB1C6] font-inter text-[14px] mt-10">검색 결과가 없습니다</p>
   </div>
 </div>
