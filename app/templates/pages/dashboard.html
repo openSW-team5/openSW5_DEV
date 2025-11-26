@@ -256,7 +256,12 @@
           <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
         </svg>
       </button>
-      <h3 id="currentMonth" class="font-montserrat font-medium text-[20px] text-black">October</h3>
+      <div class="flex items-center gap-[8px]">
+        <h3 id="currentMonth" class="font-montserrat font-medium text-[20px] text-black">October</h3>
+        <button id="todayBtn" class="px-[12px] py-[4px] bg-black text-white font-montserrat text-[12px] rounded-[8px]">
+          Today
+        </button>
+      </div>
       <button id="nextMonthBtn" class="w-[35px] h-[35px] flex items-center justify-center">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg);">
           <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
@@ -651,6 +656,7 @@
   const currentMonthText = document.getElementById('currentMonth');
   const prevMonthBtn = document.getElementById('prevMonthBtn');
   const nextMonthBtn = document.getElementById('nextMonthBtn');
+  const todayBtn = document.getElementById('todayBtn');
 
   function updateMonthDisplay() {
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -668,6 +674,11 @@
 
   nextMonthBtn.addEventListener('click', function() {
     currentDate.setMonth(currentDate.getMonth() + 1);
+    updateMonthDisplay();
+  });
+
+  todayBtn.addEventListener('click', function() {
+    currentDate = new Date();
     updateMonthDisplay();
   });
 
