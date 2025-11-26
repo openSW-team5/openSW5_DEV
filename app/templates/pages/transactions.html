@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Navbar (fixed) -->
+<!-- Navbar -->
 {% set variant = 'default' %}
 {% include 'components/navbar.html' %}
 
@@ -178,9 +178,10 @@
   </div>
 </div>
 
-<!-- Footer (fixed) -->
+<!-- Footer -->
 {% set active = 'chart' %}
 {% include 'components/footer.html' %}
+{% endblock %}
 
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
@@ -504,5 +505,3 @@ document.addEventListener('DOMContentLoaded', async function() {
   await loadReceipts();
 });
 </script>
-
-{% endblock %}
