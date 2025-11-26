@@ -18,8 +18,8 @@ templates = Jinja2Templates(directory="app/templates")
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(
-        "index.html",
-        {"request": request, "title": "Home", "msg": "Hello FastAPI + Jinja2!"}
+        "pages/dashboard.html",
+        {"request": request, "title": "Dashboard"}
     )
 
 @app.get("/transactions", response_class=HTMLResponse)

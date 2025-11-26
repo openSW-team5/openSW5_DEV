@@ -1,0 +1,229 @@
+{% set navbar_variant = 'default' %}
+{% set footer_active = 'home' %}
+{% extends "base.html" %}
+
+{% block content %}
+<div class="px-[35px] py-6">
+  <!-- Balance Card -->
+  <div class="relative w-[357px] h-[179px] mb-[18px]">
+    <!-- Rectangle 2 (Background) -->
+    <div class="absolute inset-0 bg-[#151515] rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)]"></div>
+
+    <!-- Balance Label -->
+    <div class="absolute left-[22px] top-[102px] font-montserrat font-semibold text-[20px] leading-[24px] text-white">
+      Balance
+    </div>
+
+    <!-- Amount -->
+    <div class="absolute left-[22px] top-[127px] font-montserrat font-semibold text-[26px] leading-[32px] text-white">
+      $ 20,000
+    </div>
+
+    <!-- Card Number Dots -->
+    <div class="absolute left-[306px] top-[19px] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"></div>
+    <div class="absolute left-[295px] top-[19px] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"></div>
+    <div class="absolute left-[284px] top-[19px] w-[6px] h-[6px] bg-[#C4C4C4] rounded-full"></div>
+
+    <!-- Card Number -->
+    <div class="absolute left-[275px] top-[29px] font-montserrat text-[16px] leading-[20px] text-white">
+      3284
+    </div>
+
+    <!-- Mastercard Logo -->
+    <div class="absolute left-[282px] top-[123px] w-[42px] h-[33px]">
+      <svg width="42" height="33" viewBox="0 0 42 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background white rectangle -->
+        <rect x="2.13" y="27.95" width="37.74" height="0.93" fill="#FFFFFF"/>
+        <!-- Orange intersection -->
+        <circle cx="21" cy="13.28" r="11.34" fill="#FF5F00"/>
+        <!-- Red circle -->
+        <circle cx="10.5" cy="13.28" r="10.5" fill="#EB001B"/>
+        <!-- Orange circle -->
+        <circle cx="31.5" cy="13.28" r="10.5" fill="#F79E1B"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Card Indicator Dots -->
+  <div class="flex justify-center gap-[12px] mb-[24px]">
+    <div class="w-[39px] h-[7px] bg-[#C4C4C4] rounded-[26px]"></div>
+    <div class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px]"></div>
+    <div class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px]"></div>
+    <div class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px]"></div>
+  </div>
+
+  <!-- Total Spent & Monthly Budget Card -->
+  <div class="relative w-[358px] h-[110px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[31px]">
+    <!-- Circular Progress (25%) -->
+    <div class="absolute left-[33px] top-[13px] w-[84px] h-[84px]">
+      <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
+      <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 84 84">
+        <circle cx="42" cy="42" r="30" stroke="transparent" stroke-width="12" fill="none"/>
+        <circle cx="42" cy="42" r="30" stroke="#63A1FF" stroke-width="24" fill="none"
+                stroke-dasharray="47.12 141.37" stroke-linecap="butt"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[15px] text-black">
+        25.00%
+      </div>
+    </div>
+
+    <!-- Total spent -->
+    <div class="absolute left-[184px] top-[7px]">
+      <div class="font-montserrat text-[15px] leading-[18px] text-black mb-[3px]">Total spent</div>
+      <div class="font-montserrat font-semibold text-[20px] leading-[24px] text-black">250,000원</div>
+    </div>
+
+    <!-- Monthly budget -->
+    <div class="absolute left-[184px] top-[59px]">
+      <div class="font-montserrat text-[15px] leading-[18px] text-black mb-[3px]">Monthly budget</div>
+      <div class="font-montserrat font-semibold text-[20px] leading-[24px] text-black">1,000,000원</div>
+    </div>
+  </div>
+
+  <!-- Spendings Title -->
+  <div class="flex justify-center items-center mb-[13px]">
+    <h2 class="font-montserrat font-bold text-[25px] leading-[30px] text-black">Spendings</h2>
+  </div>
+
+  <!-- Month Selector -->
+  <div class="flex justify-center items-center gap-[4px] mb-[18px]">
+    <select class="font-montserrat font-medium text-[20px] leading-[24px] text-black bg-transparent border-none outline-none appearance-none cursor-pointer">
+      <option>October</option>
+      <option>September</option>
+      <option>August</option>
+    </select>
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
+    </svg>
+  </div>
+
+  <!-- Food Card -->
+  <div class="relative w-[358px] h-[86px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[14px]">
+    <!-- Circular Progress (50%) -->
+    <div class="absolute left-[17px] top-[11px] w-[64px] h-[64px]">
+      <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
+      <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="24" stroke="transparent" stroke-width="12" fill="none"/>
+        <circle cx="32" cy="32" r="24" stroke="#AF4C4E" stroke-width="18" fill="none"
+                stroke-dasharray="75.4 75.4" stroke-linecap="butt"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[12px] text-black">
+        50.00%
+      </div>
+    </div>
+
+    <!-- Food Icon -->
+    <div class="absolute left-[87px] top-[17px] w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center">
+      <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g opacity="0.2">
+          <path d="M10.5 6.5V26.5M10.5 6.5C10.5 5.39543 9.60457 4.5 8.5 4.5C7.39543 4.5 6.5 5.39543 6.5 6.5V16.5C6.5 17.6046 7.39543 18.5 8.5 18.5C9.60457 18.5 10.5 17.6046 10.5 16.5V6.5ZM18.5 9.5V26.5M18.5 9.5C19.6046 9.5 20.5 8.60457 20.5 7.5C20.5 6.39543 19.6046 5.5 18.5 5.5C17.3954 5.5 16.5 6.39543 16.5 7.5C16.5 8.60457 17.3954 9.5 18.5 9.5Z" fill="#828282"/>
+        </g>
+        <path d="M10.5 6.5V26.5M10.5 6.5C10.5 5.39543 9.60457 4.5 8.5 4.5C7.39543 4.5 6.5 5.39543 6.5 6.5V16.5C6.5 17.6046 7.39543 18.5 8.5 18.5C9.60457 18.5 10.5 17.6046 10.5 16.5V6.5ZM18.5 9.5V26.5M18.5 9.5C19.6046 9.5 20.5 8.60457 20.5 7.5C20.5 6.39543 19.6046 5.5 18.5 5.5C17.3954 5.5 16.5 6.39543 16.5 7.5C16.5 8.60457 17.3954 9.5 18.5 9.5Z" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Food Title -->
+    <div class="absolute left-[155px] top-[9px] font-yidstreet font-bold text-[18px] leading-[23px] text-black">
+      Food
+    </div>
+
+    <!-- Left to spend -->
+    <div class="absolute left-[155px] top-[37px]">
+      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Left to spend</div>
+      <div class="font-roboto font-bold text-[18px] leading-[21px] text-black">100,000원</div>
+    </div>
+
+    <!-- Monthly budget -->
+    <div class="absolute left-[258px] top-[37px]">
+      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Monthly budget</div>
+      <div class="font-roboto font-bold text-[18px] leading-[21px] text-black">200,000원</div>
+    </div>
+  </div>
+
+  <!-- Shop Card -->
+  <div class="relative w-[358px] h-[86px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[14px]">
+    <!-- Circular Progress (20%) -->
+    <div class="absolute left-[17px] top-[11px] w-[64px] h-[64px]">
+      <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
+      <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="24" stroke="transparent" stroke-width="12" fill="none"/>
+        <circle cx="32" cy="32" r="24" stroke="#4CAF50" stroke-width="18" fill="none"
+                stroke-dasharray="30.16 120.64" stroke-linecap="butt"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[12px] text-black">
+        20.00%
+      </div>
+    </div>
+
+    <!-- Shop Icon -->
+    <div class="absolute left-[87px] top-[17px] w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center">
+      <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g opacity="0.2">
+          <path d="M6 14L9 6H29L32 14M6 14V30C6 31.1046 6.89543 32 8 32H30C31.1046 32 32 31.1046 32 30V14M6 14H32M14 18C14 20.2091 15.7909 22 18 22H20C22.2091 22 24 20.2091 24 18" fill="#000000"/>
+        </g>
+        <path d="M6 14L9 6H29L32 14M6 14V30C6 31.1046 6.89543 32 8 32H30C31.1046 32 32 31.1046 32 30V14M6 14H32M14 18C14 20.2091 15.7909 22 18 22H20C22.2091 22 24 20.2091 24 18" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Shop Title -->
+    <div class="absolute left-[155px] top-[9px] font-yidstreet font-bold text-[18px] leading-[23px] text-black">
+      Shop
+    </div>
+
+    <!-- Left to spend -->
+    <div class="absolute left-[155px] top-[37px]">
+      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Left to spend</div>
+      <div class="font-roboto font-bold text-[18px] leading-[21px] text-black">30,000원</div>
+    </div>
+
+    <!-- Monthly budget -->
+    <div class="absolute left-[258px] top-[37px]">
+      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Monthly budget</div>
+      <div class="font-roboto font-bold text-[18px] leading-[21px] text-black">150,000원</div>
+    </div>
+  </div>
+
+  <!-- Transportation Card -->
+  <div class="relative w-[358px] h-[86px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)]">
+    <!-- Circular Progress (80%) -->
+    <div class="absolute left-[17px] top-[11px] w-[64px] h-[64px]">
+      <div class="absolute inset-0 bg-[#E5E5E5] rounded-full"></div>
+      <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="24" stroke="transparent" stroke-width="12" fill="none"/>
+        <circle cx="32" cy="32" r="24" stroke="#AF4C4E" stroke-width="18" fill="none"
+                stroke-dasharray="120.64 30.16" stroke-linecap="butt"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[12px] text-black">
+        80.00%
+      </div>
+    </div>
+
+    <!-- Transportation Icon -->
+    <div class="absolute left-[87px] top-[17px] w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center">
+      <svg width="38" height="33" viewBox="0 0 38 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g opacity="0.2">
+          <path d="M8 24C8 25.1046 8.89543 26 10 26C11.1046 26 12 25.1046 12 24M26 24C26 25.1046 26.8954 26 28 26C29.1046 26 30 25.1046 30 24M6 11L8 6H30L32 11M6 11V22C6 23.1046 6.89543 24 8 24H30C31.1046 24 32 23.1046 32 22V11M6 11H32" fill="#000000"/>
+        </g>
+        <path d="M8 24C8 25.1046 8.89543 26 10 26C11.1046 26 12 25.1046 12 24M26 24C26 25.1046 26.8954 26 28 26C29.1046 26 30 25.1046 30 24M6 11L8 6H30L32 11M6 11V22C6 23.1046 6.89543 24 8 24H30C31.1046 24 32 23.1046 32 22V11M6 11H32" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Transportation Title -->
+    <div class="absolute left-[155px] top-[9px] font-yidstreet font-bold text-[18px] leading-[23px] text-[#878787]">
+      Transportation
+    </div>
+
+    <!-- Left to spend -->
+    <div class="absolute left-[155px] top-[37px]">
+      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Left to spend</div>
+      <div class="font-roboto font-bold text-[18px] leading-[21px] text-[#878787]">120,000원</div>
+    </div>
+
+    <!-- Monthly budget -->
+    <div class="absolute left-[258px] top-[37px]">
+      <div class="font-roboto font-medium text-[11px] leading-[16px] tracking-[0.5px] text-[#C4C4C4] mb-[12px]">Monthly budget</div>
+      <div class="font-roboto font-bold text-[18px] leading-[21px] text-[#878787]">150,000원</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
