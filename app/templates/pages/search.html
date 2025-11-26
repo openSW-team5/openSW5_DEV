@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}검색 - Smart Ledger{% endblock %}
+
+{% block content %}
+<div class="relative max-w-md mx-auto bg-white min-h-screen pb-[95px]" style="padding-left: 20px; padding-right: 20px;">
+  <!-- Header -->
+  <div class="relative w-full pt-[33px] pb-[20px]">
+    <!-- Back Button -->
+    <a href="/transactions" class="absolute left-0 top-[38px] w-[50px] h-[50px] flex items-center justify-center">
+      <svg width="16" height="25" viewBox="0 0 16 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 1L1 12.5L15 24" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
+    <!-- SmartLedger Logo -->
+    <div class="w-full flex justify-center">
+      <h1 class="font-['Yde_street'] font-bold text-[17px] text-black">SmartLedger</h1>
+    </div>
+  </div>
+
+  <!-- Search Input Container -->
+  <div class="relative px-[64px] mt-[20px]">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="상호 및 메모 내용을 입력하세요"
+      class="w-full border-b border-[#ACB1C6] pb-[10px] font-inter text-[14px] text-black placeholder-[#ACB1C6] outline-none"
+      autofocus
+    />
+
+    <!-- Filter Icon -->
+    <div class="absolute right-[64px] top-0">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);">
+        <path d="M2 2L9 9L16 2" stroke="#ACB1C6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Search Results -->
+  <div id="searchResults" class="mt-[30px]">
+    <p class="text-center text-[#ACB1C6] font-inter text-[14px] mt-10">검색 결과가 없습니다</p>
+  </div>
+</div>
+
+<!-- Footer -->
+{% set active = 'chart' %}
+{% include 'components/footer.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.getElementById('searchResults');
+  let receiptsData = [];
+
+  // Load receipts from API
+  async function loadReceipts() {
+    try {
+      const response = await fetch('/receipts');
+      const result = await response.json();
+
+      if (result.status === 'ok' && result.data && result.data.length > 0) {
+        receiptsData = result.data;
+      }
+    } catch (error) {
+      console.error('Error loading receipts:', error);
+    }
+  }
+
+  searchInput.addEventListener('input', function() {
+    const query = searchInput.value.toLowerCase().trim();
+
+    if (!query) {
+      searchResults.innerHTML = '<p class="text-center text-[#ACB1C6] font-inter text-[14px] mt-10">검색 결과가 없습니다</p>';
+      return;
+    }
+
+    // Search in receipts
+    const filtered = receiptsData.filter(receipt => {
+      return receipt.merchant.toLowerCase().includes(query) ||
+             (receipt.memo && receipt.memo.toLowerCase().includes(query));
+    });
+
+    if (filtered.length === 0) {
+      searchResults.innerHTML = '<p class="text-center text-[#ACB1C6] font-inter text-[14px] mt-10">검색 결과가 없습니다</p>';
+      return;
+    }
+
+    // Render search results
+    const resultsHTML = filtered.map(receipt => {
+      const amount = receipt.total.toLocaleString();
+      const isExpense = receipt.total > 0;
+
+      return `
+        <div class="bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-[20px] cursor-pointer hover:shadow-lg transition-shadow"
+             onclick="window.location.href='/receipt/${receipt.id}'">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-[12px]">
+              <div class="w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center flex-shrink-0">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                  <path d="M3 9L5 3H19L21 9M3 9V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V9M3 9H21M9 13C9 14.6569 10.3431 16 12 16C13.6569 16 15 14.6569 15 13" stroke="#828282" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="flex flex-col justify-center">
+                <h4 class="font-montserrat font-semibold text-[20px] leading-tight text-text mb-[2px]">${receipt.merchant}</h4>
+                <p class="font-montserrat text-[15px] leading-tight text-[#727272]">${receipt.status === 'CONFIRMED' ? 'Food' : 'Pending'}</p>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <p class="font-montserrat font-semibold text-[20px] ${isExpense ? 'text-[#FF6B6B]' : 'text-[#4CAF50]'}">
+                ${isExpense ? '-' : '+'}${amount}원
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    searchResults.innerHTML = `<div class="space-y-4">${resultsHTML}</div>`;
+  });
+
+  // Load receipts on page load
+  await loadReceipts();
+});
+</script>
+
+{% endblock %}
