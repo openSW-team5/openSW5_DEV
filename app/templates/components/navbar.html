@@ -1,43 +1,38 @@
-<!-- Navbar Component -->
-<!-- 사용법: {% include 'components/navbar.html' %} -->
-<!-- 변형: variant='default' | 'back' | 'back-notify' -->
+{# Navbar Component #}
+{# 사용법: include 'components/navbar.html' with variant='back' #}
+{# 변형: variant='default' | 'back' | 'back-notify' #}
 
 {% set variant = variant|default('default') %}
+{% set back_url = back_url|default('/') %}
 
-<nav class="fixed top-0 left-0 right-0 bg-white z-50 px-5 py-5 h-[62px] flex items-center justify-between max-w-md mx-auto">
-  <!-- 왼쪽: 뒤로가기 버튼 (variant가 'back' 또는 'back-notify'일 때만) -->
-  <div class="w-[50px]">
+<nav class="absolute top-[33px] left-0 right-0 w-full h-[62px] bg-transparent z-50">
+  <div class="absolute w-[362px] h-[62px] left-[37px] top-0">
+
+    {# Back Button - left: 0%, right: 86.19%, top: 5px, height: 50px #}
     {% if variant in ['back', 'back-notify'] %}
-    <button onclick="history.back()" class="w-[50px] h-[50px] flex items-center justify-center">
-      <svg width="16" height="25" viewBox="0 0 16 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M15 1L2 12.5L15 24" stroke="#1B1B1B" stroke-width="3"/>
+    <a href="{{ back_url }}" class="absolute left-0 top-[5px] w-[50px] h-[50px] flex items-center justify-center">
+      <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+        <path d="M31.25 9.375L15.625 25L31.25 40.625" stroke="#000000" stroke-width="3"/>
       </svg>
-    </button>
-    {% endif %}
-  </div>
-
-  <!-- 가운데: 로고 -->
-  <div class="flex-1 flex justify-center items-center">
-    <a href="/" class="flex items-center">
-      <img src="{{ url_for('static', path='assets/logo.svg') }}" alt="SmartLedger" class="h-5">
-    </a>
-  </div>
-
-  <!-- 오른쪽: 프로필 아이콘 -->
-  <div class="w-[50px] flex justify-end">
-    {% if variant == 'back-notify' %}
-    <!-- 알림 있음 (녹색 테두리) -->
-    <a href="/profile" class="relative">
-      <div class="w-12 h-12 rounded-full bg-gray-light border-[6px] border-primary"></div>
-    </a>
-    {% else %}
-    <!-- 기본 프로필 -->
-    <a href="/profile">
-      <div class="w-12 h-12 rounded-full bg-gray-light"></div>
     </a>
     {% endif %}
+
+    {# Logo - left: 28.18%, right: 30.11%, top: 30.65%, bottom: 33.87% #}
+    <div class="absolute left-[28.18%] right-[30.11%] top-[30.65%] bottom-[33.87%]">
+      <span class="font-yidstreet font-bold text-[17px] leading-[22px] flex items-center justify-center text-center text-black w-full h-full">
+        SmartLedger
+      </span>
+    </div>
+
+    {# Profile - left: 84.81%, right: 1.93%, top: 11.29%, bottom: 11.29% #}
+    <div class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%]">
+      {% if variant == 'back-notify' %}
+      {# Ellipse 2 - border with primary color #}
+      <div class="absolute left-[-2.07%] right-[-2.07%] top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"></div>
+      {% endif %}
+      {# Ellipse 1 - background circle #}
+      <div class="w-full h-full bg-gray-light rounded-full"></div>
+    </div>
+
   </div>
 </nav>
-
-<!-- Navbar 높이만큼 공간 확보 -->
-<div class="h-[62px]"></div>

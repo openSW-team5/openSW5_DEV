@@ -6,8 +6,10 @@
         "build": "npx tailwindcss -i ./app/static/css/input.css -o ./app/static/css/output.css --minify"
     },
     "devDependencies": {
+
         "tailwindcss": "^3.4.1",
         "postcss": "^8.4.23",
         "autoprefixer": "^10.4.14"
+
     }
 }

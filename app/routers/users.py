@@ -176,3 +176,7 @@ async def login_submit(
 
     # 인증 성공 → 홈으로 리다이렉트 (세션/쿠키는 이후에 추가)
     return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.get("/user", response_class=HTMLResponse)
+async def user_page(request: Request):
+    return templates.TemplateResponse("pages/user.html", {"request": request})
