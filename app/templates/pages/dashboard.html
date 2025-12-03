@@ -171,15 +171,15 @@
   <div class="flex justify-center gap-[4px] mb-[24px]">
     <div
       id="dot-0"
-      class="w-[39px] h-[7px] bg-[#C4C4C4] rounded-[26px] transition-all duration-300"
+      class="w-[39px] h-[7px] bg-[#C4C4C4] rounded-[26px] transition-all duration-300 cursor-pointer"
     ></div>
     <div
       id="dot-1"
-      class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px] transition-all duration-300"
+      class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px] transition-all duration-300 cursor-pointer"
     ></div>
     <div
       id="dot-2"
-      class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px] transition-all duration-300"
+      class="w-[7px] h-[7px] bg-[#C4C4C4] rounded-[26px] transition-all duration-300 cursor-pointer"
     ></div>
   </div>
 
@@ -580,6 +580,15 @@
     const offset = -currentCardIndex * (357 + 16); // card width + gap
     cardContainer.style.transform = `translateX(${offset}px)`;
   }
+
+  // Add click event to dots
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+      currentCardIndex = index;
+      updateCardPosition();
+      updateDots();
+    });
+  });
 
   cardContainer.addEventListener("touchstart", (e) => {
     startX = e.touches[0].clientX;
