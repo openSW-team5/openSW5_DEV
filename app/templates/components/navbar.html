@@ -33,19 +33,17 @@ variant = variant|default('default') %} {% set back_url = back_url|default('/')
       </span>
     </div>
 
+    {# Ellipse 2 (녹색 테두리) - only for back-notify variant #}
+    {% if variant == 'back-notify' %}
+    <div class="absolute left-[82.87%] right-0 top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"></div>
+    {% endif %}
+
     {# Profile - left: 84.81%, right: 1.93%, top: 11.29%, bottom: 11.29% #}
     <a
       href="javascript:void(0)"
       onclick="handleUserIconClick()"
-      class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%] cursor-pointer"
+      class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%] bg-gray-light rounded-full cursor-pointer"
     >
-      {% if variant == 'back-notify' %} {# Ellipse 2 - border with primary color
-      #}
-      <div
-        class="absolute left-[-2.07%] right-[-2.07%] top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"
-      ></div>
-      {% endif %} {# Ellipse 1 - background circle #}
-      <div class="w-full h-full bg-gray-light rounded-full"></div>
     </a>
 
     <script>
