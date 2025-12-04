@@ -30,7 +30,7 @@
 </h1>
 
 <!-- Form -->
-<form method="post" action="/users/login">
+<form method="post" action="/users/login" id="loginForm">
   <!-- ID Label -->
   <label for="username" class="absolute left-[54px] top-[281px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
     ID
@@ -88,4 +88,37 @@
 <!-- Footer -->
 {% set active = 'none' %}
 {% include 'components/footer.html' %}
+
+<script>
+  // 로그인 폼 제출 처리
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    try {
+      const response = await fetch('/users/login', {
+        method: 'POST',
+        body: formData
+      });
+
+      // 로그인 성공 시 (리다이렉트 또는 200 응답)
+      if (response.ok || response.redirected) {
+        const username = formData.get('username');
+        // sessionStorage에 로그인 정보 저장
+        sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('username', username);
+
+        // dashboard로 이동
+        window.location.href = '/dashboard';
+      } else {
+        // 로그인 실패 시 페이지 리로드하여 에러 메시지 표시
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('로그인 중 오류가 발생했습니다.');
+    }
+  });
+</script>
 {% endblock %}

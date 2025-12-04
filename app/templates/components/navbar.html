@@ -34,8 +34,10 @@ variant = variant|default('default') %} {% set back_url = back_url|default('/')
     </div>
 
     {# Profile - left: 84.81%, right: 1.93%, top: 11.29%, bottom: 11.29% #}
-    <div
-      class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%]"
+    <a
+      href="javascript:void(0)"
+      onclick="handleUserIconClick()"
+      class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%] cursor-pointer"
     >
       {% if variant == 'back-notify' %} {# Ellipse 2 - border with primary color
       #}
@@ -44,6 +46,21 @@ variant = variant|default('default') %} {% set back_url = back_url|default('/')
       ></div>
       {% endif %} {# Ellipse 1 - background circle #}
       <div class="w-full h-full bg-gray-light rounded-full"></div>
-    </div>
+    </a>
+
+    <script>
+      function handleUserIconClick() {
+        // sessionStorage에서 로그인 상태 확인
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+
+        if (isLoggedIn) {
+          // 로그인 되어있으면 user 페이지로
+          window.location.href = '/users/user';
+        } else {
+          // 로그인 안 되어있으면 login 페이지로
+          window.location.href = '/users/login';
+        }
+      }
+    </script>
   </div>
 </nav>
