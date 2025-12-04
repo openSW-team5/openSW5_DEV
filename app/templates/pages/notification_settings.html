@@ -1,84 +1,31 @@
-{% set navbar_variant = 'back-notify' %}
-{% set back_url = '/users/user' %}
-{% set footer_active = 'default' %}
-{% extends "base.html" %}
+{% set navbar_variant = 'back-notify' %} {% set back_url = '/users/user' %} {%
+set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
 
-{% block content %}
-
-<div class="max-w-md mx-auto px-5 pb-24">
+<div class="relative" style="min-height: 400px;">
   <!-- 알림설정 Title -->
-  <h1 class="font-noto font-bold text-[25px] leading-[30px] text-center text-black py-8">
+  <h1
+    class="absolute font-noto font-bold text-black"
+    style="width: 92px; height: 30px; left: calc(50% - 92px/2); top: 125px; font-size: 25px; line-height: 30px;"
+  >
     알림설정
   </h1>
-
-  <!-- Category Section -->
-  <div class="flex items-start gap-5 mb-6">
-    <!-- receipt-duotone Icon -->
-    <div class="w-[50px] h-[50px] flex-shrink-0">
-      <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_0_1)">
-          <path opacity="0.2" d="M6.25 41.625V11.9375C6.25 11.5231 6.41462 11.1257 6.70765 10.8327C7.00067 10.5396 7.39806 10.375 7.8125 10.375H42.1875C42.6019 10.375 42.9993 10.5396 43.2924 10.8327C43.5854 11.1257 43.75 11.5231 43.75 11.9375V41.625L37.5 38.5L31.25 41.625L25 38.5L18.75 41.625L12.5 38.5L6.25 41.625Z" fill="black"/>
-          <path d="M15.625 21.3125H34.375" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M15.625 27.5625H34.375" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M6.25 41.625V11.9375C6.25 11.5231 6.41462 11.1257 6.70765 10.8327C7.00067 10.5396 7.39806 10.375 7.8125 10.375H42.1875C42.6019 10.375 42.9993 10.5396 43.2924 10.8327C43.5854 11.1257 43.75 11.5231 43.75 11.9375V41.625L37.5 38.5L31.25 41.625L25 38.5L18.75 41.625L12.5 38.5L6.25 41.625Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_0_1">
-            <rect width="50" height="50" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>
-    </div>
-
-    <!-- Text Container -->
-    <div class="flex flex-col gap-4 pt-1">
-      <!-- 소비 생활 알림 설정 Title -->
-      <h2 class="font-noto font-bold text-[16px] leading-[19px] text-black">소비 생활 알림 설정</h2>
-
-      <!-- 소비 생활 알림 on/off Text -->
-      <p class="font-noto font-medium text-[16px] leading-[19px] text-[#878787]">소비 생활 알림 on/off</p>
-    </div>
-  </div>
-
-  <!-- Line -->
-  <div class="w-full border-t-[1.5px] border-[#878787] my-4"></div>
-
-  <!-- 알림 on -->
-  <div class="flex flex-row justify-between items-center py-3">
-    <span class="font-noto font-bold text-[16px] leading-[19px] text-[#878787]">알림</span>
-
-    <!-- Switch ON -->
-    <div class="relative w-[44px] h-[24px] bg-[#B4DE00] rounded-[100px] cursor-pointer" onclick="toggleSwitch(this)">
-      <div class="absolute w-[20px] h-[20px] left-[22px] top-[2px] bg-white shadow-[0px_2px_4px_rgba(39,39,39,0.1)] rounded-full transition-all duration-300"></div>
-    </div>
-  </div>
-
-  <!-- 알림 off -->
-  <div class="flex flex-row justify-between items-center py-3">
-    <span class="font-noto font-bold text-[16px] leading-[19px] text-[#878787]">알림</span>
-
-    <!-- Switch OFF -->
-    <div class="relative w-[44px] h-[24px] bg-[#D2D5DA] rounded-[100px] cursor-pointer" onclick="toggleSwitch(this)">
-      <div class="absolute w-[20px] h-[20px] left-[2px] top-[2px] bg-white shadow-[0px_2px_4px_rgba(39,39,39,0.1)] rounded-full transition-all duration-300"></div>
-    </div>
-  </div>
 </div>
 
 <script>
   function toggleSwitch(element) {
-    const knob = element.querySelector('div');
-    const isOn = element.classList.contains('bg-[#B4DE00]');
+    const knob = element.querySelector("div");
+    const isOn = element.classList.contains("bg-[#B4DE00]");
 
     if (isOn) {
       // Turn OFF
-      element.classList.remove('bg-[#B4DE00]');
-      element.classList.add('bg-[#D2D5DA]');
-      knob.style.left = '2px';
+      element.classList.remove("bg-[#B4DE00]");
+      element.classList.add("bg-[#D2D5DA]");
+      knob.style.left = "2px";
     } else {
       // Turn ON
-      element.classList.remove('bg-[#D2D5DA]');
-      element.classList.add('bg-[#B4DE00]');
-      knob.style.left = '22px';
+      element.classList.remove("bg-[#D2D5DA]");
+      element.classList.add("bg-[#B4DE00]");
+      knob.style.left = "22px";
     }
   }
 </script>
