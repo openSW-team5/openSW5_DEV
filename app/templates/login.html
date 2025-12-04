@@ -5,66 +5,68 @@
 
 {% block content %}
 
-<!-- 로그인 Title -->
-<h1 class="absolute w-[120px] h-[52px] left-[calc(50%-120px/2)] top-[162px] font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black">
-  로그인
-</h1>
-
-<!-- Form -->
-<form method="post" action="/users/login" id="loginForm">
-  <!-- ID Label -->
-  <label for="username" class="absolute left-[54px] top-[281px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
-    ID
-  </label>
-
-  <!-- Rectangle 14 (ID Input) -->
-  <input
-    type="text"
-    id="username"
-    name="username"
-    required
-    placeholder="아이디를 입력하세요"
-    class="absolute w-[357px] h-[58px] left-[calc(50%-357px/2+0.5px)] top-[290px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors flex items-center"
-    style="box-sizing: border-box; padding: 0 20px;"
-  />
-
-  <!-- Password Label -->
-  <label for="password" class="absolute left-[54px] top-[385px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
-    Password
-  </label>
-
-  <!-- Rectangle 15 (Password Input) -->
-  <input
-    type="password"
-    id="password"
-    name="password"
-    required
-    placeholder="비밀번호를 입력하세요"
-    class="absolute w-[357px] h-[58px] left-[35px] top-[394px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors flex items-center"
-    style="box-sizing: border-box; padding: 0 20px;"
-  />
-
-  <!-- Google Button Container (로그인 버튼) -->
-  <button
-    type="submit"
-    class="absolute w-[351px] h-[54px] left-[calc(50%-351px/2+0.5px)] top-[498px] bg-[#B4DE00] border border-[#111111] rounded-[70px] flex flex-row justify-center items-center font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-[#a0c900] transition-colors"
-    style="box-sizing: border-box; padding: 16px 10px; gap: 8px;"
-  >
+<div class="relative px-5" style="min-height: 700px; padding-bottom: 100px;">
+  <!-- 로그인 Title -->
+  <h1 class="absolute w-[120px] h-[52px] left-[calc(50%-120px/2)] top-[162px] font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black">
     로그인
-  </button>
-</form>
+  </h1>
 
-<!-- 계정이 없으신가요? 회원가입 -->
-<p class="absolute w-[192px] h-[19px] left-[119px] top-[568px] font-noto font-medium text-[16px] leading-[19px] text-center text-[#878787]">
-  계정이 없으신가요? <a href="/users/register" class="hover:underline" style="color: #0024F3;">회원가입</a>
-</p>
+  <!-- Form -->
+  <form method="post" action="/users/login" id="loginForm">
+    <!-- ID Label -->
+    <label for="username" class="absolute left-[54px] top-[281px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
+      ID
+    </label>
 
-<!-- Error Message -->
-{% if error %}
-  <div class="absolute left-[35px] right-[35px] top-[620px] p-4 bg-red-50 border border-red-200 rounded-lg">
-    <p class="text-red-600 text-center font-medium">{{ error }}</p>
-  </div>
-{% endif %}
+    <!-- Rectangle 14 (ID Input) -->
+    <input
+      type="text"
+      id="username"
+      name="username"
+      required
+      placeholder="아이디를 입력하세요"
+      class="absolute w-[357px] h-[58px] left-[calc(50%-357px/2+0.5px)] top-[290px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors flex items-center"
+      style="box-sizing: border-box; padding: 0 20px;"
+    />
+
+    <!-- Password Label -->
+    <label for="password" class="absolute left-[54px] top-[385px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
+      Password
+    </label>
+
+    <!-- Rectangle 15 (Password Input) -->
+    <input
+      type="password"
+      id="password"
+      name="password"
+      required
+      placeholder="비밀번호를 입력하세요"
+      class="absolute w-[357px] h-[58px] left-[35px] top-[394px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors flex items-center"
+      style="box-sizing: border-box; padding: 0 20px;"
+    />
+
+    <!-- Google Button Container (로그인 버튼) -->
+    <button
+      type="submit"
+      class="absolute w-[351px] h-[54px] left-[calc(50%-351px/2+0.5px)] top-[498px] bg-[#B4DE00] border border-[#111111] rounded-[70px] flex flex-row justify-center items-center font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-[#a0c900] transition-colors"
+      style="box-sizing: border-box; padding: 16px 10px; gap: 8px;"
+    >
+      로그인
+    </button>
+  </form>
+
+  <!-- 계정이 없으신가요? 회원가입 -->
+  <p class="absolute w-[192px] h-[19px] left-[119px] top-[568px] font-noto font-medium text-[16px] leading-[19px] text-center text-[#878787]">
+    계정이 없으신가요? <a href="/users/register" class="hover:underline" style="color: #0024F3;">회원가입</a>
+  </p>
+
+  <!-- Error Message -->
+  {% if error %}
+    <div class="absolute left-[35px] right-[35px] top-[620px] p-4 bg-red-50 border border-red-200 rounded-lg">
+      <p class="text-red-600 text-center font-medium">{{ error }}</p>
+    </div>
+  {% endif %}
+</div>
 
 <script>
   // 로그인 폼 제출 처리
