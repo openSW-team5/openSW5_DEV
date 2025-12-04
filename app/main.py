@@ -43,6 +43,13 @@ def search_page(request: Request):
         {"request": request, "title": "검색"}
     )
 
+@app.get("/notification-settings", response_class=HTMLResponse)
+def notification_settings_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/notification_settings.html",
+        {"request": request, "title": "알림설정"}
+    )
+
 # ✅ 라우터 등록
 app.include_router(health.router)
 app.include_router(receipts.router)

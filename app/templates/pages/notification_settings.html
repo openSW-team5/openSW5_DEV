@@ -1,0 +1,75 @@
+{% set navbar_variant = 'back-notify' %}
+{% set back_url = '/users/user' %}
+{% set footer_active = 'notification' %}
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="max-w-md mx-auto">
+  <!-- 알림설정 Title -->
+  <h1 class="absolute w-[92px] h-[30px] left-[calc(50%-92px/2)] top-[125px] font-noto font-bold text-[25px] leading-[30px] text-center text-black">
+    알림설정
+  </h1>
+
+  <!-- Receipt Icon + 소비 생활 -->
+  <div class="absolute left-[37px] top-[163px] flex items-center gap-5">
+    <!-- receipt-duotone Icon -->
+    <div class="w-[50px] h-[50px]">
+      <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15.625 9.375C14.6299 9.375 13.6756 9.77009 12.9692 10.4765C12.2627 11.1829 11.8676 12.1372 11.8676 13.1323V43.75L15.625 41.1458L19.3824 43.75L23.1399 41.1458L26.8973 43.75L30.6547 41.1458L34.4121 43.75V13.1323C34.4121 12.1372 34.017 11.1829 33.3106 10.4765C32.6041 9.77009 31.6498 9.375 30.6547 9.375H15.625Z" fill="black" fill-opacity="0.2"/>
+        <path d="M19.5312 20.3125H26.9271" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M19.5312 26.5625H26.9271" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M15.625 9.375C14.6299 9.375 13.6756 9.77009 12.9692 10.4765C12.2627 11.1829 11.8676 12.1372 11.8676 13.1323V43.75L15.625 41.1458L19.3824 43.75L23.1399 41.1458L26.8973 43.75L30.6547 41.1458L34.4121 43.75V13.1323C34.4121 12.1372 34.017 11.1829 33.3106 10.4765C32.6041 9.77009 31.6498 9.375 30.6547 9.375H15.625Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- 소비 생활 Text -->
+    <span class="font-noto font-bold text-[16px] leading-[19px] text-black">소비 생활</span>
+  </div>
+
+  <!-- Line 13 -->
+  <div class="absolute w-[390px] h-0 left-[calc(50%-390px/2)] top-[217px] border-[1.5px] border-[#878787]"></div>
+
+  <!-- 알림 on -->
+  <div class="absolute w-[328px] h-[24px] left-[40px] top-[231px] flex flex-row justify-between items-center">
+    <!-- 알림 Text -->
+    <span class="font-noto font-bold text-[16px] leading-[19px] text-[#878787]">알림</span>
+
+    <!-- Switch ON -->
+    <div class="relative w-[44px] h-[24px] bg-[#B4DE00] rounded-[100px] cursor-pointer" onclick="toggleSwitch(this)">
+      <div class="absolute w-[20px] h-[20px] left-[22px] top-[2px] bg-white shadow-[0px_2px_4px_rgba(39,39,39,0.1)] rounded-full transition-all duration-300"></div>
+    </div>
+  </div>
+
+  <!-- 알림 off -->
+  <div class="absolute w-[328px] h-[24px] left-[40px] top-[273px] flex flex-row justify-between items-center">
+    <!-- 알림 Text -->
+    <span class="font-noto font-bold text-[16px] leading-[19px] text-[#878787]">알림</span>
+
+    <!-- Switch OFF -->
+    <div class="relative w-[44px] h-[24px] bg-[#D2D5DA] rounded-[100px] cursor-pointer" onclick="toggleSwitch(this)">
+      <div class="absolute w-[20px] h-[20px] left-[2px] top-[2px] bg-white shadow-[0px_2px_4px_rgba(39,39,39,0.1)] rounded-full transition-all duration-300"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleSwitch(element) {
+    const knob = element.querySelector('div');
+    const isOn = element.classList.contains('bg-[#B4DE00]');
+
+    if (isOn) {
+      // Turn OFF
+      element.classList.remove('bg-[#B4DE00]');
+      element.classList.add('bg-[#D2D5DA]');
+      knob.style.left = '2px';
+    } else {
+      // Turn ON
+      element.classList.remove('bg-[#D2D5DA]');
+      element.classList.add('bg-[#B4DE00]');
+      knob.style.left = '22px';
+    }
+  }
+</script>
+
+{% endblock %}
