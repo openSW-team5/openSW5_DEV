@@ -14,5 +14,12 @@
       <img src="{{ url_for('static', filename='assets/logo.svg') }}" alt="SmartLedger" class="w-full h-full">
     </div>
   </div>
+
+  <script>
+    // 2초 후 dashboard로 자동 이동
+    setTimeout(function() {
+      window.location.href = '/dashboard';
+    }, 2000);
+  </script>
 </body>
 </html>
