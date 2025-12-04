@@ -5,10 +5,8 @@
 
 {% block content %}
 
-<!-- Scrollable Content Area -->
-<div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
-  <div class="relative" style="min-height: 800px; padding-bottom: 100px;">
-    <!-- 회원가입 Title -->
+<div class="relative px-5" style="min-height: 800px; padding-bottom: 100px;">
+  <!-- 회원가입 Title -->
     <h1 class="absolute w-[160px] h-[52px] left-[calc(50%-160px/2)] top-[12px] font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black">
       회원가입
     </h1>
@@ -129,6 +127,5 @@
       <p class="text-red-600 text-center font-medium">{{ error }}</p>
     </div>
   {% endif %}
-  </div>
 </div>
 {% endblock %}
