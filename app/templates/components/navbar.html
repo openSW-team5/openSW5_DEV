@@ -33,12 +33,13 @@ variant = variant|default('default') %} {% set back_url = back_url|default('/')
       </span>
     </div>
 
-    {# Ellipse 2 (녹색 테두리) - only for back-notify variant #}
-    {% if variant == 'back-notify' %}
-    <div class="absolute left-[82.87%] right-0 top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"></div>
-    {% endif %}
-
-    {# Profile - left: 84.81%, right: 1.93%, top: 11.29%, bottom: 11.29% #}
+    {# Ellipse 2 (녹색 테두리) - only for back-notify variant #} {% if variant
+    == 'back-notify' %}
+    <div
+      class="absolute left-[82.87%] right-0 top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"
+    ></div>
+    {% endif %} {# Profile - left: 84.81%, right: 1.93%, top: 11.29%, bottom:
+    11.29% #}
     <a
       href="javascript:void(0)"
       onclick="handleUserIconClick()"
@@ -49,14 +50,14 @@ variant = variant|default('default') %} {% set back_url = back_url|default('/')
     <script>
       function handleUserIconClick() {
         // sessionStorage에서 로그인 상태 확인
-        const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+        const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
 
         if (isLoggedIn) {
           // 로그인 되어있으면 user 페이지로
-          window.location.href = '/users/user';
+          window.location.href = "/users/user";
         } else {
           // 로그인 안 되어있으면 login 페이지로
-          window.location.href = '/users/login';
+          window.location.href = "/users/login";
         }
       }
     </script>
