@@ -1,0 +1,178 @@
+{% set navbar_variant = 'back-notify' %}
+{% set back_url = '/users/user' %}
+{% set footer_active = 'default' %}
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="relative" style="min-height: 800px; padding-top: 107px; padding-bottom: 107px;">
+  <!-- 카테고리 편집 Title -->
+  <h1
+    class="absolute font-noto font-bold text-black"
+    style="width: 144px; height: 30px; left: calc(50% - 144px/2); top: 125px; font-size: 25px; line-height: 30px;"
+  >
+    카테고리 편집
+  </h1>
+
+  <!-- OptionSwitcher -->
+  <div
+    class="absolute flex flex-row items-start bg-white rounded-[51px]"
+    style="width: 228px; height: 45px; left: calc(50% - 228px/2); top: 171px; padding: 3px 6px; gap: 3px;"
+  >
+    <!-- 수입 Option -->
+    <div
+      onclick="switchCategory('income')"
+      class="flex flex-row items-start rounded-[52px] cursor-pointer"
+      style="width: 70px; height: 39px; padding: 10px 20px; gap: 10px;"
+    >
+      <span class="font-inter font-medium text-[16px] leading-[19px]" style="width: 30px; height: 19px; color: #026A00;">수입</span>
+    </div>
+
+    <!-- 지출 Option (Active) -->
+    <div
+      onclick="switchCategory('expense')"
+      class="flex flex-row items-start rounded-[52px] cursor-pointer"
+      style="width: 70px; height: 39px; padding: 10px 20px; gap: 10px; background: #B4DE00; box-shadow: 0px 4px 19px rgba(180, 222, 0, 0.49);"
+    >
+      <span class="font-inter font-medium text-[16px] leading-[19px]" style="width: 30px; height: 19px; color: #FFFFFF;">지출</span>
+    </div>
+
+    <!-- 자산 Option -->
+    <div
+      onclick="switchCategory('asset')"
+      class="flex flex-row items-start rounded-[52px] cursor-pointer"
+      style="width: 70px; height: 39px; padding: 10px 20px; gap: 10px;"
+    >
+      <span class="font-inter font-medium text-[16px] leading-[19px]" style="width: 30px; height: 19px; color: #026A00;">자산</span>
+    </div>
+  </div>
+
+  <!-- Category Items Grid -->
+  <!-- Row 1 -->
+  <!-- Item 1 -->
+  <div class="absolute" style="width: 82px; height: 109px; left: 39px; top: 232px;">
+    <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
+      <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
+        <rect x="8.75" y="8.75" width="52.5" height="52.5" stroke="black" stroke-width="5"/>
+      </svg>
+    </div>
+    <p class="absolute font-yidstreet font-bold text-[16px] leading-[21px] text-center" style="width: 32px; height: 21px; left: 25px; top: 70px; color: #878787;">항목</p>
+    <p class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center" style="width: 82px; height: 18px; left: 0px; top: 91px; color: #878787;">소분류 00개</p>
+  </div>
+
+  <!-- Item 2 (Center) -->
+  <div class="absolute" style="width: 82px; height: 109px; left: calc(50% - 82px/2); top: 232px;">
+    <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
+      <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
+        <rect x="8.75" y="8.75" width="52.5" height="52.5" stroke="black" stroke-width="5"/>
+      </svg>
+    </div>
+    <p class="absolute font-yidstreet font-bold text-[16px] leading-[21px] text-center" style="width: 32px; height: 21px; left: 25px; top: 70px; color: #878787;">항목</p>
+    <p class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center" style="width: 82px; height: 18px; left: 0px; top: 91px; color: #878787;">소분류 00개</p>
+  </div>
+
+  <!-- Item 3 -->
+  <div class="absolute" style="width: 82px; height: 109px; left: 307px; top: 232px;">
+    <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
+      <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
+        <rect x="8.75" y="8.75" width="52.5" height="52.5" stroke="black" stroke-width="5"/>
+      </svg>
+    </div>
+    <p class="absolute font-yidstreet font-bold text-[16px] leading-[21px] text-center" style="width: 32px; height: 21px; left: 25px; top: 70px; color: #878787;">항목</p>
+    <p class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center" style="width: 82px; height: 18px; left: 0px; top: 91px; color: #878787;">소분류 00개</p>
+  </div>
+
+  <!-- Row 2 -->
+  <!-- Item 4 -->
+  <div class="absolute" style="width: 82px; height: 109px; left: 39px; top: 389px;">
+    <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
+      <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
+        <rect x="8.75" y="8.75" width="52.5" height="52.5" stroke="black" stroke-width="5"/>
+      </svg>
+    </div>
+    <p class="absolute font-yidstreet font-bold text-[16px] leading-[21px] text-center" style="width: 32px; height: 21px; left: 25px; top: 70px; color: #878787;">항목</p>
+    <p class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center" style="width: 82px; height: 18px; left: 0px; top: 91px; color: #878787;">소분류 00개</p>
+  </div>
+
+  <!-- Item 5 (Center) -->
+  <div class="absolute" style="width: 82px; height: 109px; left: calc(50% - 82px/2); top: 389px;">
+    <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
+      <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
+        <rect x="8.75" y="8.75" width="52.5" height="52.5" stroke="black" stroke-width="5"/>
+      </svg>
+    </div>
+    <p class="absolute font-yidstreet font-bold text-[16px] leading-[21px] text-center" style="width: 32px; height: 21px; left: 25px; top: 70px; color: #878787;">항목</p>
+    <p class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center" style="width: 82px; height: 18px; left: 0px; top: 91px; color: #878787;">소분류 00개</p>
+  </div>
+
+  <!-- Item 6 -->
+  <div class="absolute" style="width: 82px; height: 109px; left: 307px; top: 389px;">
+    <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
+      <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
+        <rect x="8.75" y="8.75" width="52.5" height="52.5" stroke="black" stroke-width="5"/>
+      </svg>
+    </div>
+    <p class="absolute font-yidstreet font-bold text-[16px] leading-[21px] text-center" style="width: 32px; height: 21px; left: 25px; top: 70px; color: #878787;">항목</p>
+    <p class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center" style="width: 82px; height: 18px; left: 0px; top: 91px; color: #878787;">소분류 00개</p>
+  </div>
+
+  <!-- Row 3 -->
+  <!-- Item 7 -->
+  <div class="absolute" style="width: 82px; height: 109px; left: 39px; top: 546px;">
+    <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
+      <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
+        <rect x="8.75" y="8.75" width="52.5" height="52.5" stroke="black" stroke-width="5"/>
+      </svg>
+    </div>
+    <p class="absolute font-yidstreet font-bold text-[16px] leading-[21px] text-center" style="width: 32px; height: 21px; left: 25px; top: 70px; color: #878787;">항목</p>
+    <p class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center" style="width: 82px; height: 18px; left: 0px; top: 91px; color: #878787;">소분류 00개</p>
+  </div>
+
+  <!-- Item 8 (Center) -->
+  <div class="absolute" style="width: 82px; height: 109px; left: calc(50% - 82px/2); top: 546px;">
+    <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
+      <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
+        <rect x="8.75" y="8.75" width="52.5" height="52.5" stroke="black" stroke-width="5"/>
+      </svg>
+    </div>
+    <p class="absolute font-yidstreet font-bold text-[16px] leading-[21px] text-center" style="width: 32px; height: 21px; left: 25px; top: 70px; color: #878787;">항목</p>
+    <p class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center" style="width: 82px; height: 18px; left: 0px; top: 91px; color: #878787;">소분류 00개</p>
+  </div>
+
+  <!-- Item 9 -->
+  <div class="absolute" style="width: 82px; height: 109px; left: 307px; top: 546px;">
+    <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
+      <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
+        <rect x="8.75" y="8.75" width="52.5" height="52.5" stroke="black" stroke-width="5"/>
+      </svg>
+    </div>
+    <p class="absolute font-yidstreet font-bold text-[16px] leading-[21px] text-center" style="width: 32px; height: 21px; left: 25px; top: 70px; color: #878787;">항목</p>
+    <p class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center" style="width: 82px; height: 18px; left: 0px; top: 91px; color: #878787;">소분류 00개</p>
+  </div>
+
+  <!-- 카테고리 추가 Button -->
+  <button
+    class="absolute flex flex-row justify-center items-center border rounded-[70px] font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-gray-50 transition-colors"
+    style="width: 150px; height: 54px; left: calc(50% - 150px/2); top: 756px; box-sizing: border-box; padding: 16px 10px; gap: 8px; border: 1px solid #878787;"
+  >
+    <span style="width: 111px; height: 22px;">카테고리 추가</span>
+  </button>
+</div>
+
+<script>
+  function switchCategory(type) {
+    // TODO: Implement category switching logic
+    console.log('Switching to category type:', type);
+  }
+</script>
+
+{% endblock %}

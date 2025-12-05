@@ -57,6 +57,13 @@ def data_export_page(request: Request):
         {"request": request, "title": "데이터 내보내기"}
     )
 
+@app.get("/category-edit", response_class=HTMLResponse)
+def category_edit_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/category_edit.html",
+        {"request": request, "title": "카테고리 편집"}
+    )
+
 # ✅ 라우터 등록
 app.include_router(health.router)
 app.include_router(receipts.router)
