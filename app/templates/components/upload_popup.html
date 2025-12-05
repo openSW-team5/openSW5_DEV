@@ -1,0 +1,378 @@
+{# Upload Popup Component #}
+{# 사용법: {% include 'components/upload_popup.html' %} #}
+
+<!-- Backdrop -->
+<div id="uploadPopup" class="hidden fixed inset-0 z-40" style="background: rgba(0, 0, 0, 0.7);" onclick="closeUploadPopup()">
+
+  <!-- Popup Container -->
+  <div
+    class="absolute"
+    style="
+      width: 388px;
+      height: 266px;
+      left: calc(50% - 388px/2);
+      bottom: 115px;
+      background: #F7F7F7;
+      border-radius: 27px;
+    "
+    onclick="event.stopPropagation()"
+  >
+
+    <!-- 설명 텍스트 -->
+    <p
+      class="absolute"
+      style="
+        width: 309px;
+        left: calc(50% - 309px/2 - 0.5px);
+        top: 20px;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 15px;
+        text-align: center;
+        color: #878787;
+      "
+    >
+      이미지 파일(JPG, PNG), 최대 10MB까지 업로드 가능합니다.
+    </p>
+
+    <!-- 직접 입력 버튼 -->
+    <button
+      class="absolute flex flex-row justify-center items-center"
+      style="
+        width: 351px;
+        height: 54px;
+        left: calc(50% - 351px/2 - 0.5px);
+        top: 50px;
+        background: #B4DE00;
+        border: 1px solid #111111;
+        border-radius: 70px;
+        padding: 16px 10px;
+        gap: 8px;
+      "
+      onclick="handleManualInput()"
+    >
+      <span
+        style="
+          font-family: 'Satoshi Variable';
+          font-style: normal;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 22px;
+          color: #111111;
+        "
+      >
+        직접 입력
+      </span>
+    </button>
+
+    <!-- 갤러리에서 선택 버튼 -->
+    <button
+      class="absolute flex flex-row justify-center items-center"
+      style="
+        width: 351px;
+        height: 54px;
+        left: calc(50% - 351px/2 + 0.5px);
+        top: 115px;
+        background: #B4DE00;
+        border: 1px solid #111111;
+        border-radius: 70px;
+        padding: 16px 10px;
+        gap: 8px;
+      "
+      onclick="handleGallerySelect()"
+    >
+      <span
+        style="
+          font-family: 'Satoshi Variable';
+          font-style: normal;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 22px;
+          color: #111111;
+        "
+      >
+        갤러리에서 선택
+      </span>
+    </button>
+
+    <!-- 사진 촬영 버튼 -->
+    <button
+      class="absolute flex flex-row justify-center items-center"
+      style="
+        width: 351px;
+        height: 54px;
+        left: calc(50% - 351px/2 - 0.5px);
+        top: 180px;
+        background: #B4DE00;
+        border: 1px solid #111111;
+        border-radius: 70px;
+        padding: 16px 10px;
+        gap: 8px;
+      "
+      onclick="handleCameraCapture()"
+    >
+      <span
+        style="
+          font-family: 'Satoshi Variable';
+          font-style: normal;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 22px;
+          color: #111111;
+        "
+      >
+        사진 촬영
+      </span>
+    </button>
+
+  </div>
+</div>
+
+<!-- Loading Popup (1차 자동인식) -->
+<div id="loadingPopup" class="hidden fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0, 0, 0, 0.7);">
+  <div
+    class="absolute"
+    style="
+      width: 388px;
+      height: 139px;
+      background: #F7F7F7;
+      border-radius: 27px;
+    "
+  >
+    <p
+      class="absolute font-yidstreet font-bold text-center"
+      style="
+        width: 276px;
+        height: 62px;
+        left: calc(50% - 276px/2);
+        top: calc(50% - 62px/2 + 1px);
+        font-size: 48px;
+        line-height: 62px;
+        color: #000000;
+      "
+    >
+      1차 자동인식
+    </p>
+  </div>
+</div>
+
+<!-- Error Popup -->
+<div id="errorPopup" class="hidden fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0, 0, 0, 0.7);">
+  <div
+    class="flex flex-col"
+    style="
+      width: 380px;
+      height: 187px;
+      background: #FFFFFF;
+      box-shadow: 0px 4px 8px rgba(16, 24, 64, 0.08);
+      border-radius: 8px;
+    "
+  >
+    <!-- Header -->
+    <div
+      class="flex flex-row items-start"
+      style="
+        width: 380px;
+        height: 56px;
+        padding: 16px 16px 16px 20px;
+        gap: 10px;
+        background: #FFFFFF;
+        border-radius: 8px 8px 0px 0px;
+      "
+    >
+      <div class="flex flex-col" style="width: 310px; height: 24px; gap: 12px; flex-grow: 1;">
+        <h3
+          id="errorTitle"
+          class="font-noto font-semibold flex items-center"
+          style="
+            width: 310px;
+            height: 24px;
+            font-size: 16px;
+            line-height: 152%;
+            color: #000000;
+          "
+        >
+          에러 제목
+        </h3>
+      </div>
+      <button onclick="closeErrorPopup()" style="width: 24px; height: 24px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 6L18 18M6 18L18 6" stroke="#6C6F75" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div
+      class="flex flex-col justify-center items-start"
+      style="
+        width: 380px;
+        height: 68px;
+        padding: 16px 24px;
+        gap: 16px;
+      "
+    >
+      <p
+        id="errorMessage"
+        class="font-noto"
+        style="
+          width: 332px;
+          height: 36px;
+          font-weight: 400;
+          font-size: 12px;
+          line-height: 150%;
+          color: #000000;
+        "
+      >
+        에러 메시지
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div
+      class="flex flex-row justify-end items-start"
+      style="
+        width: 380px;
+        height: 63px;
+        padding: 16px 20px;
+        gap: 8px;
+        background: #FFFFFF;
+        border-top: 1px solid rgba(34, 34, 38, 0.08);
+        box-shadow: 0px 4px 4px rgba(16, 24, 64, 0.08);
+        border-radius: 0px 0px 8px 8px;
+      "
+    >
+      <button
+        onclick="closeErrorPopup()"
+        class="flex flex-row justify-center items-center"
+        style="
+          width: 55px;
+          height: 31px;
+          padding: 8px 16px;
+          gap: 5px;
+          background: #1A1A1C;
+          border: 1px solid #1A1A1C;
+          box-shadow: 0px 1px 2px rgba(38, 110, 255, 0.05);
+          border-radius: 3px;
+        "
+      >
+        <span
+          class="font-inter font-medium"
+          style="
+            width: 23px;
+            height: 15px;
+            font-size: 12px;
+            line-height: 15px;
+            color: #FFFFFF;
+          "
+        >
+          확인
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden file inputs -->
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleFileSelect(this, 'camera')">
+<input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="handleFileSelect(this, 'gallery')">
+
+<script>
+  function openUploadPopup() {
+    document.getElementById('uploadPopup').classList.remove('hidden');
+  }
+
+  function closeUploadPopup() {
+    document.getElementById('uploadPopup').classList.add('hidden');
+  }
+
+  function handleCameraCapture() {
+    closeUploadPopup();
+    document.getElementById('cameraInput').click();
+  }
+
+  function handleGallerySelect() {
+    closeUploadPopup();
+    document.getElementById('galleryInput').click();
+  }
+
+  function handleManualInput() {
+    console.log('직접 입력 기능');
+    // TODO: 직접 입력 페이지로 이동
+    closeUploadPopup();
+  }
+
+  function handleFileSelect(input, source) {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      console.log(`${source}에서 선택된 파일:`, file.name);
+
+      // 파일 검증
+      const validation = validateFile(file);
+      if (!validation.valid) {
+        showErrorPopup(validation.errorType, validation.message);
+        return;
+      }
+
+      // 로딩 팝업 표시
+      showLoadingPopup();
+
+      // 2초 후 로딩 팝업 닫기
+      setTimeout(() => {
+        hideLoadingPopup();
+        // TODO: 서버 업로드 또는 다음 페이지로 이동
+      }, 2000);
+    }
+  }
+
+  function validateFile(file) {
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+    // 파일 형식 검증
+    if (!allowedTypes.includes(file.type)) {
+      return {
+        valid: false,
+        errorType: 'fileType',
+        message: '지원하지 않는 파일 형식입니다\n이미지 파일(PNG, JPG)만 업로드 가능합니다.'
+      };
+    }
+
+    // 파일 크기 검증
+    if (file.size > maxSize) {
+      return {
+        valid: false,
+        errorType: 'fileSize',
+        message: '파일 크기가 너무 큽니다\n최대 10MB까지 업로드 가능합니다.'
+      };
+    }
+
+    return { valid: true };
+  }
+
+  function showLoadingPopup() {
+    document.getElementById('loadingPopup').classList.remove('hidden');
+  }
+
+  function hideLoadingPopup() {
+    document.getElementById('loadingPopup').classList.add('hidden');
+  }
+
+  function showErrorPopup(errorType, message) {
+    const titles = {
+      'fileType': '지원하지 않는 파일 형식',
+      'fileSize': '파일 크기 초과',
+      'recognition': '파일 인식 불가'
+    };
+
+    document.getElementById('errorTitle').textContent = titles[errorType] || '오류';
+    document.getElementById('errorMessage').textContent = message;
+    document.getElementById('errorPopup').classList.remove('hidden');
+  }
+
+  function closeErrorPopup() {
+    document.getElementById('errorPopup').classList.add('hidden');
+  }
+</script>

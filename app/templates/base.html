@@ -39,6 +39,9 @@
         {% set active = footer_active %}
         {% include 'components/footer.html' %}
       {% endif %}
+
+      <!-- Upload Popup -->
+      {% include 'components/upload_popup.html' %}
     </div>
 
     <script src="{{ url_for('static', path='js/app.js') }}"></script>
