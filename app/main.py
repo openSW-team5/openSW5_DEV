@@ -64,6 +64,20 @@ def category_edit_page(request: Request):
         {"request": request, "title": "카테고리 편집"}
     )
 
+@app.get("/category-income", response_class=HTMLResponse)
+def category_income_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/category_income.html",
+        {"request": request, "title": "카테고리 편집"}
+    )
+
+@app.get("/category-asset", response_class=HTMLResponse)
+def category_asset_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/category_asset.html",
+        {"request": request, "title": "카테고리 편집"}
+    )
+
 # ✅ 라우터 등록
 app.include_router(health.router)
 app.include_router(receipts.router)
