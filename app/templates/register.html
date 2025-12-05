@@ -5,29 +5,30 @@
 
 {% block content %}
 
-<div class="relative px-5" style="min-height: 800px; padding-bottom: 100px;">
-  <!-- 회원가입 Title -->
+<div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
+  <div class="relative px-5" style="min-height: 800px; padding-bottom: 100px;">
+    <!-- 회원가입 Title -->
     <h1 class="absolute w-[160px] h-[52px] left-[calc(50%-160px/2)] top-[12px] font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black">
       회원가입
     </h1>
 
-  <!-- Form -->
-  <form method="post" action="/users/register">
-    <!-- ID Label -->
-    <label for="username" class="absolute left-[54px] top-[76px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
-    ID
-  </label>
+    <!-- Form -->
+    <form method="post" action="/users/register">
+      <!-- ID Label -->
+      <label for="username" class="absolute left-[54px] top-[76px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
+      ID
+    </label>
 
-    <!-- ID Input (Rectangle 14) -->
-    <input
-      type="text"
-      id="username"
-      name="username"
-      required
-      placeholder="아이디를 입력하세요"
-      class="absolute w-[357px] h-[58px] left-[calc(50%-357px/2+0.5px)] top-[85px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
-      style="box-sizing: border-box; padding: 0 20px;"
-    />
+      <!-- ID Input (Rectangle 14) -->
+      <input
+        type="text"
+        id="username"
+        name="username"
+        required
+        placeholder="아이디를 입력하세요"
+        class="absolute w-[357px] h-[58px] left-[calc(50%-357px/2+0.5px)] top-[85px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+        style="box-sizing: border-box; padding: 0 20px;"
+      />
 
     <!-- Password Label -->
     <label for="password" class="absolute left-[55px] top-[155px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
@@ -121,11 +122,12 @@
     이미 계정이 있으신가요? <a href="/users/login" class="hover:underline" style="color: #0024F3;">로그인</a>
   </p>
 
-  <!-- Error Message -->
-  {% if error %}
-    <div class="absolute left-[35px] right-[35px] top-[720px] p-4 bg-red-50 border border-red-200 rounded-lg mb-8">
-      <p class="text-red-600 text-center font-medium">{{ error }}</p>
-    </div>
-  {% endif %}
+    <!-- Error Message -->
+    {% if error %}
+      <div class="absolute left-[35px] right-[35px] top-[720px] p-4 bg-red-50 border border-red-200 rounded-lg mb-8">
+        <p class="text-red-600 text-center font-medium">{{ error }}</p>
+      </div>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
