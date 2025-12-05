@@ -1,0 +1,255 @@
+{% set navbar_variant = 'back-notify' %} {% set back_url = '/users/user' %} {%
+set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
+
+<div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
+  <div class="relative" style="min-height: 500px; padding-bottom: 50px">
+    <!-- 카테고리 편집 Title -->
+    <h1
+      class="absolute font-noto font-bold text-black"
+      style="
+        width: 144px;
+        height: 30px;
+        left: calc(50% - 144px / 2);
+        top: 30px;
+        font-size: 25px;
+        line-height: 30px;
+      "
+    >
+      카테고리 편집
+    </h1>
+
+    <!-- Option Switcher Group (수입 active) -->
+    <div
+      class="absolute flex"
+      style="
+        width: 228px;
+        height: 45px;
+        left: calc(50% - 228px / 2);
+        top: 76px;
+        background: #FFFFFF;
+        border-radius: 51px;
+        padding: 3px 6px;
+        gap: 3px;
+      "
+    >
+      <a
+        href="/category-income"
+        class="flex items-center justify-center"
+        style="
+          width: 70px;
+          height: 39px;
+          background: #B4DE00;
+          box-shadow: 0px 4px 19px rgba(180, 222, 0, 0.49);
+          border-radius: 52px;
+          padding: 10px 20px;
+          font-family: 'Inter';
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 19px;
+          color: #FFFFFF;
+          text-decoration: none;
+        "
+      >
+        수입
+      </a>
+      <a
+        href="/category-edit"
+        class="flex items-center justify-center"
+        style="
+          width: 70px;
+          height: 39px;
+          border-radius: 52px;
+          padding: 10px 20px;
+          font-family: 'Inter';
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 19px;
+          color: #026A00;
+          text-decoration: none;
+        "
+      >
+        지출
+      </a>
+      <a
+        href="/category-asset"
+        class="flex items-center justify-center"
+        style="
+          width: 70px;
+          height: 39px;
+          border-radius: 52px;
+          padding: 10px 20px;
+          font-family: 'Inter';
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 19px;
+          color: #026A00;
+          text-decoration: none;
+        "
+      >
+        이체
+      </a>
+    </div>
+
+    <!-- Category List -->
+    <div
+      class="absolute flex flex-col items-start"
+      style="width: 391px; left: 19px; top: 180px; gap: 6px"
+    >
+      <!-- 급여 -->
+      <div class="relative" style="width: 391px; height: 32px">
+        <p
+          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
+          style="
+            width: 391px;
+            height: 26px;
+            left: 0px;
+            top: 0px;
+            color: #000000;
+          "
+        >
+          급여
+        </p>
+        <div
+          class="absolute"
+          style="
+            width: 391px;
+            height: 0px;
+            left: 0px;
+            top: 32px;
+            border-top: 1.5px solid #878787;
+          "
+        ></div>
+      </div>
+
+      <!-- 용돈 -->
+      <div class="relative" style="width: 391px; height: 32px">
+        <p
+          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
+          style="
+            width: 391px;
+            height: 26px;
+            left: 0px;
+            top: 0px;
+            color: #000000;
+          "
+        >
+          용돈
+        </p>
+        <div
+          class="absolute"
+          style="
+            width: 391px;
+            height: 0px;
+            left: 0px;
+            top: 32px;
+            border-top: 1.5px solid #878787;
+          "
+        ></div>
+      </div>
+
+      <!-- 금융수입 -->
+      <div class="relative" style="width: 391px; height: 32px">
+        <p
+          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
+          style="
+            width: 391px;
+            height: 26px;
+            left: 0px;
+            top: 0px;
+            color: #000000;
+          "
+        >
+          금융수입
+        </p>
+        <div
+          class="absolute"
+          style="
+            width: 391px;
+            height: 0px;
+            left: 0px;
+            top: 32px;
+            border-top: 1.5px solid #878787;
+          "
+        ></div>
+      </div>
+
+      <!-- 항목 (비활성) -->
+      <div class="relative" style="width: 391px; height: 32px">
+        <p
+          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
+          style="
+            width: 391px;
+            height: 26px;
+            left: 0px;
+            top: 0px;
+            color: #878787;
+          "
+        >
+          항목
+        </p>
+        <div
+          class="absolute"
+          style="
+            width: 391px;
+            height: 0px;
+            left: 0px;
+            top: 32px;
+            border-top: 1.5px solid #878787;
+          "
+        ></div>
+      </div>
+
+      <!-- 항목 (비활성) -->
+      <div class="relative" style="width: 391px; height: 32px">
+        <p
+          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
+          style="
+            width: 391px;
+            height: 26px;
+            left: 0px;
+            top: 0px;
+            color: #878787;
+          "
+        >
+          항목
+        </p>
+        <div
+          class="absolute"
+          style="
+            width: 391px;
+            height: 0px;
+            left: 0px;
+            top: 32px;
+            border-top: 1.5px solid #878787;
+          "
+        ></div>
+      </div>
+    </div>
+
+    <!-- 카테고리 추가 Button -->
+    <button
+      class="absolute flex flex-row justify-center items-center hover:bg-gray-50 transition-colors"
+      style="
+        width: 150px;
+        height: 54px;
+        left: calc(50% - 150px / 2);
+        top: 380px;
+        border: 1px solid #878787;
+        border-radius: 70px;
+        padding: 16px 10px;
+        gap: 8px;
+      "
+    >
+      <span
+        class="font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111]"
+        >편집</span
+      >
+    </button>
+  </div>
+</div>
+
+<script>
+  // 카테고리 전환 기능은 추후 구현
+</script>
+
+{% endblock %}

@@ -18,8 +18,15 @@ templates = Jinja2Templates(directory="app/templates")
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(
-        "index.html",
-        {"request": request, "title": "Home", "msg": "Hello FastAPI + Jinja2!"}
+        "splash.html",
+        {"request": request}
+    )
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard(request: Request):
+    return templates.TemplateResponse(
+        "pages/dashboard.html",
+        {"request": request, "title": "Dashboard"}
     )
 
 @app.get("/transactions", response_class=HTMLResponse)
@@ -34,6 +41,41 @@ def search_page(request: Request):
     return templates.TemplateResponse(
         "pages/search.html",
         {"request": request, "title": "검색"}
+    )
+
+@app.get("/notification-settings", response_class=HTMLResponse)
+def notification_settings_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/notification_settings.html",
+        {"request": request, "title": "알림설정"}
+    )
+
+@app.get("/data-export", response_class=HTMLResponse)
+def data_export_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/data_export.html",
+        {"request": request, "title": "데이터 내보내기"}
+    )
+
+@app.get("/category-edit", response_class=HTMLResponse)
+def category_edit_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/category_edit.html",
+        {"request": request, "title": "카테고리 편집"}
+    )
+
+@app.get("/category-income", response_class=HTMLResponse)
+def category_income_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/category_income.html",
+        {"request": request, "title": "카테고리 편집"}
+    )
+
+@app.get("/category-asset", response_class=HTMLResponse)
+def category_asset_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/category_asset.html",
+        {"request": request, "title": "카테고리 편집"}
     )
 
 # ✅ 라우터 등록

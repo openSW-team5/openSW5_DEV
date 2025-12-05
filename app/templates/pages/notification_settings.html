@@ -1,0 +1,86 @@
+{% set navbar_variant = 'back-notify' %} {% set back_url = '/users/user' %} {%
+set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
+
+<div class="relative" style="min-height: 400px;">
+  <!-- 알림설정 Title -->
+  <h1
+    class="absolute font-noto font-bold text-black"
+    style="width: 92px; height: 30px; left: calc(50% - 92px/2); top: 125px; font-size: 25px; line-height: 30px;"
+  >
+    알림설정
+  </h1>
+
+  <!-- receipt-duotone Icon -->
+  <div class="absolute" style="width: 50px; height: 50px; left: 37px; top: 163px;">
+    <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_207_1345)">
+        <path opacity="0.2" d="M6.25 40.625V10.9375C6.25 10.5231 6.41462 10.1257 6.70765 9.83265C7.00067 9.53962 7.3981 9.375 7.8125 9.375H42.1875C42.6019 9.375 42.9993 9.53962 43.2924 9.83265C43.5854 10.1257 43.75 10.5231 43.75 10.9375V40.625L37.5 37.5L31.25 40.625L25 37.5L18.75 40.625L12.5 37.5L6.25 40.625Z" fill="black"/>
+        <path d="M15.625 20.3125H34.375" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M15.625 26.5625H34.375" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6.25 40.625V10.9375C6.25 10.5231 6.41462 10.1257 6.70765 9.83265C7.00067 9.53962 7.3981 9.375 7.8125 9.375H42.1875C42.6019 9.375 42.9993 9.53962 43.2924 9.83265C43.5854 10.1257 43.75 10.5231 43.75 10.9375V40.625L37.5 37.5L31.25 40.625L25 37.5L18.75 40.625L12.5 37.5L6.25 40.625Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <defs>
+        <clipPath id="clip0_207_1345">
+          <rect width="50" height="50" fill="white"/>
+        </clipPath>
+      </defs>
+    </svg>
+  </div>
+
+  <!-- 소비 생활 -->
+  <p
+    class="absolute font-noto font-bold text-black"
+    style="width: 63px; height: 19px; left: 107px; top: 178px; font-size: 16px; line-height: 19px;"
+  >
+    소비 생활
+  </p>
+
+  <!-- Line 13 -->
+  <div
+    class="absolute"
+    style="width: 390px; height: 0; left: calc(50% - 390px/2); top: 217px; border-top: 1.5px solid #878787;"
+  ></div>
+
+  <!-- 알림 1 -->
+  <div class="absolute flex flex-row justify-between items-center" style="width: 328px; height: 24px; left: 40px; top: 231px;">
+    <span class="font-noto font-bold" style="font-size: 16px; line-height: 19px; color: #878787;">알림</span>
+
+    <!-- Switch OFF -->
+    <div class="relative cursor-pointer bg-[#D2D5DA]" onclick="toggleSwitch(this)" style="width: 44px; height: 24px; background: #D2D5DA; border-radius: 100px;">
+      <div class="absolute" style="width: 20px; height: 20px; left: 2px; top: 2px; background: #FFFFFF; box-shadow: 0px 2px 4px rgba(39, 39, 39, 0.1); border-radius: 100px; transition: all 0.3s;"></div>
+    </div>
+  </div>
+
+  <!-- 알림 2 -->
+  <div class="absolute flex flex-row justify-between items-center" style="width: 328px; height: 24px; left: 40px; top: 273px;">
+    <span class="font-noto font-bold" style="font-size: 16px; line-height: 19px; color: #878787;">알림</span>
+
+    <!-- Switch OFF -->
+    <div class="relative cursor-pointer bg-[#D2D5DA]" onclick="toggleSwitch(this)" style="width: 44px; height: 24px; background: #D2D5DA; border-radius: 100px;">
+      <div class="absolute" style="width: 20px; height: 20px; left: 2px; top: 2px; background: #FFFFFF; box-shadow: 0px 2px 4px rgba(39, 39, 39, 0.1); border-radius: 100px; transition: all 0.3s;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleSwitch(element) {
+    const knob = element.querySelector("div");
+    const isOn = element.classList.contains("bg-[#B4DE00]");
+
+    if (isOn) {
+      // Turn OFF
+      element.classList.remove("bg-[#B4DE00]");
+      element.classList.add("bg-[#D2D5DA]");
+      element.style.background = "#D2D5DA";
+      knob.style.left = "2px";
+    } else {
+      // Turn ON
+      element.classList.remove("bg-[#D2D5DA]");
+      element.classList.add("bg-[#B4DE00]");
+      element.style.background = "#B4DE00";
+      knob.style.left = "22px";
+    }
+  }
+</script>
+
+{% endblock %}

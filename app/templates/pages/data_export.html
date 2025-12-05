@@ -1,0 +1,101 @@
+{% set navbar_variant = 'back-notify' %}
+{% set back_url = '/users/user' %}
+{% set footer_active = 'default' %}
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="relative" style="min-height: 800px; padding-top: 107px; padding-bottom: 107px;">
+  <!-- 데이터 내보내기 Title -->
+  <h1
+    class="absolute font-montserrat font-bold text-black"
+    style="width: 169px; height: 30px; left: calc(50% - 169px/2 + 0.5px); top: 125px; font-size: 25px; line-height: 30px; display: flex; align-items: center; text-align: center;"
+  >
+    데이터 내보내기
+  </h1>
+
+  <!-- 가계부 내역을 엑셀 파일로 확인하세요 -->
+  <p
+    class="absolute font-noto font-medium text-black"
+    style="width: 242px; height: 60px; left: 37px; top: 180px; font-size: 25px; line-height: 30px; display: flex; align-items: center;"
+  >
+    가계부 내역을 엑셀 파일로 확인하세요
+  </p>
+
+  <!-- file-csv-duotone Icon -->
+  <div class="absolute" style="width: 120px; height: 120px; left: calc(50% - 120px/2); top: 380px;">
+    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path opacity="0.2" d="M71.25 15V41.25H97.5L71.25 15Z" fill="black"/>
+      <path d="M22.5 52.5V18.75C22.5 17.755 22.895 16.802 23.598 16.098C24.302 15.395 25.255 15 26.25 15H71.25L97.5 41.25V52.5" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M71.25 15V41.25H97.5" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M37.5 94.158C36.543 95.196 35.385 96.028 34.095 96.603C32.805 97.178 31.412 97.483 30 97.5C23.784 97.5 18.75 91.622 18.75 84.375C18.75 77.128 23.784 71.25 30 71.25C31.412 71.267 32.805 71.572 34.095 72.147C35.385 72.722 36.543 73.554 37.5 74.592" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M65.578 72C65.578 72 51.783 68.353 50.672 77.156C49.561 85.959 68.686 81.9 67.444 91.556C66.286 100.537 52.547 96.712 52.547 96.712" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M78.75 71.25L88.125 97.5L97.5 71.25" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <!-- 내보내기 Button -->
+  <button
+    onclick="exportData()"
+    class="absolute flex flex-row justify-center items-center bg-[#B4DE00] border border-[#111111] rounded-[70px] font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-[#a0c900] transition-colors"
+    style="width: 351px; height: 54px; left: calc(50% - 351px/2 - 0.5px); top: 654px; box-sizing: border-box; padding: 16px 10px; gap: 8px;"
+  >
+    <!-- arrow-square-out-duotone Icon -->
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex: none; order: 0; flex-grow: 0;">
+      <path opacity="0.2" d="M13.75 5.625H3.75C3.405 5.625 3.125 5.905 3.125 6.25V16.25C3.125 16.595 3.405 16.875 3.75 16.875H13.75C14.095 16.875 14.375 16.595 14.375 16.25V6.25C14.375 5.905 14.095 5.625 13.75 5.625Z" fill="black"/>
+      <path d="M10.625 9.375L16.875 3.125" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M16.875 8.125L16.874 3.126L11.875 3.125" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M14.375 10.625V16.25C14.375 16.416 14.309 16.575 14.192 16.692C14.075 16.809 13.916 16.875 13.75 16.875H3.75C3.584 16.875 3.425 16.809 3.308 16.692C3.191 16.575 3.125 16.416 3.125 16.25V6.25C3.125 6.084 3.191 5.925 3.308 5.808C3.425 5.691 3.584 5.625 3.75 5.625H9.375" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span style="flex: none; order: 1; flex-grow: 0;">데이터 내보내기</span>
+  </button>
+</div>
+
+<script>
+  async function exportData() {
+    try {
+      // API 호출하여 데이터 가져오기
+      const response = await fetch('/receipts');
+      const result = await response.json();
+
+      if (result.status !== 'ok' || !result.data) {
+        alert('데이터를 불러올 수 없습니다.');
+        return;
+      }
+
+      // CSV 형식으로 변환
+      const receipts = result.data;
+      let csvContent = '날짜,상호명,금액,카테고리,메모\n';
+
+      receipts.forEach(receipt => {
+        const date = receipt.date || '';
+        const merchant = receipt.merchant || '';
+        const amount = receipt.total || 0;
+        const category = receipt.status === 'CONFIRMED' ? 'Food' : 'Pending';
+        const memo = receipt.memo || '';
+
+        csvContent += `${date},"${merchant}",${amount},"${category}","${memo}"\n`;
+      });
+
+      // CSV 파일 다운로드
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute('href', url);
+      link.setAttribute('download', `가계부_내역_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      alert('데이터 내보내기가 완료되었습니다.');
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      alert('데이터 내보내기 중 오류가 발생했습니다.');
+    }
+  }
+</script>
+
+{% endblock %}

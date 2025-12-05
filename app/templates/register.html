@@ -1,60 +1,34 @@
+{% set navbar_variant = 'back-notify' %}
+{% set back_url = '/users/login' %}
+{% set footer_active = 'default' %}
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Navbar (베리언트3) -->
-<nav class="absolute w-[362px] h-[62px] left-[37px] top-[33px] z-50">
-  <!-- Back Button -->
-  <a href="/users/login" class="absolute left-0 top-[5px] w-[50px] h-[50px] flex items-center justify-center">
-    <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
-      <path d="M31.25 9.375L15.625 25L31.25 40.625" stroke="#000000" stroke-width="3"/>
-    </svg>
-  </a>
 
-  <!-- Logo -->
-  <div class="absolute left-[28.18%] right-[30.11%] top-[30.65%] bottom-[33.87%]">
-    <span class="font-yidstreet font-bold text-[17px] leading-[22px] flex items-center justify-center text-center text-black w-full h-full">
-      SmartLedger
-    </span>
-  </div>
-
-  <!-- Ellipse 2 (녹색 테두리) -->
-  <div class="absolute left-[82.87%] right-0 top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"></div>
-
-  <!-- Ellipse 1 (회색 배경) -->
-  <div class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%] bg-gray-light rounded-full"></div>
-</nav>
-
-<!-- Footer -->
-<div class="absolute bottom-0 left-0 right-0">
-  {% set active = 'default' %}
-  {% include 'components/footer.html' %}
-</div>
-
-<!-- Scrollable Content Area -->
 <div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
-  <div class="relative" style="min-height: 800px; padding-bottom: 100px;">
+  <div class="relative px-5" style="min-height: 800px; padding-bottom: 100px;">
     <!-- 회원가입 Title -->
     <h1 class="absolute w-[160px] h-[52px] left-[calc(50%-160px/2)] top-[12px] font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black">
       회원가입
     </h1>
 
-  <!-- Form -->
-  <form method="post" action="/users/register">
-    <!-- ID Label -->
-    <label for="username" class="absolute left-[54px] top-[76px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
-    ID
-  </label>
+    <!-- Form -->
+    <form method="post" action="/users/register">
+      <!-- ID Label -->
+      <label for="username" class="absolute left-[54px] top-[76px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
+      ID
+    </label>
 
-    <!-- ID Input (Rectangle 14) -->
-    <input
-      type="text"
-      id="username"
-      name="username"
-      required
-      placeholder="아이디를 입력하세요"
-      class="absolute w-[357px] h-[58px] left-[calc(50%-357px/2+0.5px)] top-[85px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
-      style="box-sizing: border-box; padding: 0 20px;"
-    />
+      <!-- ID Input (Rectangle 14) -->
+      <input
+        type="text"
+        id="username"
+        name="username"
+        required
+        placeholder="아이디를 입력하세요"
+        class="absolute w-[357px] h-[58px] left-[calc(50%-357px/2+0.5px)] top-[85px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+        style="box-sizing: border-box; padding: 0 20px;"
+      />
 
     <!-- Password Label -->
     <label for="password" class="absolute left-[55px] top-[155px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
@@ -148,12 +122,12 @@
     이미 계정이 있으신가요? <a href="/users/login" class="hover:underline" style="color: #0024F3;">로그인</a>
   </p>
 
-  <!-- Error Message -->
-  {% if error %}
-    <div class="absolute left-[35px] right-[35px] top-[720px] p-4 bg-red-50 border border-red-200 rounded-lg mb-8">
-      <p class="text-red-600 text-center font-medium">{{ error }}</p>
-    </div>
-  {% endif %}
+    <!-- Error Message -->
+    {% if error %}
+      <div class="absolute left-[35px] right-[35px] top-[720px] p-4 bg-red-50 border border-red-200 rounded-lg mb-8">
+        <p class="text-red-600 text-center font-medium">{{ error }}</p>
+      </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

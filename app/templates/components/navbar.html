@@ -1,38 +1,65 @@
-{# Navbar Component #}
-{# 사용법: include 'components/navbar.html' with variant='back' #}
-{# 변형: variant='default' | 'back' | 'back-notify' #}
+{# Navbar Component #} {# 사용법: include 'components/navbar.html' with
+variant='back' #} {# 변형: variant='default' | 'back' | 'back-notify' #} {% set
+variant = variant|default('default') %} {% set back_url = back_url|default('/')
+%}
 
-{% set variant = variant|default('default') %}
-{% set back_url = back_url|default('/') %}
-
-<nav class="absolute top-[33px] left-0 right-0 w-full h-[62px] bg-transparent z-50">
+<nav
+  class="absolute top-[33px] left-0 right-0 w-full h-[62px] bg-transparent z-50"
+>
   <div class="absolute w-[362px] h-[62px] left-[37px] top-0">
-
-    {# Back Button - left: 0%, right: 86.19%, top: 5px, height: 50px #}
-    {% if variant in ['back', 'back-notify'] %}
-    <a href="{{ back_url }}" class="absolute left-0 top-[5px] w-[50px] h-[50px] flex items-center justify-center">
+    {# Back Button - left: 0%, right: 86.19%, top: 5px, height: 50px #} {% if
+    variant in ['back', 'back-notify'] %}
+    <a
+      href="{{ back_url }}"
+      class="absolute left-0 top-[5px] w-[50px] h-[50px] flex items-center justify-center"
+    >
       <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
-        <path d="M31.25 9.375L15.625 25L31.25 40.625" stroke="#000000" stroke-width="3"/>
+        <path
+          d="M31.25 9.375L15.625 25L31.25 40.625"
+          stroke="#000000"
+          stroke-width="3"
+        />
       </svg>
     </a>
-    {% endif %}
-
-    {# Logo - left: 28.18%, right: 30.11%, top: 30.65%, bottom: 33.87% #}
-    <div class="absolute left-[28.18%] right-[30.11%] top-[30.65%] bottom-[33.87%]">
-      <span class="font-yidstreet font-bold text-[17px] leading-[22px] flex items-center justify-center text-center text-black w-full h-full">
+    {% endif %} {# Logo - left: 28.18%, right: 30.11%, top: 30.65%, bottom:
+    33.87% #}
+    <div
+      class="absolute left-[28.18%] right-[30.11%] top-[30.65%] bottom-[33.87%]"
+    >
+      <span
+        class="font-yidstreet font-bold text-[17px] leading-[22px] flex items-center justify-center text-center text-black w-full h-full"
+      >
         SmartLedger
       </span>
     </div>
 
-    {# Profile - left: 84.81%, right: 1.93%, top: 11.29%, bottom: 11.29% #}
-    <div class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%]">
-      {% if variant == 'back-notify' %}
-      {# Ellipse 2 - border with primary color #}
-      <div class="absolute left-[-2.07%] right-[-2.07%] top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"></div>
-      {% endif %}
-      {# Ellipse 1 - background circle #}
-      <div class="w-full h-full bg-gray-light rounded-full"></div>
-    </div>
+    {# Ellipse 2 (녹색 테두리) - only for back-notify variant #} {% if variant
+    == 'back-notify' %}
+    <div
+      class="absolute left-[82.87%] right-0 top-0 h-[62px] w-[62px] border-[6px] border-primary rounded-full"
+    ></div>
+    {% endif %} {# Profile - left: 84.81%, right: 1.93%, top: 11.29%, bottom:
+    11.29% #}
+    <a
+      href="javascript:void(0)"
+      onclick="handleUserIconClick()"
+      class="absolute left-[84.81%] right-[1.93%] top-[11.29%] bottom-[11.29%] bg-gray-light rounded-full cursor-pointer"
+    >
+    </a>
 
+    <script>
+      function handleUserIconClick() {
+        // sessionStorage에서 로그인 상태 확인
+        const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+
+        if (isLoggedIn) {
+          // 로그인 되어있으면 user 페이지로
+          window.location.href = "/users/user";
+        } else {
+          // 로그인 안 되어있으면 login 페이지로
+          window.location.href = "/users/login";
+        }
+      }
+    </script>
   </div>
 </nav>
