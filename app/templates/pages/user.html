@@ -1,51 +1,46 @@
-{% set navbar_variant = 'back' %}
-{% set footer_active = 'notification' %}
+{% set navbar_variant = 'back-notify' %}
+{% set back_url = '/dashboard' %}
+{% set footer_active = 'default' %}
 {% extends "base.html" %}
 
 {% block content %}
 
-<div class="max-w-md mx-auto px-5 pb-24">
+<div class="max-w-md mx-auto px-5" style="padding-top: 107px; padding-bottom: 107px;">
   <!-- User Profile Section -->
   <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787]">
     <!-- Profile Image -->
     <div class="relative w-20 h-20">
-      <div class="w-20 h-20 bg-[#C4C4C4] rounded-full flex items-center justify-center overflow-hidden">
-        <!-- User Icon -->
-        <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Head -->
-          <circle cx="35" cy="26.25" r="8.75" fill="black" fill-opacity="0.2"/>
-          <circle cx="35" cy="26.25" r="8.75" stroke="black" stroke-width="4"/>
-          <!-- Body -->
-          <path d="M17.5 52.5C17.5 43.7 24.2 36.5 35 36.5C45.8 36.5 52.5 43.7 52.5 52.5" stroke="black" stroke-width="4" stroke-linecap="round"/>
-        </svg>
-      </div>
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="40" fill="#C4C4C4"/>
+        <g clip-path="url(#clip0_196_886)">
+          <path opacity="0.2" d="M40 48.75C49.665 48.75 57.5 40.915 57.5 31.25C57.5 21.585 49.665 13.75 40 13.75C30.335 13.75 22.5 21.585 22.5 31.25C22.5 40.915 30.335 48.75 40 48.75Z" fill="black"/>
+          <path d="M40 48.75C49.665 48.75 57.5 40.915 57.5 31.25C57.5 21.585 49.665 13.75 40 13.75C30.335 13.75 22.5 21.585 22.5 31.25C22.5 40.915 30.335 48.75 40 48.75Z" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.75 64.0625C19.0465 54.9105 28.666 48.75 40 48.75C51.334 48.75 60.9535 54.9105 66.25 64.0625" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <defs>
+          <clipPath id="clip0_196_886">
+            <rect width="70" height="70" fill="white" transform="translate(5 5)"/>
+          </clipPath>
+        </defs>
+      </svg>
     </div>
 
     <!-- User Name -->
     <h2 class="font-noto font-bold text-[24px] text-[#1B1B1B]">User</h2>
-
-    <!-- Right Arrow -->
-    <div class="ml-auto">
-      <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M16.875 11.25L28.125 22.5L16.875 33.75" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
   </div>
 
   <!-- Menu List -->
   <div class="space-y-0">
     <!-- Notice Setting -->
-    <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
+    <a href="/notification-settings" class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
       <!-- Bell Icon -->
       <div class="w-[45px] h-[45px] flex items-center justify-center">
         <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Bell body -->
-          <path d="M13.125 16.875C13.125 11.7 17.325 7.5 22.5 7.5C27.675 7.5 31.875 11.7 31.875 16.875V26.25L35.625 30V33.75H9.375V30L13.125 26.25V16.875Z" fill="black" fill-opacity="0.2"/>
-          <path d="M13.125 16.875C13.125 11.7 17.325 7.5 22.5 7.5C27.675 7.5 31.875 11.7 31.875 16.875V26.25L35.625 30V33.75H9.375V30L13.125 26.25V16.875Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <!-- Bell clapper -->
-          <path d="M19.6875 33.75C19.6875 35.4 20.85 36.5625 22.5 36.5625C24.15 36.5625 25.3125 35.4 25.3125 33.75" stroke="black" stroke-width="3" stroke-linecap="round"/>
-          <!-- Notification dot -->
-          <circle cx="32.8125" cy="10.3125" r="2.8125" fill="black" stroke="black" stroke-width="3"/>
+          <path opacity="0.2" d="M9.84374 19.6875C9.84374 16.3309 11.1772 13.1117 13.5507 10.7382C15.9242 8.36467 19.1433 7.03125 22.5 7.03125C25.8566 7.03125 29.0758 8.36467 31.4493 10.7382C33.8228 13.1117 35.1562 16.3309 35.1562 19.6875C35.1562 25.984 36.6152 29.6367 37.7754 31.6406C37.8986 31.854 37.9636 32.0961 37.9638 32.3425C37.964 32.5889 37.8995 32.8311 37.7766 33.0447C37.6538 33.2584 37.477 33.436 37.2639 33.5597C37.0508 33.6835 36.8089 33.7491 36.5625 33.75H8.43749C8.19137 33.7485 7.94994 33.6825 7.73733 33.5584C7.52473 33.4344 7.34841 33.2568 7.22599 33.0432C7.10357 32.8297 7.03933 32.5878 7.0397 32.3416C7.04008 32.0955 7.10505 31.8538 7.22812 31.6406C8.38652 29.6367 9.84374 25.9822 9.84374 19.6875Z" fill="black"/>
+          <path d="M16.875 33.75C16.875 35.2418 17.4676 36.6726 18.5225 37.7275C19.5774 38.7824 21.0082 39.375 22.5 39.375C23.9918 39.375 25.4226 38.7824 26.4775 37.7275C27.5324 36.6726 28.125 35.2418 28.125 33.75" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M32.3438 4.21875C35.0593 5.95146 37.2618 8.37914 38.7229 11.25" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6.27715 11.25C7.73819 8.37914 9.9407 5.95146 12.6562 4.21875" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9.84374 19.6875C9.84374 16.3309 11.1772 13.1117 13.5507 10.7382C15.9242 8.36467 19.1433 7.03125 22.5 7.03125C25.8566 7.03125 29.0758 8.36467 31.4493 10.7382C33.8228 13.1117 35.1562 16.3309 35.1562 19.6875C35.1562 25.984 36.6152 29.6367 37.7754 31.6406C37.8986 31.854 37.9636 32.0961 37.9638 32.3425C37.964 32.5889 37.8995 32.8311 37.7766 33.0447C37.6538 33.2584 37.477 33.436 37.2639 33.5597C37.0508 33.6835 36.8089 33.7491 36.5625 33.75H8.43749C8.19137 33.7485 7.94994 33.6825 7.73733 33.5584C7.52473 33.4344 7.34841 33.2568 7.22599 33.0432C7.10357 32.8297 7.03933 32.5878 7.0397 32.3416C7.04008 32.0955 7.10505 31.8538 7.22812 31.6406C8.38652 29.6367 9.84374 25.9822 9.84374 19.6875Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
 
@@ -57,19 +52,24 @@
           <path d="M16.875 11.25L28.125 22.5L16.875 33.75" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-    </div>
+    </a>
 
     <!-- Data Export -->
-    <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
+    <a href="/data-export" class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
       <!-- Export Icon -->
       <div class="w-[45px] h-[45px] flex items-center justify-center">
         <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Square -->
-          <rect x="7.03125" y="12.6562" width="25.3125" height="25.3125" fill="black" fill-opacity="0.2"/>
-          <rect x="7.03125" y="12.6562" width="25.3125" height="25.3125" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <!-- Arrow -->
-          <path d="M23.9062 7.03125H37.9688V21.0938" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M26.7188 18.2812L37.9688 7.03125" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <g clip-path="url(#clip0_207_798)">
+            <path opacity="0.2" d="M30.9375 12.6562H8.4375C7.66085 12.6562 7.03125 13.2858 7.03125 14.0625V36.5625C7.03125 37.3391 7.66085 37.9688 8.4375 37.9688H30.9375C31.7141 37.9688 32.3438 37.3391 32.3438 36.5625V14.0625C32.3438 13.2858 31.7141 12.6562 30.9375 12.6562Z" fill="black"/>
+            <path d="M23.9062 21.0938L37.9688 7.03125" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M37.9688 18.2812L37.967 7.03301L26.7188 7.03125" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M32.3437 23.9062V36.5625C32.3437 36.9355 32.1956 37.2931 31.9319 37.5569C31.6681 37.8206 31.3105 37.9687 30.9375 37.9687H8.4375C8.06454 37.9687 7.70685 37.8206 7.44313 37.5569C7.17941 37.2931 7.03125 36.9355 7.03125 36.5625V14.0625C7.03125 13.6895 7.17941 13.3319 7.44313 13.0681C7.70685 12.8044 8.06454 12.6562 8.4375 12.6562H21.0937" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_207_798">
+              <rect width="45" height="45" fill="white"/>
+            </clipPath>
+          </defs>
         </svg>
       </div>
 
@@ -81,16 +81,22 @@
           <path d="M16.875 11.25L28.125 22.5L16.875 33.75" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-    </div>
+    </a>
 
     <!-- Category Edit -->
-    <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
+    <a href="/category-edit" class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
       <!-- Folder Icon -->
       <div class="w-[45px] h-[45px] flex items-center justify-center">
         <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Folder -->
-          <path d="M5.625 9.84375H18.75L22.5 13.5938H39.375V35.1562H5.625V9.84375Z" fill="black" fill-opacity="0.2"/>
-          <path d="M5.625 9.84375H18.75L22.5 13.5938H39.375V35.1562H5.625V9.84375Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <g clip-path="url(#clip0_207_1174)">
+            <path opacity="0.2" d="M39.375 15.4688V35.3127C39.375 35.6442 39.2433 35.9621 39.0089 36.1964C38.7746 36.4308 38.4567 36.5625 38.1252 36.5625H7.03125C6.65829 36.5625 6.3006 36.4143 6.03688 36.1506C5.77316 35.8869 5.625 35.5292 5.625 35.1562V11.25C5.625 10.877 5.77316 10.5194 6.03688 10.2556C6.3006 9.99191 6.65829 9.84375 7.03125 9.84375H16.4057C16.7099 9.84375 17.006 9.94244 17.2494 10.125L22.5 14.0625H37.9688C38.3417 14.0625 38.6994 14.2107 38.9631 14.4744C39.2268 14.7381 39.375 15.0958 39.375 15.4688Z" fill="black"/>
+            <path d="M39.375 15.4688V35.3127C39.375 35.6442 39.2433 35.9621 39.0089 36.1964C38.7746 36.4308 38.4567 36.5625 38.1252 36.5625H7.03125C6.65829 36.5625 6.3006 36.4143 6.03688 36.1506C5.77316 35.8869 5.625 35.5292 5.625 35.1562V11.25C5.625 10.877 5.77316 10.5194 6.03688 10.2556C6.3006 9.99191 6.65829 9.84375 7.03125 9.84375H16.4057C16.7099 9.84375 17.006 9.94244 17.2494 10.125L22.5 14.0625H37.9688C38.3417 14.0625 38.6994 14.2107 38.9631 14.4744C39.2268 14.7381 39.375 15.0958 39.375 15.4688Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_207_1174">
+              <rect width="45" height="45" fill="white"/>
+            </clipPath>
+          </defs>
         </svg>
       </div>
 
@@ -102,18 +108,23 @@
           <path d="M16.875 11.25L28.125 22.5L16.875 33.75" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-    </div>
+    </a>
 
     <!-- Additional Settings (Disabled) -->
     <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] opacity-50 cursor-not-allowed">
       <!-- Gear Icon -->
       <div class="w-[45px] h-[45px] flex items-center justify-center">
         <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Gear center -->
-          <circle cx="22.5" cy="22.5" r="7.03125" fill="black" fill-opacity="0.2"/>
-          <circle cx="22.5" cy="22.5" r="7.03125" stroke="black" stroke-width="3"/>
-          <!-- Gear outer -->
-          <path d="M22.5 5.5125C24.0375 5.5125 25.425 6.3375 26.1375 7.6875L27.9 11.025C28.35 11.8875 29.2125 12.4125 30.15 12.4125H33.975C35.5125 12.4125 36.9 13.2375 37.6125 14.5875L39.375 17.925C40.0875 19.275 39.975 20.925 39.0375 22.1625L36.45 25.4625C35.8875 26.1375 35.8875 27.1125 36.45 27.7875L39.0375 31.0875C39.975 32.325 40.0875 33.975 39.375 35.325L37.6125 38.6625C36.9 40.0125 35.5125 40.8375 33.975 40.8375H30.15C29.2125 40.8375 28.35 41.3625 27.9 42.225L26.1375 45.5625C25.425 46.9125 24.0375 47.7375 22.5 47.7375C20.9625 47.7375 19.575 46.9125 18.8625 45.5625L17.1 42.225C16.65 41.3625 15.7875 40.8375 14.85 40.8375H11.025C9.4875 40.8375 8.1 40.0125 7.3875 38.6625L5.625 35.325C4.9125 33.975 5.025 32.325 5.9625 31.0875L8.55 27.7875C9.1125 27.1125 9.1125 26.1375 8.55 25.4625L5.9625 22.1625C5.025 20.925 4.9125 19.275 5.625 17.925L7.3875 14.5875C8.1 13.2375 9.4875 12.4125 11.025 12.4125H14.85C15.7875 12.4125 16.65 11.8875 17.1 11.025L18.8625 7.6875C19.575 6.3375 20.9625 5.5125 22.5 5.5125Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <g clip-path="url(#clip0_207_1184)">
+            <path opacity="0.2" d="M36.5379 21.6527L39.4875 17.9613C39.0897 16.4658 38.4944 15.0299 37.7174 13.6916L33.024 13.1642C32.6491 12.7418 32.2494 12.3421 31.827 11.9671L31.2996 7.27202C29.9598 6.49969 28.5235 5.90859 27.0281 5.51421L23.3367 8.46206C22.7724 8.42866 22.2065 8.42866 21.6422 8.46206L17.9508 5.51245C16.4601 5.91147 15.029 6.50671 13.6951 7.28257L13.1678 11.9759C12.7454 12.3509 12.3456 12.7506 11.9707 13.173L7.27559 13.7003C6.50326 15.0401 5.91216 16.4765 5.51778 17.9718L8.46563 21.6632C8.43223 22.2276 8.43223 22.7934 8.46563 23.3578L5.51602 27.0492C5.91386 28.5447 6.50914 29.9806 7.28614 31.3189L11.9795 31.8462C12.3544 32.2687 12.7542 32.6684 13.1766 33.0433L13.7039 37.7384C15.0437 38.5108 16.4801 39.1019 17.9754 39.4962L21.6668 36.5484C22.2312 36.5818 22.797 36.5818 23.3613 36.5484L27.0527 39.498C28.5483 39.1002 29.9841 38.5049 31.3225 37.7279L31.8498 33.0345C32.2722 32.6596 32.672 32.2599 33.0469 31.8375L37.742 31.3101C38.5143 29.9703 39.1054 28.5339 39.4998 27.0386L36.552 23.3472C36.5807 22.7826 36.576 22.2168 36.5379 21.6527ZM22.5 29.5312C21.1094 29.5312 19.7499 29.1188 18.5937 28.3462C17.4374 27.5736 16.5362 26.4755 16.004 25.1907C15.4718 23.9059 15.3326 22.4922 15.6039 21.1282C15.8752 19.7643 16.5448 18.5114 17.5282 17.5281C18.5115 16.5448 19.7643 15.8751 21.1283 15.6038C22.4922 15.3325 23.906 15.4717 25.1907 16.0039C26.4755 16.5361 27.5737 17.4373 28.3463 18.5936C29.1189 19.7499 29.5313 21.1093 29.5313 22.5C29.5313 24.3648 28.7905 26.1532 27.4718 27.4718C26.1532 28.7904 24.3648 29.5312 22.5 29.5312Z" fill="black"/>
+            <path d="M22.5 29.5312C26.3833 29.5312 29.5312 26.3833 29.5312 22.5C29.5312 18.6167 26.3833 15.4688 22.5 15.4688C18.6167 15.4688 15.4688 18.6167 15.4688 22.5C15.4688 26.3833 18.6167 29.5312 22.5 29.5312Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7.28261 31.3048C6.50561 29.9665 5.91034 28.5306 5.5125 27.0351L8.46211 23.3437C8.42871 22.7794 8.42871 22.2135 8.46211 21.6492L5.51425 17.9578C5.91141 16.462 6.50548 15.0256 7.28086 13.6863L11.976 13.1589C12.3509 12.7365 12.7506 12.3368 13.173 11.9619L13.7004 7.26851C15.0378 6.49682 16.4718 5.9063 17.9648 5.51245L21.6562 8.46206C22.2206 8.42866 22.7864 8.42866 23.3508 8.46206L27.0422 5.51421C28.5379 5.91137 29.9743 6.50543 31.3137 7.28081L31.841 11.9759C32.2634 12.3509 32.6632 12.7506 33.0381 13.173L37.7314 13.7003C38.5084 15.0387 39.1037 16.4745 39.5016 17.9701L36.552 21.6615C36.5853 22.2258 36.5853 22.7917 36.552 23.356L39.4998 27.0474C39.1054 28.5427 38.5143 29.9791 37.742 31.3189L33.0469 31.8462C32.6719 32.2687 32.2722 32.6684 31.8498 33.0433L31.3225 37.7367C29.9841 38.5137 28.5483 39.1089 27.0527 39.5068L23.3613 36.5572C22.797 36.5906 22.2311 36.5906 21.6668 36.5572L17.9754 39.505C16.4801 39.1106 15.0437 38.5195 13.7039 37.7472L13.1766 33.0521C12.7541 32.6772 12.3544 32.2774 11.9795 31.855L7.28261 31.3048Z" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_207_1184">
+              <rect width="45" height="45" fill="white"/>
+            </clipPath>
+          </defs>
         </svg>
       </div>
 

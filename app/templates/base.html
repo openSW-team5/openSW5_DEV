@@ -32,15 +32,7 @@
       {% endif %}
 
       <!-- Content Area -->
-      {% if navbar_variant is defined and footer_active is defined %}
-        <div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
-      {% endif %}
-
       {% block content %}{% endblock %}
-
-      {% if navbar_variant is defined and footer_active is defined %}
-        </div>
-      {% endif %}
 
       <!-- Footer -->
       {% if footer_active is defined %}
