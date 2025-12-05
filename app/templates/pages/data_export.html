@@ -1,0 +1,109 @@
+{% set navbar_variant = 'back-notify' %}
+{% set back_url = '/users/user' %}
+{% set footer_active = 'default' %}
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="relative" style="min-height: 400px;">
+  <!-- 데이터 내보내기 Title -->
+  <h1
+    class="absolute font-montserrat font-bold text-black"
+    style="width: 169px; height: 30px; left: calc(50% - 169px/2 + 0.5px); top: 125px; font-size: 25px; line-height: 30px; display: flex; align-items: center; text-align: center;"
+  >
+    데이터 내보내기
+  </h1>
+
+  <!-- 가계부 내역을 엑셀 파일로 확인하세요 -->
+  <p
+    class="absolute font-noto font-medium text-black"
+    style="width: 242px; height: 60px; left: 37px; top: 180px; font-size: 25px; line-height: 30px; display: flex; align-items: center;"
+  >
+    가계부 내역을 엑셀 파일로 확인하세요
+  </p>
+
+  <!-- file-csv-duotone Icon -->
+  <div class="absolute" style="width: 120px; height: 120px; left: calc(50% - 120px/2); top: calc(50% - 120px/2);">
+    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background opacity rectangle -->
+      <path opacity="0.2" d="M71.25 15V26.25C71.25 27.2446 71.6451 28.1984 72.3483 28.9017C73.0516 29.6049 74.0054 30 75 30H86.25V78.75C86.25 80.7391 85.4598 82.6468 84.0533 84.0533C82.6468 85.4598 80.7391 86.25 78.75 86.25H41.25C39.2609 86.25 37.3532 85.4598 35.9467 84.0533C34.5402 82.6468 33.75 80.7391 33.75 78.75V41.25C33.75 39.2609 34.5402 37.3532 35.9467 35.9467C37.3532 34.5402 39.2609 33.75 41.25 33.75H71.25V15Z" fill="black"/>
+
+      <!-- Main file outline -->
+      <path d="M22.5 71.25V26.25C22.5 24.2609 23.2902 22.3532 24.6967 20.9467C26.1032 19.5402 28.0109 18.75 30 18.75H75C76.9891 18.75 78.8968 19.5402 80.3033 20.9467C81.7098 22.3532 82.5 24.2609 82.5 26.25V37.5" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- Top corner fold -->
+      <path d="M71.25 15V26.25C71.25 27.2446 71.6451 28.1984 72.3483 28.9017C73.0516 29.6049 74.0054 30 75 30H86.25" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- CSV letters -->
+      <path d="M18.75 71.25V93.75C18.75 95.7391 19.5402 97.6468 20.9467 99.0533C22.3532 100.46 24.2609 101.25 26.25 101.25H93.75C95.7391 101.25 97.6468 100.46 99.0533 99.0533C100.46 97.6468 101.25 95.7391 101.25 93.75V71.25" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M18.75 71.25H33.75" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M50.625 71.25H51.5625" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M78.75 71.25H93.75" stroke="black" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <!-- 내보내기 Button -->
+  <button
+    onclick="exportData()"
+    class="absolute flex flex-row justify-center items-center bg-[#B4DE00] border border-[#111111] rounded-[70px] font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-[#a0c900] transition-colors"
+    style="width: 351px; height: 54px; left: calc(50% - 351px/2 - 0.5px); top: 749px; box-sizing: border-box; padding: 16px 10px; gap: 8px;"
+  >
+    <!-- arrow-square-out-duotone Icon -->
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex: none; order: 0; flex-grow: 0;">
+      <path opacity="0.2" d="M3.125 14.375V5.625C3.125 5.29348 3.2567 4.97554 3.49112 4.74112C3.72554 4.5067 4.04348 4.375 4.375 4.375H14.375C14.7065 4.375 15.0245 4.5067 15.2589 4.74112C15.4933 4.97554 15.625 5.29348 15.625 5.625V14.375C15.625 14.7065 15.4933 15.0245 15.2589 15.2589C15.0245 15.4933 14.7065 15.625 14.375 15.625H4.375C4.04348 15.625 3.72554 15.4933 3.49112 15.2589C3.2567 15.0245 3.125 14.7065 3.125 14.375Z" fill="#000000"/>
+      <path d="M10.625 3.125H15.625V8.125" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M11.875 3.125H15.625V6.875" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M3.125 14.375V5.625C3.125 5.29348 3.2567 4.97554 3.49112 4.74112C3.72554 4.5067 4.04348 4.375 4.375 4.375H14.375C14.7065 4.375 15.0245 4.5067 15.2589 4.74112C15.4933 4.97554 15.625 5.29348 15.625 5.625V14.375C15.625 14.7065 15.4933 15.0245 15.2589 15.2589C15.0245 15.4933 14.7065 15.625 14.375 15.625H4.375C4.04348 15.625 3.72554 15.4933 3.49112 15.2589C3.2567 15.0245 3.125 14.7065 3.125 14.375Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span style="flex: none; order: 1; flex-grow: 0;">데이터 내보내기</span>
+  </button>
+</div>
+
+<script>
+  async function exportData() {
+    try {
+      // API 호출하여 데이터 가져오기
+      const response = await fetch('/receipts');
+      const result = await response.json();
+
+      if (result.status !== 'ok' || !result.data) {
+        alert('데이터를 불러올 수 없습니다.');
+        return;
+      }
+
+      // CSV 형식으로 변환
+      const receipts = result.data;
+      let csvContent = '날짜,상호명,금액,카테고리,메모\n';
+
+      receipts.forEach(receipt => {
+        const date = receipt.date || '';
+        const merchant = receipt.merchant || '';
+        const amount = receipt.total || 0;
+        const category = receipt.status === 'CONFIRMED' ? 'Food' : 'Pending';
+        const memo = receipt.memo || '';
+
+        csvContent += `${date},"${merchant}",${amount},"${category}","${memo}"\n`;
+      });
+
+      // CSV 파일 다운로드
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute('href', url);
+      link.setAttribute('download', `가계부_내역_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      alert('데이터 내보내기가 완료되었습니다.');
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      alert('데이터 내보내기 중 오류가 발생했습니다.');
+    }
+  }
+</script>
+
+{% endblock %}

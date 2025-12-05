@@ -50,6 +50,13 @@ def notification_settings_page(request: Request):
         {"request": request, "title": "알림설정"}
     )
 
+@app.get("/data-export", response_class=HTMLResponse)
+def data_export_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/data_export.html",
+        {"request": request, "title": "데이터 내보내기"}
+    )
+
 # ✅ 라우터 등록
 app.include_router(health.router)
 app.include_router(receipts.router)
