@@ -5,52 +5,54 @@
 
 {% block content %}
 
-<div class="relative" style="min-height: 800px; padding-top: 107px; padding-bottom: 107px;">
+<div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
+  <div class="relative" style="min-height: 680px; padding-bottom: 50px;">
   <!-- 카테고리 편집 Title -->
   <h1
     class="absolute font-noto font-bold text-black"
-    style="width: 144px; height: 30px; left: calc(50% - 144px/2); top: 125px; font-size: 25px; line-height: 30px;"
+    style="width: 144px; height: 30px; left: calc(50% - 144px/2); top: 30px; font-size: 25px; line-height: 30px;"
   >
     카테고리 편집
   </h1>
 
   <!-- OptionSwitcher -->
   <div
-    class="absolute flex flex-row items-start bg-white rounded-[51px]"
-    style="width: 228px; height: 45px; left: calc(50% - 228px/2); top: 171px; padding: 3px 6px; gap: 3px;"
+    class="absolute bg-white rounded-[22.5px]"
+    style="width: 228px; height: 45px; left: calc(50% - 228px/2); top: 76px;"
   >
-    <!-- 수입 Option -->
-    <div
-      onclick="switchCategory('income')"
-      class="flex flex-row items-start rounded-[52px] cursor-pointer"
-      style="width: 70px; height: 39px; padding: 10px 20px; gap: 10px;"
-    >
-      <span class="font-inter font-medium text-[16px] leading-[19px]" style="width: 30px; height: 19px; color: #026A00;">수입</span>
-    </div>
+    <svg width="228" height="45" viewBox="0 0 228 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="228" height="45" rx="22.5" fill="white"/>
+      <!-- 수입 text -->
+      <path d="M32.464 15.168H33.936V15.936C33.936 16.4907 33.84 17.024 33.648 17.536C33.456 18.0373 33.1787 18.5013 32.816 18.928C32.464 19.3547 32.0373 19.7387 31.536 20.08C31.0453 20.4213 30.5013 20.7093 29.904 20.944C29.3067 21.168 28.6667 21.3333 27.984 21.44L27.328 20.096C27.9253 20.0107 28.48 19.8773 28.992 19.696C29.5147 19.504 29.9893 19.2747 30.416 19.008C30.8427 18.7307 31.2053 18.4267 31.504 18.096C31.8133 17.7653 32.048 17.4187 32.208 17.056C32.3787 16.6933 32.464 16.32 32.464 15.936V15.168ZM32.784 15.168H34.24V15.936C34.24 16.3093 34.32 16.6773 34.48 17.04C34.6507 17.4027 34.8907 17.7493 35.2 18.08C35.5093 18.4107 35.8773 18.7147 36.304 18.992C36.7307 19.2587 37.2 19.488 37.712 19.68C38.2347 19.872 38.7893 20.0107 39.376 20.096L38.72 21.44C38.048 21.3333 37.4133 21.1627 36.816 20.928C36.2187 20.6933 35.6693 20.4053 35.168 20.064C34.6773 19.7227 34.2507 19.3387 33.888 18.912C33.536 18.4853 33.264 18.0213 33.072 17.52C32.88 17.0187 32.784 16.4907 32.784 15.936V15.168ZM32.48 23.84H34.144V29.328H32.48V23.84ZM26.736 22.8H39.952V24.176H26.736V22.8ZM51.8228 14.704H53.5028V22.544H51.8228V14.704ZM43.9668 23.248H45.6148V24.832H51.8548V23.248H53.5028V29.136H43.9668V23.248ZM45.6148 26.128V27.792H51.8548V26.128H45.6148ZM45.6148 15.36C46.3614 15.36 47.0281 15.504 47.6148 15.792C48.2014 16.08 48.6601 16.48 48.9908 16.992C49.3321 17.4933 49.5028 18.08 49.5028 18.752C49.5028 19.424 49.3321 20.016 48.9908 20.528C48.6601 21.04 48.2014 21.44 47.6148 21.728C47.0281 22.016 46.3614 22.16 45.6148 22.16C44.8681 22.16 44.2014 22.016 43.6148 21.728C43.0281 21.44 42.5641 21.04 42.2228 20.528C41.8921 20.016 41.7268 19.424 41.7268 18.752C41.7268 18.08 41.8921 17.4933 42.2228 16.992C42.5641 16.48 43.0281 16.08 43.6148 15.792C44.2014 15.504 44.8681 15.36 45.6148 15.36ZM45.6148 16.736C45.1774 16.736 44.7881 16.8213 44.4468 16.992C44.1161 17.152 43.8548 17.3867 43.6628 17.696C43.4708 17.9947 43.3748 18.3467 43.3748 18.752C43.3748 19.1573 43.4708 19.5147 43.6628 19.824C43.8548 20.1227 44.1161 20.3573 44.4468 20.528C44.7881 20.688 45.1774 20.768 45.6148 20.768C46.0521 20.768 46.4361 20.688 46.7668 20.528C47.1081 20.3573 47.3748 20.1227 47.5668 19.824C47.7694 19.5147 47.8708 19.1573 47.8708 18.752C47.8708 18.3467 47.7694 17.9947 47.5668 17.696C47.3748 17.3867 47.1081 17.152 46.7668 16.992C46.4361 16.8213 46.0521 16.736 45.6148 16.736Z" fill="#026A00"/>
 
-    <!-- 지출 Option (Active) -->
-    <div
-      onclick="switchCategory('expense')"
-      class="flex flex-row items-start rounded-[52px] cursor-pointer"
-      style="width: 70px; height: 39px; padding: 10px 20px; gap: 10px; background: #B4DE00; box-shadow: 0px 4px 19px rgba(180, 222, 0, 0.49);"
-    >
-      <span class="font-inter font-medium text-[16px] leading-[19px]" style="width: 30px; height: 19px; color: #FFFFFF;">지출</span>
-    </div>
+      <!-- 지출 option (active) with filter -->
+      <g filter="url(#filter0_d_category)">
+        <rect x="79" y="3" width="70" height="39" rx="19.5" fill="#B4DE00"/>
+        <path d="M103.448 16.88H104.792V18.928C104.792 19.7387 104.696 20.5333 104.504 21.312C104.312 22.08 104.029 22.8053 103.656 23.488C103.293 24.1707 102.856 24.7733 102.344 25.296C101.832 25.8187 101.267 26.2347 100.648 26.544L99.672 25.216C100.237 24.9493 100.749 24.592 101.208 24.144C101.677 23.696 102.077 23.1893 102.408 22.624C102.739 22.048 102.995 21.4453 103.176 20.816C103.357 20.1867 103.448 19.5573 103.448 18.928V16.88ZM103.8 16.88H105.144V18.928C105.144 19.536 105.235 20.1387 105.416 20.736C105.597 21.3333 105.853 21.8987 106.184 22.432C106.515 22.9653 106.909 23.44 107.368 23.856C107.827 24.272 108.344 24.6027 108.92 24.848L107.992 26.176C107.352 25.888 106.776 25.4987 106.264 25.008C105.752 24.5173 105.309 23.952 104.936 23.312C104.573 22.6613 104.291 21.968 104.088 21.232C103.896 20.4853 103.8 19.7173 103.8 18.928V16.88ZM100.2 16.144H108.392V17.536H100.2V16.144ZM110.088 14.704H111.768V29.328H110.088V14.704ZM120.215 22.048H121.895V24.208H120.215V22.048ZM114.471 21.072H127.655V22.32H114.471V21.072ZM120.215 14.64H121.879V16.4H120.215V14.64ZM120.135 16.528H121.607V16.784C121.607 17.3387 121.457 17.8347 121.159 18.272C120.871 18.6987 120.46 19.072 119.927 19.392C119.393 19.712 118.753 19.968 118.007 20.16C117.271 20.3413 116.455 20.464 115.559 20.528L115.079 19.28C115.879 19.2373 116.588 19.1467 117.207 19.008C117.825 18.8693 118.353 18.6933 118.791 18.48C119.228 18.256 119.559 18 119.783 17.712C120.017 17.424 120.135 17.1147 120.135 16.784V16.528ZM120.503 16.528H121.975V16.784C121.975 17.1147 122.087 17.424 122.311 17.712C122.545 18 122.876 18.256 123.303 18.48C123.74 18.6933 124.268 18.8693 124.887 19.008C125.516 19.1467 126.231 19.2373 127.031 19.28L126.551 20.528C125.644 20.464 124.823 20.3413 124.087 20.16C123.351 19.968 122.716 19.712 122.183 19.392C121.649 19.072 121.233 18.6987 120.935 18.272C120.647 17.8347 120.503 17.3387 120.503 16.784V16.528ZM115.767 15.904H126.359V17.152H115.767V15.904ZM116.007 23.456H126.007V26.832H117.687V28.432H116.039V25.68H124.359V24.672H116.007V23.456ZM116.039 27.936H126.423V29.184H116.039V27.936Z" fill="white"/>
+      </g>
 
-    <!-- 자산 Option -->
-    <div
-      onclick="switchCategory('asset')"
-      class="flex flex-row items-start rounded-[52px] cursor-pointer"
-      style="width: 70px; height: 39px; padding: 10px 20px; gap: 10px;"
-    >
-      <span class="font-inter font-medium text-[16px] leading-[19px]" style="width: 30px; height: 19px; color: #026A00;">자산</span>
-    </div>
+      <!-- 자산 text -->
+      <path d="M183.088 14.688H184.768V29.344H183.088V14.688ZM176.992 15.76C177.717 15.76 178.363 15.9733 178.928 16.4C179.504 16.8267 179.952 17.424 180.272 18.192C180.592 18.96 180.752 19.8667 180.752 20.912C180.752 21.968 180.592 22.8853 180.272 23.664C179.952 24.432 179.504 25.0293 178.928 25.456C178.363 25.872 177.717 26.08 176.992 26.08C176.267 26.08 175.616 25.872 175.04 25.456C174.475 25.0293 174.027 24.432 173.696 23.664C173.376 22.8853 173.216 21.968 173.216 20.912C173.216 19.8667 173.376 18.96 173.696 18.192C174.027 17.424 174.475 16.8267 175.04 16.4C175.616 15.9733 176.267 15.76 176.992 15.76ZM176.992 17.28C176.565 17.28 176.187 17.424 175.856 17.712C175.536 18 175.285 18.416 175.104 18.96C174.923 19.504 174.832 20.1547 174.832 20.912C174.832 21.68 174.923 22.336 175.104 22.88C175.285 23.424 175.536 23.8453 175.856 24.144C176.187 24.432 176.565 24.576 176.992 24.576C177.419 24.576 177.792 24.432 178.112 24.144C178.432 23.8453 178.683 23.424 178.864 22.88C179.045 22.336 179.136 21.68 179.136 20.912C179.136 20.1547 179.045 19.504 178.864 18.96C178.683 18.416 178.432 18 178.112 17.712C177.792 17.424 177.419 17.28 176.992 17.28ZM193.407 20.368H195.967V21.728H193.407V20.368ZM190.255 18.576H191.535V19.168C191.535 19.9147 191.465 20.6507 191.327 21.376C191.188 22.0907 190.98 22.7733 190.703 23.424C190.436 24.0747 190.095 24.6613 189.679 25.184C189.263 25.696 188.777 26.112 188.223 26.432L187.263 25.168C187.764 24.8693 188.201 24.5013 188.575 24.064C188.959 23.6267 189.273 23.1413 189.519 22.608C189.764 22.064 189.945 21.504 190.063 20.928C190.191 20.3413 190.255 19.7547 190.255 19.168V18.576ZM190.559 18.576H191.839V19.168C191.839 19.7333 191.897 20.2987 192.015 20.864C192.143 21.4187 192.329 21.952 192.575 22.464C192.831 22.9653 193.145 23.424 193.519 23.84C193.892 24.2453 194.329 24.5813 194.831 24.848L193.903 26.112C193.156 25.7067 192.532 25.1467 192.031 24.432C191.54 23.7067 191.172 22.8907 190.927 21.984C190.681 21.0773 190.559 20.1387 190.559 19.168V18.576ZM187.727 17.28H194.335V18.656H187.727V17.28ZM190.255 15.2H191.855V18.352H190.255V15.2ZM198.319 14.688H199.919V29.312H198.319V14.688ZM195.391 14.992H196.959V28.608H195.391V14.992Z" fill="#026A00"/>
+
+      <defs>
+        <filter id="filter0_d_category" x="60" y="0" width="108" height="65" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+          <feOffset dy="4"/>
+          <feGaussianBlur stdDeviation="9.5"/>
+          <feComposite in2="hardAlpha" operator="out"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0.705882 0 0 0 0 0.870588 0 0 0 0 0 0 0 0 0.49 0"/>
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_category"/>
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_category" result="shape"/>
+        </filter>
+      </defs>
+    </svg>
   </div>
 
   <!-- Category Items Grid -->
   <!-- Row 1 -->
   <!-- Item 1 -->
-  <div class="absolute" style="width: 82px; height: 109px; left: 39px; top: 232px;">
+  <div class="absolute" style="width: 82px; height: 109px; left: 39px; top: 137px;">
     <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
       <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
@@ -62,7 +64,7 @@
   </div>
 
   <!-- Item 2 (Center) -->
-  <div class="absolute" style="width: 82px; height: 109px; left: calc(50% - 82px/2); top: 232px;">
+  <div class="absolute" style="width: 82px; height: 109px; left: calc(50% - 82px/2); top: 137px;">
     <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
       <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
@@ -74,7 +76,7 @@
   </div>
 
   <!-- Item 3 -->
-  <div class="absolute" style="width: 82px; height: 109px; left: 307px; top: 232px;">
+  <div class="absolute" style="width: 82px; height: 109px; left: 307px; top: 137px;">
     <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
       <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
@@ -87,7 +89,7 @@
 
   <!-- Row 2 -->
   <!-- Item 4 -->
-  <div class="absolute" style="width: 82px; height: 109px; left: 39px; top: 389px;">
+  <div class="absolute" style="width: 82px; height: 109px; left: 39px; top: 294px;">
     <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
       <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
@@ -99,7 +101,7 @@
   </div>
 
   <!-- Item 5 (Center) -->
-  <div class="absolute" style="width: 82px; height: 109px; left: calc(50% - 82px/2); top: 389px;">
+  <div class="absolute" style="width: 82px; height: 109px; left: calc(50% - 82px/2); top: 294px;">
     <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
       <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
@@ -111,7 +113,7 @@
   </div>
 
   <!-- Item 6 -->
-  <div class="absolute" style="width: 82px; height: 109px; left: 307px; top: 389px;">
+  <div class="absolute" style="width: 82px; height: 109px; left: 307px; top: 294px;">
     <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
       <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
@@ -124,7 +126,7 @@
 
   <!-- Row 3 -->
   <!-- Item 7 -->
-  <div class="absolute" style="width: 82px; height: 109px; left: 39px; top: 546px;">
+  <div class="absolute" style="width: 82px; height: 109px; left: 39px; top: 451px;">
     <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
       <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
@@ -136,7 +138,7 @@
   </div>
 
   <!-- Item 8 (Center) -->
-  <div class="absolute" style="width: 82px; height: 109px; left: calc(50% - 82px/2); top: 546px;">
+  <div class="absolute" style="width: 82px; height: 109px; left: calc(50% - 82px/2); top: 451px;">
     <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
       <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
@@ -148,7 +150,7 @@
   </div>
 
   <!-- Item 9 -->
-  <div class="absolute" style="width: 82px; height: 109px; left: 307px; top: 546px;">
+  <div class="absolute" style="width: 82px; height: 109px; left: 307px; top: 451px;">
     <div class="absolute cursor-pointer" style="width: 70px; height: 70px; left: 6px; top: 0px;">
       <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect opacity="0.2" x="8.75" y="8.75" width="52.5" height="52.5" fill="black"/>
@@ -161,11 +163,15 @@
 
   <!-- 카테고리 추가 Button -->
   <button
-    class="absolute flex flex-row justify-center items-center border rounded-[70px] font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-gray-50 transition-colors"
-    style="width: 150px; height: 54px; left: calc(50% - 150px/2); top: 756px; box-sizing: border-box; padding: 16px 10px; gap: 8px; border: 1px solid #878787;"
+    class="absolute hover:bg-gray-50 transition-colors"
+    style="width: 150px; height: 54px; left: calc(50% - 150px/2); top: 590px;"
   >
-    <span style="width: 111px; height: 22px;">카테고리 추가</span>
+    <svg width="150" height="54" viewBox="0 0 150 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0.5" y="0.5" width="149" height="53" rx="26.5" stroke="#878787"/>
+      <path d="M71.4493 19.704H73.1293V30.536H71.4493V19.704ZM61.4173 20.808H69.1133V22.168H61.4173V20.808ZM61.2093 28.536L61.0333 27.144C61.8333 27.144 62.7133 27.1387 63.6733 27.128C64.6333 27.1067 65.6146 27.0693 66.6173 27.016C67.6199 26.9627 68.5639 26.888 69.4493 26.792L69.5453 28.024C68.6279 28.184 67.6733 28.3013 66.6813 28.376C65.6999 28.44 64.7399 28.4827 63.8013 28.504C62.8626 28.5253 61.9986 28.536 61.2093 28.536ZM62.7293 21.992H64.3613V27.336H62.7293V21.992ZM66.1853 21.992H67.8013V27.336H66.1853V21.992ZM69.3212 22.376H72.3613V23.736H69.3212V22.376ZM69.3212 25.224H72.3613V26.584H69.3212V25.224ZM63.6413 32.664H73.4973V34.024H63.6413V32.664ZM63.6413 29.672H65.3213V33.624H63.6413V29.672ZM79.48 20.952H80.856V21.976C80.856 22.84 80.6907 23.656 80.36 24.424C80.0293 25.1813 79.5547 25.8427 78.936 26.408C78.3173 26.9627 77.5707 27.384 76.696 27.672L75.864 26.36C76.44 26.1787 76.9467 25.9387 77.384 25.64C77.832 25.3413 78.2107 25 78.52 24.616C78.8293 24.2213 79.064 23.8 79.224 23.352C79.3947 22.904 79.48 22.4453 79.48 21.976V20.952ZM79.816 20.952H81.192V21.976C81.192 22.424 81.2667 22.8613 81.416 23.288C81.576 23.704 81.8107 24.0987 82.12 24.472C82.44 24.8347 82.8187 25.16 83.256 25.448C83.6933 25.7253 84.1947 25.9493 84.76 26.12L83.944 27.416C83.08 27.1493 82.3387 26.7493 81.72 26.216C81.112 25.6827 80.6427 25.0533 80.312 24.328C79.9813 23.592 79.816 22.808 79.816 21.976V20.952ZM76.312 20.584H84.296V21.912H76.312V20.584ZM86.104 19.704H87.784V27.624H86.104V19.704ZM78.248 28.296H79.896V29.848H86.136V28.296H87.784V34.136H78.248V28.296ZM79.896 31.176V32.792H86.136V31.176H79.896Z" fill="#111111"/>
+    </svg>
   </button>
+</div>
 </div>
 
 <script>
