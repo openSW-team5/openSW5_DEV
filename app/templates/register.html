@@ -1,23 +1,24 @@
-{% set navbar_variant = 'back-notify' %}
-{% set back_url = '/users/login' %}
-{% set footer_active = 'default' %}
-{% extends "base.html" %}
+{% set navbar_variant = 'back-notify' %} {% set back_url = '/users/login' %} {%
+extends "base.html" %} {% block content %}
 
-{% block content %}
-
-<div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
-  <div class="relative px-5" style="min-height: 800px; padding-bottom: 100px;">
+<div class="absolute top-[95px] bottom-0 left-0 right-0 overflow-y-auto">
+  <div class="relative px-5" style="min-height: 800px; padding-bottom: 100px">
     <!-- 회원가입 Title -->
-    <h1 class="absolute w-[160px] h-[52px] left-[calc(50%-160px/2)] top-[12px] font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black">
+    <h1
+      class="absolute w-[160px] h-[52px] left-[calc(50%-160px/2)] top-[12px] font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black"
+    >
       회원가입
     </h1>
 
     <!-- Form -->
     <form method="post" action="/users/register">
       <!-- ID Label -->
-      <label for="username" class="absolute left-[54px] top-[76px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
-      ID
-    </label>
+      <label
+        for="username"
+        class="absolute left-[54px] top-[76px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10"
+      >
+        ID
+      </label>
 
       <!-- ID Input (Rectangle 14) -->
       <input
@@ -27,106 +28,128 @@
         required
         placeholder="아이디를 입력하세요"
         class="absolute w-[357px] h-[58px] left-[calc(50%-357px/2+0.5px)] top-[85px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
-        style="box-sizing: border-box; padding: 0 20px;"
+        style="box-sizing: border-box; padding: 0 20px"
       />
 
-    <!-- Password Label -->
-    <label for="password" class="absolute left-[55px] top-[155px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
-      Password
-    </label>
+      <!-- Password Label -->
+      <label
+        for="password"
+        class="absolute left-[55px] top-[155px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10"
+      >
+        Password
+      </label>
 
-    <!-- Password Input (Rectangle 15) -->
-    <input
-      type="password"
-      id="password"
-      name="password"
-      required
-      placeholder="비밀번호를 입력하세요"
-      class="absolute w-[357px] h-[58px] left-[36px] top-[164px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
-      style="box-sizing: border-box; padding: 0 20px;"
-    />
+      <!-- Password Input (Rectangle 15) -->
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+        placeholder="비밀번호를 입력하세요"
+        class="absolute w-[357px] h-[58px] left-[36px] top-[164px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+        style="box-sizing: border-box; padding: 0 20px"
+      />
 
-    <!-- 이름 Label -->
-    <label for="name" class="absolute left-[56px] top-[234px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
-      이름
-    </label>
+      <!-- 이름 Label -->
+      <label
+        for="name"
+        class="absolute left-[56px] top-[234px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10"
+      >
+        이름
+      </label>
 
-    <!-- 이름 Input (Rectangle 16) -->
-    <input
-      type="text"
-      id="name"
-      name="name"
-      required
-      placeholder="이름을 입력하세요"
-      class="absolute w-[357px] h-[58px] left-[37px] top-[243px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
-      style="box-sizing: border-box; padding: 0 20px;"
-    />
+      <!-- 이름 Input (Rectangle 16) -->
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        placeholder="이름을 입력하세요"
+        class="absolute w-[357px] h-[58px] left-[37px] top-[243px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+        style="box-sizing: border-box; padding: 0 20px"
+      />
 
-    <!-- 이메일(선택) Label -->
-    <label for="email" class="absolute left-[55px] top-[313px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
-      이메일(선택)
-    </label>
+      <!-- 이메일(선택) Label -->
+      <label
+        for="email"
+        class="absolute left-[55px] top-[313px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10"
+      >
+        이메일(선택)
+      </label>
 
-    <!-- 이메일 Input (Rectangle 17) -->
-    <input
-      type="email"
-      id="email"
-      name="email"
-      placeholder="abcd@email.com"
-      class="absolute w-[357px] h-[58px] left-[36px] top-[322px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
-      style="box-sizing: border-box; padding: 0 20px;"
-    />
+      <!-- 이메일 Input (Rectangle 17) -->
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="abcd@email.com"
+        class="absolute w-[357px] h-[58px] left-[36px] top-[322px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+        style="box-sizing: border-box; padding: 0 20px"
+      />
 
-    <!-- 전화번호(선택) Label -->
-    <label for="phone" class="absolute left-[55px] top-[392px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
-      전화번호(선택)
-    </label>
+      <!-- 전화번호(선택) Label -->
+      <label
+        for="phone"
+        class="absolute left-[55px] top-[392px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10"
+      >
+        전화번호(선택)
+      </label>
 
-    <!-- 전화번호 Input (Rectangle 17) -->
-    <input
-      type="tel"
-      id="phone"
-      name="phone"
-      placeholder="010-0000-0000"
-      class="absolute w-[357px] h-[58px] left-[36px] top-[401px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
-      style="box-sizing: border-box; padding: 0 20px;"
-    />
+      <!-- 전화번호 Input (Rectangle 17) -->
+      <input
+        type="tel"
+        id="phone"
+        name="phone"
+        placeholder="010-0000-0000"
+        class="absolute w-[357px] h-[58px] left-[36px] top-[401px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+        style="box-sizing: border-box; padding: 0 20px"
+      />
 
-    <!-- 생년월일(선택) Label -->
-    <label for="birthdate" class="absolute left-[54px] top-[471px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10">
-      생년월일(선택)
-    </label>
+      <!-- 생년월일(선택) Label -->
+      <label
+        for="birthdate"
+        class="absolute left-[54px] top-[471px] font-montserrat font-medium text-[15px] leading-[18px] flex items-center text-[#C4C4C4] bg-white px-1 z-10"
+      >
+        생년월일(선택)
+      </label>
 
-    <!-- 생년월일 Input (Rectangle 17) -->
-    <input
-      type="date"
-      id="birthdate"
-      name="birthdate"
-      placeholder="0000-00-00"
-      class="absolute w-[357px] h-[58px] left-[35px] top-[480px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
-      style="box-sizing: border-box; padding: 0 20px;"
-    />
+      <!-- 생년월일 Input (Rectangle 17) -->
+      <input
+        type="date"
+        id="birthdate"
+        name="birthdate"
+        placeholder="0000-00-00"
+        class="absolute w-[357px] h-[58px] left-[35px] top-[480px] border-[3px] border-[#C4C4C4] rounded-[15px] font-montserrat text-[15px] leading-[18px] focus:outline-none focus:border-primary transition-colors"
+        style="box-sizing: border-box; padding: 0 20px"
+      />
 
-    <!-- 가입하기 버튼 (Google Button Container) -->
-    <button
-      type="submit"
-      class="absolute w-[351px] h-[54px] left-[calc(50%-351px/2+3.5px)] top-[614px] bg-[#B4DE00] border border-[#111111] rounded-[70px] flex flex-row justify-center items-center font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-[#a0c900] transition-colors"
-      style="box-sizing: border-box; padding: 16px 10px; gap: 8px;"
+      <!-- 가입하기 버튼 (Google Button Container) -->
+      <button
+        type="submit"
+        class="absolute w-[351px] h-[54px] left-[calc(50%-351px/2+3.5px)] top-[614px] bg-[#B4DE00] border border-[#111111] rounded-[70px] flex flex-row justify-center items-center font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-[#a0c900] transition-colors"
+        style="box-sizing: border-box; padding: 16px 10px; gap: 8px"
+      >
+        가입하기
+      </button>
+    </form>
+
+    <!-- 이미 계정이 있으신가요? 로그인 -->
+    <p
+      class="absolute w-[225px] h-[19px] left-[103px] top-[680px] font-noto font-medium text-[16px] leading-[19px] text-center text-[#878787] mb-8"
     >
-      가입하기
-    </button>
-  </form>
-
-  <!-- 이미 계정이 있으신가요? 로그인 -->
-  <p class="absolute w-[225px] h-[19px] left-[103px] top-[680px] font-noto font-medium text-[16px] leading-[19px] text-center text-[#878787] mb-8">
-    이미 계정이 있으신가요? <a href="/users/login" class="hover:underline" style="color: #0024F3;">로그인</a>
-  </p>
+      이미 계정이 있으신가요?
+      <a href="/users/login" class="hover:underline" style="color: #0024f3"
+        >로그인</a
+      >
+    </p>
 
     <!-- Error Message -->
     {% if error %}
-      <div class="absolute left-[35px] right-[35px] top-[720px] p-4 bg-red-50 border border-red-200 rounded-lg mb-8">
-        <p class="text-red-600 text-center font-medium">{{ error }}</p>
-      </div>
+    <div
+      class="absolute left-[35px] right-[35px] top-[720px] p-4 bg-red-50 border border-red-200 rounded-lg mb-8"
+    >
+      <p class="text-red-600 text-center font-medium">{{ error }}</p>
+    </div>
     {% endif %}
   </div>
 </div>
