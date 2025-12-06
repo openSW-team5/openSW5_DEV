@@ -1,8 +1,11 @@
-{% set navbar_variant = 'back-notify' %} {% set back_url = '/users/login' %} {%
-extends "base.html" %} {% block content %}
+{% set navbar_variant = 'back-notify' %}
+{% set back_url = '/users/login' %}
+{% extends "base.html" %}
+
+{% block content %}
 
 <div class="absolute top-[95px] bottom-0 left-0 right-0 overflow-y-auto">
-  <div class="relative px-5" style="min-height: 800px; padding-bottom: 100px">
+  <div class="relative px-5" style="min-height: 700px; padding-bottom: 10px">
     <!-- 회원가입 Title -->
     <h1
       class="absolute w-[160px] h-[52px] left-[calc(50%-160px/2)] top-[12px] font-yidstreet font-bold text-[40px] leading-[52px] flex items-center text-black"
@@ -126,8 +129,8 @@ extends "base.html" %} {% block content %}
       <!-- 가입하기 버튼 (Google Button Container) -->
       <button
         type="submit"
-        class="absolute w-[351px] h-[54px] left-[calc(50%-351px/2+3.5px)] top-[614px] bg-[#B4DE00] border border-[#111111] rounded-[70px] flex flex-row justify-center items-center font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-[#a0c900] transition-colors"
-        style="box-sizing: border-box; padding: 16px 10px; gap: 8px"
+        class="absolute w-[351px] h-[54px] left-[calc(50%-351px/2+3.5px)] bg-[#B4DE00] border border-[#111111] rounded-[70px] flex flex-row justify-center items-center font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111] hover:bg-[#a0c900] transition-colors"
+        style="box-sizing: border-box; padding: 16px 10px; gap: 8px; top: 566px;"
       >
         가입하기
       </button>
@@ -135,7 +138,8 @@ extends "base.html" %} {% block content %}
 
     <!-- 이미 계정이 있으신가요? 로그인 -->
     <p
-      class="absolute w-[225px] h-[19px] left-[103px] top-[680px] font-noto font-medium text-[16px] leading-[19px] text-center text-[#878787] mb-8"
+      class="absolute w-[225px] h-[19px] left-[103px] font-noto font-medium text-[16px] leading-[19px] text-center text-[#878787] mb-8"
+      style="top: 632px;"
     >
       이미 계정이 있으신가요?
       <a href="/users/login" class="hover:underline" style="color: #0024f3"
