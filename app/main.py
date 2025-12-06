@@ -78,6 +78,13 @@ def category_asset_page(request: Request):
         {"request": request, "title": "카테고리 편집"}
     )
 
+@app.get("/receipts/confirm", response_class=HTMLResponse)
+def receipt_confirm_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/receipt_confirm.html",
+        {"request": request, "title": "영수증 확인"}
+    )
+
 # ✅ 라우터 등록
 app.include_router(health.router)
 app.include_router(receipts.router)
