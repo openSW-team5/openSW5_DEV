@@ -7,13 +7,28 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-# ✅ 한 방식으로만 임포트
 from app.routers import health, receipts, users, reports
+# ✅ 세션 유틸 임포트
+from app.services.session import verify_session_token, COOKIE_NAME
 
 app = FastAPI(title="OpenSW5")
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
+
+# ✅ 모든 요청에서 user_id를 request.state에 심어주는 미들웨어
+@app.middleware("http")
+async def add_session_to_request(request: Request, call_next):
+    token = request.cookies.get(COOKIE_NAME)
+    session_data = verify_session_token(token) if token else None
+
+    if session_data:
+        request.state.user_id = session_data.get("uid")
+    else:
+        request.state.user_id = None
+
+    response = await call_next(request)
+    return response
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
@@ -26,9 +41,15 @@ def home(request: Request):
 def dashboard(request: Request):
     return templates.TemplateResponse(
         "pages/dashboard.html",
-        {"request": request, "title": "Dashboard"}
+        {
+            "request": request,
+            "title": "Dashboard",
+            # 나중에 템플릿에서 로그인 여부를 쓰고 싶으면 이 값 사용 가능
+            "user_id": getattr(request.state, "user_id", None),
+        },
     )
 
+# 나머지 페이지 라우트들 그대로 ...
 @app.get("/transactions", response_class=HTMLResponse)
 def transactions_page(request: Request):
     return templates.TemplateResponse(
@@ -78,8 +99,7 @@ def category_asset_page(request: Request):
         {"request": request, "title": "카테고리 편집"}
     )
 
-# ✅ 라우터 등록
 app.include_router(health.router)
 app.include_router(receipts.router)
 app.include_router(users.router)
-app.include_router(reports.router) 
+app.include_router(reports.router)
