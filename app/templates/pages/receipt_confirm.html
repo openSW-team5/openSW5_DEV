@@ -4,6 +4,8 @@
 <div
   x-data="{
     scrolled: false,
+    receiptDate: '',
+    receiptTime: '',
     product1: { quantity: '', unitPrice: '' },
     product2: { quantity: '', unitPrice: '' },
     product3: { quantity: '', unitPrice: '' },
@@ -22,6 +24,10 @@
     },
     get total() {
       return this.subtotal(this.product1) + this.subtotal(this.product2) + this.subtotal(this.product3);
+    },
+    get formattedDateTime() {
+      if (!this.receiptDate && !this.receiptTime) return '';
+      return (this.receiptDate || '') + ' ' + (this.receiptTime || '');
     }
   }"
   x-ref="container"
@@ -241,15 +247,21 @@
       </div>
 
       <!-- Frame 36: Date -->
-      <div class="flex items-center gap-[50px]">
+      <div class="flex items-center gap-[10px]">
         <span
-          class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-grow"
+          class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0"
           >Date</span
         >
-        <span
-          class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0]"
-          >2025-10-25 18:53</span
-        >
+        <input
+          type="date"
+          x-model="receiptDate"
+          class="flex-1 h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+        />
+        <input
+          type="time"
+          x-model="receiptTime"
+          class="w-[80px] h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+        />
       </div>
 
       <!-- Frame 37: Store -->
