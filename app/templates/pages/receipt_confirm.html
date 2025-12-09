@@ -4,10 +4,19 @@
 <div
   x-data="{
     scrolled: false,
+    product1: { quantity: 0, unitPrice: 0 },
+    product2: { quantity: 0, unitPrice: 0 },
+    product3: { quantity: 0, unitPrice: 0 },
     init() {
       this.$refs.container.addEventListener('scroll', () => {
         this.scrolled = this.$refs.container.scrollTop > 100;
       });
+    },
+    subtotal(product) {
+      return product.quantity * product.unitPrice;
+    },
+    get total() {
+      return this.subtotal(this.product1) + this.subtotal(this.product2) + this.subtotal(this.product3);
     }
   }"
   x-ref="container"
@@ -176,8 +185,8 @@
   >
     <p
       class="font-yidstreet font-bold text-[48px] leading-[62px] text-center text-[#AF4C4E]"
+      x-text="'-' + total + '원'"
     >
-      -30,000원
     </p>
   </div>
 
@@ -259,9 +268,9 @@
           >Total</span
         >
         <span
-          class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787]"
-          >금액</span
-        >
+          class="font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0]"
+          x-text="total + '원'"
+        ></span>
       </div>
 
       <!-- Frame 41: 상품 항목 1 -->
@@ -272,19 +281,21 @@
           placeholder="상품명"
         />
         <input
-          type="text"
+          type="number"
+          x-model.number="product1.quantity"
           class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="0"
         />
         <input
-          type="text"
+          type="number"
+          x-model.number="product1.unitPrice"
           class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="0"
         />
         <span
           class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
-          >0</span
-        >
+          x-text="subtotal(product1)"
+        ></span>
       </div>
 
       <!-- Frame 42: 상품 항목 2 -->
@@ -295,19 +306,21 @@
           placeholder="상품명"
         />
         <input
-          type="text"
+          type="number"
+          x-model.number="product2.quantity"
           class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="0"
         />
         <input
-          type="text"
+          type="number"
+          x-model.number="product2.unitPrice"
           class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="0"
         />
         <span
           class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
-          >0</span
-        >
+          x-text="subtotal(product2)"
+        ></span>
       </div>
 
       <!-- Frame 43: 상품 항목 3 -->
@@ -318,19 +331,21 @@
           placeholder="상품명"
         />
         <input
-          type="text"
+          type="number"
+          x-model.number="product3.quantity"
           class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="0"
         />
         <input
-          type="text"
+          type="number"
+          x-model.number="product3.unitPrice"
           class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="0"
         />
         <span
           class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
-          >0</span
-        >
+          x-text="subtotal(product3)"
+        ></span>
       </div>
     </div>
 
