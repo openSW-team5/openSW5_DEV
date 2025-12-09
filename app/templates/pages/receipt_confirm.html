@@ -12,6 +12,9 @@
         this.scrolled = this.$refs.container.scrollTop > 100;
       });
     },
+    formatNumber(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
     subtotal(product) {
       return product.quantity * product.unitPrice;
     },
@@ -185,7 +188,7 @@
   >
     <p
       class="font-yidstreet font-bold text-[48px] leading-[62px] text-center text-[#AF4C4E]"
-      x-text="'-' + total + '원'"
+      x-text="'-' + formatNumber(total) + '원'"
     ></p>
   </div>
 
@@ -268,7 +271,7 @@
         >
         <span
           class="font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0]"
-          x-text="total + '원'"
+          x-text="formatNumber(total) + '원'"
         ></span>
       </div>
 
@@ -293,7 +296,7 @@
         />
         <span
           class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
-          x-text="subtotal(product1)"
+          x-text="formatNumber(subtotal(product1))"
         ></span>
       </div>
 
@@ -318,7 +321,7 @@
         />
         <span
           class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
-          x-text="subtotal(product2)"
+          x-text="formatNumber(subtotal(product2))"
         ></span>
       </div>
 
@@ -343,7 +346,7 @@
         />
         <span
           class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
-          x-text="subtotal(product3)"
+          x-text="formatNumber(subtotal(product3))"
         ></span>
       </div>
     </div>
