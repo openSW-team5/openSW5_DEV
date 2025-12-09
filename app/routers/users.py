@@ -12,6 +12,7 @@ import hashlib
 import hmac
 
 from app.db.util import get_conn
+from app.services.session import create_session_token, COOKIE_NAME, DEBUG  # ✅ 세션 유틸
 
 router = APIRouter(prefix="/users", tags=["users"])
 templates = Jinja2Templates(directory="app/templates")
@@ -29,7 +30,14 @@ def _hash_password(plain: str) -> str:
     if not isinstance(plain, str) or len(plain) < 8:
         raise ValueError("password too short")
     salt = secrets.token_bytes(PBKDF2_SALT_BYTES)
-    dk = hashlib.pbkdf2_hmac("sha256", plain.encode("utf-8"), salt, PBKDF2_ITER, dklen=PBKDF2_HASH_BYTES)
+    # ✅ 오타 수정: pbkdfdf2_hmac → pbkdf2_hmac
+    dk = hashlib.pbkdf2_hmac(
+        "sha256",
+        plain.encode("utf-8"),
+        salt,
+        PBKDF2_ITER,
+        dklen=PBKDF2_HASH_BYTES,
+    )
     return f"{PBKDF2_ALG}${PBKDF2_ITER}${salt.hex()}${dk.hex()}"
 
 
@@ -41,7 +49,13 @@ def _verify_password(plain: str, stored: str) -> bool:
         iters = int(iter_s)
         salt = bytes.fromhex(salt_hex)
         expected = bytes.fromhex(hash_hex)
-        dk = hashlib.pbkdf2_hmac("sha256", plain.encode("utf-8"), salt, iters, dklen=len(expected))
+        dk = hashlib.pbkdf2_hmac(
+            "sha256",
+            plain.encode("utf-8"),
+            salt,
+            iters,
+            dklen=len(expected),
+        )
         return hmac.compare_digest(dk, expected)
     except Exception:
         return False
@@ -234,7 +248,7 @@ def register_user_form(
 
 
 # ==========================
-#   로그인 처리 (POST)
+#   로그인 처리 (POST) + 세션
 # ==========================
 
 @router.post("/login")
@@ -260,18 +274,79 @@ async def login_submit(
             status_code=401,
         )
 
-    # 여기서 세션/쿠키 붙일 예정이라면 이 구간에서 처리
+    # 로그인 성공 → 세션 토큰 발급
     _ = LoginOut(user_id=row["id"], username=row["username"], name=row["name"])
+    token = create_session_token(row["id"])
 
-    # 일단 데모용으로 홈으로 리다이렉트
-    return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    # 대시보드로 이동 (원하면 "/"로 바꿔도 됨)
+    response = RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+    response.set_cookie(
+        key=COOKIE_NAME,
+        value=token,
+        httponly=True,
+        secure=not DEBUG,          # DEBUG=true면 secure=False → 로컬에서 쿠키 저장됨
+        samesite="lax",
+        max_age=7 * 24 * 60 * 60,  # 7일
+    )
+    return response
 
 
 # ==========================
-#   (예시) 마이페이지
+#   마이페이지
 # ==========================
 
 @router.get("/user", response_class=HTMLResponse)
 async def user_page(request: Request):
-    # 아직 실제 로그인 세션 연동은 안 됨 (향후 확장)
-    return templates.TemplateResponse("pages/user.html", {"request": request})
+    # 세션에서 user_id 가져오기
+    user_id = getattr(request.state, "user_id", None)
+
+    # 로그인 안 되어 있으면 로그인 페이지로 보내기
+    if not user_id:
+        return RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
+
+    # 로그인 된 경우 → DB에서 현재 유저 정보 가져오기
+    with get_conn() as conn:
+        cur = conn.cursor()
+        row = cur.execute(
+            """
+            SELECT id, username, name, email, phone, birthdate, created_at
+            FROM users
+            WHERE id = ?
+            """,
+            (user_id,),
+        ).fetchone()
+
+    if not row:
+        # 이례적 상황(세션은 있는데 유저가 없음) → 강제 로그아웃 후 다시 로그인 유도
+        resp = RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
+        resp.delete_cookie(COOKIE_NAME)
+        return resp
+
+    user = {
+        "id": row["id"],
+        "username": row["username"],
+        "name": row["name"],
+        "email": row["email"],
+        "phone": row["phone"],
+        "birthdate": row["birthdate"],
+        "created_at": row["created_at"],
+    }
+
+    return templates.TemplateResponse(
+        "pages/user.html",
+        {
+            "request": request,
+            "user": user,
+        },
+    )
+
+
+# ==========================
+#   로그아웃
+# ==========================
+
+@router.get("/logout")
+async def logout():
+    response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    response.delete_cookie(COOKIE_NAME)
+    return response
