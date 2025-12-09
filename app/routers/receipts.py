@@ -1,14 +1,14 @@
 # app/routers/receipts.py
-from fastapi import APIRouter, UploadFile, File, HTTPException, Path
+from fastapi import APIRouter, UploadFile, File, HTTPException, Path, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
-from pydantic import field_validator  # pydantic v2
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional, Literal
 from datetime import datetime
 import os
 import sqlite3
 
 from app.services.parse_ocr import parse_receipt_bytes
+from app.services.auth import require_user_id  # ✅ 세션 기반 user_id 가져오기
 
 try:
     from dotenv import load_dotenv
@@ -20,8 +20,13 @@ router = APIRouter(prefix="/receipts", tags=["receipts"])
 
 MAX_UPLOAD_MB = int(os.getenv("MAX_UPLOAD_MB", "5"))
 ALLOWED_MIMES = {
-    "image/jpeg", "image/png", "image/heic", "image/heif", "application/octet-stream",
+    "image/jpeg",
+    "image/png",
+    "image/heic",
+    "image/heif",
+    "application/octet-stream",
 }
+
 
 # ---------- Schemas ----------
 class ReceiptItemIn(BaseModel):
@@ -30,8 +35,11 @@ class ReceiptItemIn(BaseModel):
     price: int = Field(ge=0)
     category: Optional[str] = None
 
+
 class ReceiptConfirmIn(BaseModel):
-    user_id: int = 1
+    # ⚠️ 클라이언트에서 보내더라도 무시하고, 서버에서 세션 기준으로 user_id 사용
+    user_id: Optional[int] = None
+
     merchant: str
     purchased_at: str  # YYYY-MM-DD
     items: List[ReceiptItemIn]
@@ -47,6 +55,7 @@ class ReceiptConfirmIn(BaseModel):
         except ValueError:
             raise ValueError("purchased_at must be YYYY-MM-DD")
         return v
+
 
 class ReceiptUpdateIn(BaseModel):
     merchant: str
@@ -65,6 +74,7 @@ class ReceiptUpdateIn(BaseModel):
             raise ValueError("purchased_at must be YYYY-MM-DD")
         return v
 
+
 class ReceiptRow(BaseModel):
     id: int
     user_id: int
@@ -75,6 +85,7 @@ class ReceiptRow(BaseModel):
     image_path: Optional[str] = None
     created_at: Optional[str] = None
 
+
 class ReceiptDetailItem(BaseModel):
     id: int
     name: str
@@ -82,6 +93,7 @@ class ReceiptDetailItem(BaseModel):
     price: int
     category: Optional[str] = None
     subtotal: int
+
 
 class ReceiptDetail(BaseModel):
     id: int
@@ -95,10 +107,20 @@ class ReceiptDetail(BaseModel):
     updated_at: Optional[str] = None
     items: List[ReceiptDetailItem]
 
+
 # ---------- Endpoints ----------
 
 @router.get("", response_model=dict)
-def list_receipts(limit: int = 50, offset: int = 0):
+def list_receipts(
+    request: Request,
+    limit: int = 50,
+    offset: int = 0,
+):
+    """
+    로그인한 사용자의 영수증 목록 (Soft Delete 제외)
+    """
+    user_id = require_user_id(request)
+
     from app.db.util import get_conn
     with get_conn() as conn:
         rows = conn.execute(
@@ -106,10 +128,11 @@ def list_receipts(limit: int = 50, offset: int = 0):
             SELECT id, user_id, merchant, total, purchased_at, status, image_path, created_at
             FROM receipts
             WHERE is_deleted = 0
+              AND user_id = ?
             ORDER BY id DESC
             LIMIT ? OFFSET ?
             """,
-            (limit, offset),
+            (user_id, limit, offset),
         ).fetchall()
 
         data = [
@@ -129,19 +152,33 @@ def list_receipts(limit: int = 50, offset: int = 0):
 
 
 @router.get("/{receipt_id}", response_model=dict)
-def get_receipt_detail(receipt_id: int = Path(..., ge=1)):
+def get_receipt_detail(
+    request: Request,
+    receipt_id: int = Path(..., ge=1),
+):
+    """
+    로그인한 사용자의 단일 영수증 상세
+    """
+    user_id = require_user_id(request)
+
     from app.db.util import get_conn
     with get_conn() as conn:
         r = conn.execute(
             """
-            SELECT id, user_id, merchant, total, purchased_at, status, image_path, created_at, updated_at, is_deleted
+            SELECT id, user_id, merchant, total, purchased_at, status,
+                   image_path, created_at, updated_at, is_deleted
             FROM receipts
             WHERE id = ?
             """,
             (receipt_id,),
         ).fetchone()
 
-        if not r or r["is_deleted"] == 1:
+        # 삭제되었거나, 남의 영수증이면 404
+        if (
+            not r
+            or r["is_deleted"] == 1
+            or r["user_id"] != user_id
+        ):
             raise HTTPException(status_code=404, detail="receipt not found")
 
         items = conn.execute(
@@ -180,7 +217,16 @@ def get_receipt_detail(receipt_id: int = Path(..., ge=1)):
 
 
 @router.post("/upload", response_model=dict)
-async def upload_receipt(file: UploadFile = File(...)):
+async def upload_receipt(
+    request: Request,
+    file: UploadFile = File(...),
+):
+    """
+    OCR용 이미지 업로드 (DB 저장 X, OCR만 수행)
+    로그인 필요 → 세션 체크만.
+    """
+    _ = require_user_id(request)
+
     if file.content_type not in ALLOWED_MIMES:
         raise HTTPException(status_code=400, detail=f"허용되지 않은 파일 형식: {file.content_type}")
 
@@ -201,9 +247,20 @@ async def upload_receipt(file: UploadFile = File(...)):
 
 
 @router.post("/confirm", response_model=dict)
-def confirm_receipt(payload: ReceiptConfirmIn):
+def confirm_receipt(
+    request: Request,
+    payload: ReceiptConfirmIn,
+):
+    """
+    OCR 결과 + 사용자 수정을 반영해 영수증을 확정 저장
+    user_id는 세션에서 가져옴 (payload.user_id는 무시)
+    """
+    user_id = require_user_id(request)
+
     if not payload.items:
         raise HTTPException(status_code=400, detail="items 최소 1개 필요")
+
+    # 서버에서 총액 재계산
     calc_total = sum(it.qty * it.price for it in payload.items)
 
     from app.db.util import get_conn
@@ -216,7 +273,7 @@ def confirm_receipt(payload: ReceiptConfirmIn):
                 VALUES (?, ?, ?, ?, ?, ?)
                 """,
                 (
-                    payload.user_id,
+                    user_id,
                     payload.merchant.strip(),
                     calc_total,
                     payload.purchased_at.strip(),
@@ -241,32 +298,53 @@ def confirm_receipt(payload: ReceiptConfirmIn):
                     ),
                 )
 
-            return {"status": "ok", "receipt_id": receipt_id, "saved_total": calc_total, "items_saved": len(payload.items)}
+            return {
+                "status": "ok",
+                "receipt_id": receipt_id,
+                "saved_total": calc_total,
+                "items_saved": len(payload.items),
+            }
     except sqlite3.IntegrityError as e:
         if "uq_receipt_dedup" in str(e) or "UNIQUE constraint failed" in str(e):
-            raise HTTPException(status_code=409, detail="이미 저장된 영수증일 수 있어요(중복 가능성).")
+            raise HTTPException(
+                status_code=409,
+                detail="이미 저장된 영수증일 수 있어요(중복 가능성).",
+            )
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"DB 저장 실패: {e}")
 
 
-# --------- 기존 PATCH 대체: 명시적 Update (POST) ---------
 @router.post("/{receipt_id}/update", response_model=dict)
-def update_receipt(receipt_id: int, payload: ReceiptUpdateIn):
+def update_receipt(
+    request: Request,
+    receipt_id: int = Path(..., ge=1),
+    payload: ReceiptUpdateIn = ...,
+):
+    """
+    로그인한 사용자의 영수증만 수정 가능
+    """
+    user_id = require_user_id(request)
+
     if not payload.items:
         raise HTTPException(status_code=400, detail="items 최소 1개 필요")
+
     calc_total = sum(it.qty * it.price for it in payload.items)
 
     from app.db.util import get_conn
     with get_conn() as conn:
         cur = conn.cursor()
 
-        # 존재/삭제 여부 체크
+        # 존재/삭제/소유자 여부 체크
         row = cur.execute(
-            "SELECT id, is_deleted FROM receipts WHERE id = ?",
+            "SELECT id, user_id, is_deleted FROM receipts WHERE id = ?",
             (receipt_id,),
         ).fetchone()
-        if not row or row["is_deleted"] == 1:
+        if (
+            not row
+            or row["is_deleted"] == 1
+            or row["user_id"] != user_id
+        ):
             raise HTTPException(status_code=404, detail="receipt not found")
 
         # 본문 업데이트
@@ -286,7 +364,7 @@ def update_receipt(receipt_id: int, payload: ReceiptUpdateIn):
             ),
         )
 
-        # 품목 전량 삭제 후 재입력(간단/안전)
+        # 품목 전량 삭제 후 재입력
         cur.execute("DELETE FROM receipt_items WHERE receipt_id = ?", (receipt_id,))
         for it in payload.items:
             cur.execute(
@@ -303,21 +381,41 @@ def update_receipt(receipt_id: int, payload: ReceiptUpdateIn):
                 ),
             )
 
-        return {"status": "ok", "receipt_id": receipt_id, "saved_total": calc_total, "items_saved": len(payload.items)}
+        return {
+            "status": "ok",
+            "receipt_id": receipt_id,
+            "saved_total": calc_total,
+            "items_saved": len(payload.items),
+        }
 
 
-# --------- 기존 DELETE 대체: Soft Delete (POST) ---------
 @router.post("/{receipt_id}/delete", response_model=dict)
-def soft_delete_receipt(receipt_id: int):
+def soft_delete_receipt(
+    request: Request,
+    receipt_id: int = Path(..., ge=1),
+):
+    """
+    로그인한 사용자의 영수증만 Soft Delete
+    """
+    user_id = require_user_id(request)
+
     from app.db.util import get_conn
     with get_conn() as conn:
         cur = conn.cursor()
-        # 이미 삭제됐거나 없는 경우 처리
         cur.execute(
-            "UPDATE receipts SET is_deleted = 1, updated_at = datetime('now') WHERE id = ? AND is_deleted = 0",
-            (receipt_id,),
+            """
+            UPDATE receipts
+               SET is_deleted = 1,
+                   updated_at = datetime('now')
+             WHERE id = ?
+               AND user_id = ?
+               AND is_deleted = 0
+            """,
+            (receipt_id, user_id),
         )
         if cur.rowcount == 0:
-            # 없는 ID이거나 이미 삭제됨
-            raise HTTPException(status_code=404, detail="receipt not found or already deleted")
+            raise HTTPException(
+                status_code=404,
+                detail="receipt not found or already deleted",
+            )
         return {"status": "ok", "receipt_id": receipt_id, "deleted": True}

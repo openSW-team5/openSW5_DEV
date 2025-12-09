@@ -287,6 +287,7 @@ async def login_submit(
         secure=not DEBUG,          # DEBUG=true면 secure=False → 로컬에서 쿠키 저장됨
         samesite="lax",
         max_age=7 * 24 * 60 * 60,  # 7일
+        path="/",                  # 모든 경로에서 쿠키 전송    
     )
     return response
 
@@ -347,6 +348,13 @@ async def user_page(request: Request):
 
 @router.get("/logout")
 async def logout():
-    response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
-    response.delete_cookie(COOKIE_NAME)
+    response = RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
+    response.delete_cookie(
+        key=COOKIE_NAME,
+        path="/",     # ✅ 로그인 때와 동일하게 명시
+    )
     return response
+
+@router.get("/me-test")
+def me_test(request: Request):
+    return {"user_id": getattr(request.state, "user_id", None)}

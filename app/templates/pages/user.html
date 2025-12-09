@@ -37,10 +37,6 @@ extends "base.html" %} {% block content %}
         <!-- User Name -->
         <h2 class="font-noto font-bold text-[24px] text-[#1B1B1B]">{{ (user.name) }}님</h2>
     </div>
-
-
-    <!-- User Name -->
-    <h2 class="font-noto font-bold text-[24px] text-[#1B1B1B]">User</h2>
   </div>
 
   <!-- Menu List -->
@@ -125,7 +121,7 @@ extends "base.html" %} {% block content %}
     </a>
 
     <!-- Logout -->
-    <a href="#" class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
+    <a href="/users/logout" class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
       <!-- Logout Icon -->
       <div class="w-[45px] h-[45px] flex items-center justify-center">
         <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
