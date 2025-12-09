@@ -4,9 +4,9 @@
 <div
   x-data="{
     scrolled: false,
-    product1: { quantity: 0, unitPrice: 0 },
-    product2: { quantity: 0, unitPrice: 0 },
-    product3: { quantity: 0, unitPrice: 0 },
+    product1: { quantity: '', unitPrice: '' },
+    product2: { quantity: '', unitPrice: '' },
+    product3: { quantity: '', unitPrice: '' },
     init() {
       this.$refs.container.addEventListener('scroll', () => {
         this.scrolled = this.$refs.container.scrollTop > 100;
@@ -16,7 +16,9 @@
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
     subtotal(product) {
-      return product.quantity * product.unitPrice;
+      const qty = Number(product.quantity) || 0;
+      const price = Number(product.unitPrice) || 0;
+      return qty * price;
     },
     get total() {
       return this.subtotal(this.product1) + this.subtotal(this.product2) + this.subtotal(this.product3);
@@ -284,13 +286,17 @@
         />
         <input
           type="number"
-          x-model.number="product1.quantity"
+          x-model="product1.quantity"
+          min="0"
+          inputmode="numeric"
           class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="수량"
         />
         <input
           type="number"
-          x-model.number="product1.unitPrice"
+          x-model="product1.unitPrice"
+          min="0"
+          inputmode="numeric"
           class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="단가"
         />
@@ -309,13 +315,17 @@
         />
         <input
           type="number"
-          x-model.number="product2.quantity"
+          x-model="product2.quantity"
+          min="0"
+          inputmode="numeric"
           class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="수량"
         />
         <input
           type="number"
-          x-model.number="product2.unitPrice"
+          x-model="product2.unitPrice"
+          min="0"
+          inputmode="numeric"
           class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="단가"
         />
@@ -334,13 +344,17 @@
         />
         <input
           type="number"
-          x-model.number="product3.quantity"
+          x-model="product3.quantity"
+          min="0"
+          inputmode="numeric"
           class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="수량"
         />
         <input
           type="number"
-          x-model.number="product3.unitPrice"
+          x-model="product3.unitPrice"
+          min="0"
+          inputmode="numeric"
           class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
           placeholder="단가"
         />
