@@ -8,12 +8,12 @@
 <nav class="fixed bottom-0 left-0 right-0 max-w-[428px] mx-auto h-[95px] bg-white shadow-[0_-17px_33px_-9px_rgba(0,0,0,0.15)] z-50">
 
   {# Plus Button #}
-  <div class="absolute w-[60px] h-[60px] left-[184px] top-[14px]">
+  <button class="absolute w-[60px] h-[60px] left-[184px] top-[14px] cursor-pointer" onclick="openUploadPopup()">
     <svg class="w-full h-full" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="30" cy="30" r="30" fill="#B4DE00"/>
       <path d="M26.7227 42V19H33.2269V42H26.7227ZM18 33.5368V27.4632H42V33.5368H18Z" fill="white"/>
     </svg>
-  </div>
+  </button>
 
   {# Home Icon #}
   {% if active == 'home' %}

@@ -23,6 +23,8 @@ module.exports = {
         montserrat: ['Montserrat', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'],
         yidstreet: ['Yidstreet', 'sans-serif'],
+        satoshi: ['Satoshi', 'sans-serif'],
+        sarina: ['Sarina', 'cursive'],
       },
     },
   },

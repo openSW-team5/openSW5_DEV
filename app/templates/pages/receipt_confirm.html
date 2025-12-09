@@ -1,0 +1,182 @@
+{% set navbar_variant = 'back' %}
+{% set back_url = '/dashboard' %}
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="relative w-full h-screen overflow-y-auto" style="background: #FFFFFF;">
+
+  <!-- 회전된 카드 이미지 (상단) -->
+  <div class="absolute w-[219px] h-[150px] left-[94px] top-[119px]" style="transform: rotate(-15deg);">
+    <!-- Card Background -->
+    <div class="absolute w-full h-full bg-[#B4DE00] rounded-[11px] border border-[#111111]"></div>
+
+    <!-- Budgeta Text (숨김) -->
+    <p class="absolute left-[0px] top-[-30px] font-sarina text-[51px] leading-[64px] text-[#ABD107]" style="transform: rotate(-15deg);">
+      Budgeta
+    </p>
+
+    <!-- Daily Text -->
+    <p class="absolute left-[51px] top-[-99px] font-sarina text-[16px] leading-[20px] text-[#252525]" style="transform: rotate(-15deg);">
+      Daily
+    </p>
+
+    <!-- Balance -->
+    <p class="absolute left-[-74px] top-[-65px] font-satoshi font-bold text-[16px] leading-[22px] text-[#252525]" style="transform: rotate(-15deg);">
+      $1,300
+    </p>
+
+    <!-- Card Number Dots -->
+    <div class="absolute left-[-61px] top-[-38px] flex gap-[13px]" style="transform: rotate(-15deg);">
+      <span class="font-satoshi font-bold text-[12px] text-[#252525]">4892</span>
+      <div class="flex gap-1">
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+      </div>
+      <div class="flex gap-1">
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+      </div>
+      <div class="flex gap-1">
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+        <div class="w-[3px] h-[3px] rounded-full bg-[#252525]"></div>
+      </div>
+    </div>
+
+    <!-- Debit Card Text -->
+    <p class="absolute left-[-46px] top-[42px] font-satoshi text-[8px] leading-[11px] text-white" style="transform: rotate(-15deg);">
+      Debit Card
+    </p>
+
+    <!-- Expiry Date -->
+    <p class="absolute left-[113px] top-[4px] font-satoshi font-bold text-[8px] leading-[11px] text-[#252525]" style="transform: rotate(-15deg);">
+      07/25
+    </p>
+  </div>
+
+  <!-- 검정색 박스 (영수증 정보) -->
+  <div class="absolute w-full h-[578px] left-0 top-[364px] bg-[#1B1B1B]">
+
+    <!-- Up Arrow -->
+    <div class="absolute w-[12px] h-[12px] left-[285px] top-[32px] rotate-180">
+      <svg viewBox="0 0 12 12" fill="none">
+        <path d="M6 2L10 10H2L6 2Z" fill="#F0F0F0"/>
+      </svg>
+    </div>
+
+    <!-- Frame 36 - 영수증 상세 정보 -->
+    <div class="absolute w-[351px] left-[38px] top-[12px] flex flex-col gap-[17px] p-4 border border-[#4F4F4F] rounded-[5px]" style="max-height: 451px; overflow-y: auto;">
+
+      <!-- Frame 35: Name -->
+      <div class="flex items-center gap-[50px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-grow">Name</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0]">credit card</span>
+      </div>
+
+      <!-- Frame 36: Date -->
+      <div class="flex items-center gap-[50px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-grow">Date</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0]">2025-10-25 18:53</span>
+      </div>
+
+      <!-- Frame 37: Store -->
+      <div class="flex items-center gap-[50px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-grow">Store</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0]">편의점</span>
+      </div>
+
+      <!-- Frame 40: Total -->
+      <div class="flex items-center gap-[50px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-grow">Total</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0]">30,000원</span>
+      </div>
+
+      <!-- Frame 41: 헤더 (상품명, 수량, 단가, 소계) -->
+      <div class="flex items-center gap-[10px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] flex-grow">상품명</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] w-[26px]">수량</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">단가</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">소계</span>
+      </div>
+
+      <!-- Frame 46: 상품 항목 1 (삼각김밥) -->
+      <div class="flex items-center gap-[10px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-grow">삼각김밥</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] w-[26px]">1 개</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] w-[26px]">1,200원</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] w-[26px]">1,200원</span>
+      </div>
+
+      <!-- Frame 47: 빈 상품 항목 -->
+      <div class="flex items-center gap-[10px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] flex-grow">상품명</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] w-[26px]">수량</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">단가</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">소계</span>
+      </div>
+
+      <!-- Frame 48 -->
+      <div class="flex items-center gap-[10px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] flex-grow">상품명</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] w-[26px]">수량</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">단가</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">소계</span>
+      </div>
+
+      <!-- Frame 49 -->
+      <div class="flex items-center gap-[10px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] flex-grow">상품명</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] w-[26px]">수량</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">단가</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">소계</span>
+      </div>
+
+      <!-- Frame 50 -->
+      <div class="flex items-center gap-[10px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] flex-grow">상품명</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] w-[26px]">수량</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">단가</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">소계</span>
+      </div>
+
+      <!-- Frame 51 -->
+      <div class="flex items-center gap-[10px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] flex-grow">상품명</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] w-[26px]">수량</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">단가</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">소계</span>
+      </div>
+
+      <!-- Frame 52 -->
+      <div class="flex items-center gap-[10px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] flex-grow">상품명</span>
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#878787] w-[26px]">수량</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">단가</span>
+        <span class="font-satoshi font-bold text-[14px] leading-[19px] text-[#878787] w-[26px]">소계</span>
+      </div>
+    </div>
+
+    <!-- Add 버튼 -->
+    <button class="absolute w-[83px] h-[26px] left-[calc(50%-83px/2+0.5px)] top-[451px] border-[3px] border-[#4CAF50] rounded-[20px] flex items-center justify-center">
+      <span class="font-montserrat font-bold text-[16px] text-[#4CAF50]">Add</span>
+    </button>
+
+    <!-- 확인 버튼 (홈으로 돌아가기) -->
+    <button class="absolute w-[351px] h-[54px] left-[calc(50%-351px/2-0.5px)] top-[482px] bg-[#B4DE00] border border-[#111111] rounded-[70px] flex items-center justify-center gap-2">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M16.6667 8.33333L10 3.33333L3.33333 8.33333V16.6667C3.33333 17.1087 3.50893 17.5326 3.82149 17.8452C4.13405 18.1577 4.55797 18.3333 5 18.3333H15C15.442 18.3333 15.866 18.1577 16.1785 17.8452C16.4911 17.5326 16.6667 17.1087 16.6667 16.6667V8.33333Z" stroke="#111111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 15C10 15 10 15 10 12.5C10 12.5 10 12.5 10 12.5" stroke="#111111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="font-satoshi font-medium text-[16px] text-[#111111]">홈으로 돌아가기</span>
+    </button>
+  </div>
+
+</div>
+
+{% endblock %}
