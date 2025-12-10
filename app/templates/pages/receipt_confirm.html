@@ -308,28 +308,37 @@
             startX: 0,
             currentX: 0,
             isDragging: false,
-            handleTouchStart(e) {
-              this.startX = e.touches[0].clientX;
+            handleStart(e) {
+              this.startX = e.touches ? e.touches[0].clientX : e.clientX;
               this.isDragging = true;
             },
-            handleTouchMove(e) {
+            handleMove(e) {
               if (!this.isDragging) return;
-              e.preventDefault();
-              this.currentX = e.touches[0].clientX;
+              this.currentX = e.touches ? e.touches[0].clientX : e.clientX;
               const diff = this.startX - this.currentX;
+              const absDiff = Math.abs(diff);
+
+              if (absDiff > 10) {
+                e.preventDefault();
+              }
+
               if (diff > 50) {
                 product.swipedLeft = true;
               } else if (diff < -50) {
                 product.swipedLeft = false;
               }
             },
-            handleTouchEnd() {
+            handleEnd() {
               this.isDragging = false;
             }
           }"
-          @touchstart.passive="handleTouchStart($event)"
-          @touchmove="handleTouchMove($event)"
-          @touchend.passive="handleTouchEnd()"
+          @mousedown="handleStart($event)"
+          @mousemove="handleMove($event)"
+          @mouseup="handleEnd()"
+          @mouseleave="handleEnd()"
+          @touchstart.passive="handleStart($event)"
+          @touchmove="handleMove($event)"
+          @touchend.passive="handleEnd()"
         >
           <div
             class="flex items-center gap-[10px] transition-transform duration-300 absolute left-0 w-full"
@@ -338,30 +347,27 @@
             <input
               type="text"
               x-model="product.name"
-              class="flex-grow h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+              class="flex-grow h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
               placeholder="상품명"
               @focus="product.swipedLeft = false"
-              @touchstart.stop
             />
             <input
               type="number"
               x-model="product.quantity"
               min="0"
               inputmode="numeric"
-              class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+              class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
               placeholder="수량"
               @focus="product.swipedLeft = false"
-              @touchstart.stop
             />
             <input
               type="number"
               x-model="product.unitPrice"
               min="0"
               inputmode="numeric"
-              class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+              class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
               placeholder="단가"
               @focus="product.swipedLeft = false"
-              @touchstart.stop
             />
             <span
               class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
