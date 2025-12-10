@@ -1,0 +1,284 @@
+{% set navbar_variant = 'back' %} {% set back_url = '/transactions' %} {% extends "base.html" %} {% block content %}
+<div class="relative w-full h-screen overflow-y-auto bg-white">
+    <!-- 상단 타이틀 영역 -->
+    <div class="px-5 pt-[90px] pb-4">
+        <h1 class="font-montserrat font-bold text-[24px] text-text mb-1">영수증 상세</h1>
+        <p class="text-[13px] text-[#888888]">자동 인식된 내용을 확인하고, 필요하면 수정한 뒤 저장하세요.</p>
+    </div>
+
+    <!-- 상단 요약 카드 -->
+    <div class="px-5 mb-4">
+        <div class="w-full bg-[#1B1B1B] rounded-[20px] px-4 py-4 text-white">
+            <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-[13px] text-[#A7A7A7]">가게명</span>
+                    <input
+                        id="merchantInput"
+                        type="text"
+                        class="ml-4 flex-1 bg-transparent border-b border-[#444444] text-right text-[14px] focus:outline-none"
+                        placeholder="가게명을 입력하세요" />
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-[13px] text-[#A7A7A7]">날짜</span>
+                    <input
+                        id="dateInput"
+                        type="date"
+                        class="ml-4 bg-transparent border-b border-[#444444] text-right text-[14px] focus:outline-none" />
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-[13px] text-[#A7A7A7]">상태</span>
+                    <select
+                        id="statusSelect"
+                        class="ml-4 bg-transparent border border-[#444444] rounded-[999px] px-3 py-1 text-[12px] focus:outline-none">
+                        <option value="CONFIRMED">확정됨</option>
+                        <option value="PENDING">임시저장</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-between mt-1">
+                    <span class="text-[13px] text-[#A7A7A7]">총액</span>
+                    <span id="totalDisplay" class="text-[18px] font-montserrat font-semibold">0원</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 품목 리스트 -->
+    <div class="px-5 pb-[120px]">
+        <div class="flex items-center justify-between mb-3">
+            <h2 class="font-montserrat font-semibold text-[18px] text-text">품목 목록</h2>
+            <button
+                id="addItemBtn"
+                type="button"
+                class="px-3 py-1 rounded-[999px] border border-[#B4DE00] text-[13px] text-[#3C3C3C] bg-[#F8FFE0]">
+                + 항목 추가
+            </button>
+        </div>
+
+        <div class="w-full border border-[#E0E0E0] rounded-[14px] overflow-hidden">
+            <div class="grid grid-cols-4 bg-[#F7F7F7] px-3 py-2 text-[12px] text-[#777777]">
+                <span class="col-span-2">상품명</span>
+                <span class="text-center">수량</span>
+                <span class="text-right">단가</span>
+            </div>
+
+            <div id="itemsBody" class="divide-y divide-[#F0F0F0] bg-white"></div>
+        </div>
+
+        <p class="mt-2 text-[11px] text-[#A0A0A0]">* 항목을 수정하면 총액은 자동으로 다시 계산됩니다.</p>
+    </div>
+
+    <!-- 하단 버튼 -->
+    <div class="fixed left-0 right-0 bottom-0 bg-white border-t border-[#E8E8E8] px-5 py-3">
+        <div class="flex gap-3">
+            <button
+                id="deleteBtn"
+                type="button"
+                class="flex-1 h-[46px] rounded-[999px] border border-[#FF6B6B] text-[#FF6B6B] text-[14px] font-montserrat font-semibold">
+                삭제
+            </button>
+            <button
+                id="saveBtn"
+                type="button"
+                class="flex-[2] h-[46px] rounded-[999px] bg-[#B4DE00] border border-[#111111] text-[#111111] text-[15px] font-montserrat font-semibold">
+                저장
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Jinja 변수를 문자열로 안전하게 변환 (린트 오류 제거)
+        const receiptId = '{{ receipt_id }}';
+
+        const itemsBody = document.getElementById('itemsBody');
+        const merchantInput = document.getElementById('merchantInput');
+        const dateInput = document.getElementById('dateInput');
+        const statusSelect = document.getElementById('statusSelect');
+        const totalDisplay = document.getElementById('totalDisplay');
+        const addItemBtn = document.getElementById('addItemBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+
+        let currentItems = [];
+
+        function formatWon(value) {
+            return Number(value || 0).toLocaleString() + '원';
+        }
+
+        function recalcTotal() {
+            let total = 0;
+            const rows = itemsBody.querySelectorAll('.item-row');
+
+            rows.forEach((row) => {
+                const qty = parseInt(row.querySelector('.item-qty').value || '0', 10);
+                const price = parseInt(row.querySelector('.item-price').value || '0', 10);
+                if (!isNaN(qty) && !isNaN(price)) {
+                    total += qty * price;
+                }
+            });
+
+            totalDisplay.textContent = formatWon(total);
+            return total;
+        }
+
+        function createItemRow(item = {}) {
+            const row = document.createElement('div');
+            row.className = 'item-row grid grid-cols-4 items-center px-3 py-2 text-[13px]';
+
+            row.innerHTML = `
+            <div class="col-span-2 pr-1">
+                <input type="text" class="item-name w-full border-b border-[#E0E0E0] focus:outline-none text-[13px] py-[2px]"
+                       placeholder="상품명" value="${item.name || ''}">
+            </div>
+
+            <div class="flex items-center justify-center">
+                <input type="number" min="1" class="item-qty w-[50px] text-center border-b border-[#E0E0E0] focus:outline-none text-[13px] py-[2px]"
+                       value="${item.qty ?? 1}">
+            </div>
+
+            <div class="flex items-center justify-end">
+                <input type="number" min="0" class="item-price w-[70px] text-right border-b border-[#E0E0E0] focus:outline-none text-[13px] py-[2px]"
+                       value="${item.price ?? 0}">
+            </div>
+        `;
+
+            row.querySelectorAll('input').forEach((input) => {
+                input.addEventListener('input', recalcTotal);
+            });
+
+            return row;
+        }
+
+        function renderReceipt(detail) {
+            merchantInput.value = detail.merchant || '';
+            dateInput.value = detail.purchased_at || '';
+            statusSelect.value = detail.status || 'CONFIRMED';
+
+            itemsBody.innerHTML = '';
+            currentItems = detail.items || [];
+
+            if (currentItems.length === 0) {
+                itemsBody.appendChild(createItemRow());
+            } else {
+                currentItems.forEach((it) => itemsBody.appendChild(createItemRow(it)));
+            }
+
+            recalcTotal();
+        }
+
+        async function loadReceipt() {
+            try {
+                const res = await fetch(`/receipts/${receiptId}`);
+                const result = await res.json();
+
+                if (res.ok && result.status === 'ok') {
+                    renderReceipt(result.data);
+                } else {
+                    alert('영수증 정보를 불러올 수 없습니다.');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('조회 중 오류 발생');
+            }
+        }
+
+        function buildPayloadFromForm() {
+            const merchant = merchantInput.value.trim();
+            const purchased_at = dateInput.value;
+            const status = statusSelect.value;
+
+            const items = [];
+            const rows = itemsBody.querySelectorAll('.item-row');
+
+            rows.forEach((row) => {
+                const name = row.querySelector('.item-name').value.trim();
+                const qty = parseInt(row.querySelector('.item-qty').value || '0');
+                const price = parseInt(row.querySelector('.item-price').value || '0');
+
+                if (!name || qty <= 0 || price < 0) return;
+
+                items.push({ name, qty, price, category: null });
+            });
+
+            if (!items.length) {
+                alert('최소 1개 이상의 항목을 입력하세요.');
+                return null;
+            }
+            if (!merchant) {
+                alert('가게명을 입력하세요.');
+                return null;
+            }
+            if (!purchased_at) {
+                alert('날짜를 입력하세요.');
+                return null;
+            }
+
+            const total = recalcTotal();
+
+            return {
+                merchant,
+                purchased_at,
+                status,
+                total,
+                items,
+                image_path: null,
+            };
+        }
+
+        addItemBtn.addEventListener('click', () => {
+            itemsBody.appendChild(createItemRow());
+            recalcTotal();
+        });
+
+        saveBtn.addEventListener('click', async () => {
+            const payload = buildPayloadFromForm();
+            if (!payload) return;
+
+            try {
+                const res = await fetch(`/receipts/${receiptId}/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                const result = await res.json();
+                if (res.ok && result.status === 'ok') {
+                    alert('저장되었습니다.');
+                    await loadReceipt();
+                } else {
+                    alert(result.detail || '저장 실패');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('저장 중 오류 발생');
+            }
+        });
+
+        deleteBtn.addEventListener('click', async () => {
+            if (!confirm('정말 삭제할까요? 복구할 수 없습니다.')) return;
+
+            try {
+                const res = await fetch(`/receipts/${receiptId}/delete`, { method: 'POST' });
+                const result = await res.json();
+
+                if (res.ok && result.status === 'ok') {
+                    alert('삭제되었습니다.');
+                    window.location.href = '/transactions';
+                } else {
+                    alert(result.detail || '삭제 실패');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('삭제 중 오류 발생');
+            }
+        });
+
+        await loadReceipt();
+    });
+</script>
+
+{% endblock %}

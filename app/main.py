@@ -16,6 +16,7 @@ app = FastAPI(title="OpenSW5")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
+
 # ✅ 모든 요청에서 user_id를 request.state에 심어주는 미들웨어
 @app.middleware("http")
 async def add_session_to_request(request: Request, call_next):
@@ -30,12 +31,14 @@ async def add_session_to_request(request: Request, call_next):
     response = await call_next(request)
     return response
 
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(
         "splash.html",
         {"request": request}
     )
+
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request):
@@ -49,6 +52,7 @@ def dashboard(request: Request):
         },
     )
 
+
 # 나머지 페이지 라우트들 그대로 ...
 @app.get("/transactions", response_class=HTMLResponse)
 def transactions_page(request: Request):
@@ -57,12 +61,14 @@ def transactions_page(request: Request):
         {"request": request, "title": "거래내역"}
     )
 
+
 @app.get("/search", response_class=HTMLResponse)
 def search_page(request: Request):
     return templates.TemplateResponse(
         "pages/search.html",
         {"request": request, "title": "검색"}
     )
+
 
 @app.get("/notification-settings", response_class=HTMLResponse)
 def notification_settings_page(request: Request):
@@ -71,12 +77,14 @@ def notification_settings_page(request: Request):
         {"request": request, "title": "알림설정"}
     )
 
+
 @app.get("/data-export", response_class=HTMLResponse)
 def data_export_page(request: Request):
     return templates.TemplateResponse(
         "pages/data_export.html",
         {"request": request, "title": "데이터 내보내기"}
     )
+
 
 @app.get("/category-edit", response_class=HTMLResponse)
 def category_edit_page(request: Request):
@@ -85,12 +93,14 @@ def category_edit_page(request: Request):
         {"request": request, "title": "카테고리 편집"}
     )
 
+
 @app.get("/category-income", response_class=HTMLResponse)
 def category_income_page(request: Request):
     return templates.TemplateResponse(
         "pages/category_income.html",
         {"request": request, "title": "카테고리 편집"}
     )
+
 
 @app.get("/category-asset", response_class=HTMLResponse)
 def category_asset_page(request: Request):
@@ -99,6 +109,7 @@ def category_asset_page(request: Request):
         {"request": request, "title": "카테고리 편집"}
     )
 
+
 @app.get("/receipts/confirm", response_class=HTMLResponse)
 def receipt_confirm_page(request: Request):
     return templates.TemplateResponse(
@@ -106,10 +117,23 @@ def receipt_confirm_page(request: Request):
         {"request": request, "title": "영수증 확인"}
     )
 
-# ✅ 라우터 등록
 
+# ✅ 새로 추가: 영수증 상세 페이지 (transactions에서 카드 클릭 시 이동하는 곳)
+@app.get("/receipts/{receipt_id}/view", response_class=HTMLResponse)
+def receipt_detail_page(request: Request, receipt_id: int):
+    return templates.TemplateResponse(
+        "pages/receipt_detail.html",
+        {
+            "request": request,
+            "title": "영수증 상세",
+            "receipt_id": receipt_id,
+        },
+    )
+
+
+# ✅ 라우터 등록
 app.include_router(health.router)
 app.include_router(receipts.router)
 app.include_router(users.router)
 app.include_router(reports.router)
-app.include_router(exports.router) 
+app.include_router(exports.router)
