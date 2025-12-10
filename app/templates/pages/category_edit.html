@@ -7,32 +7,41 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
     style="min-height: 730px; padding-bottom: 50px"
     x-data="{
       editMode: false,
-      categories: ['식비', '교통', '쇼핑', '여가', '의료', '주거', '통신', '기타'],
+      categories: [
+        { name: '식비', icon: 'food.svg' },
+        { name: '교통', icon: 'Transportation.svg' },
+        { name: '쇼핑', icon: 'shop.svg' },
+        { name: '여가', icon: 'Leisure.svg' },
+        { name: '의료', icon: 'Healthcare.svg' },
+        { name: '주거', icon: 'Housing.svg' },
+        { name: '통신', icon: 'Communications.svg' },
+        { name: '기타', icon: 'Other.svg' }
+      ],
       showAddModal: false,
       showRenameModal: false,
       newCategoryName: '',
       renamingIndex: null,
       renamingName: '',
       deleteCategory(index) {
-        if (confirm(this.categories[index] + ' 카테고리를 삭제하시겠습니까?')) {
+        if (confirm(this.categories[index].name + ' 카테고리를 삭제하시겠습니까?')) {
           this.categories.splice(index, 1);
         }
       },
       addCategory() {
         if (this.newCategoryName.trim()) {
-          this.categories.push(this.newCategoryName.trim());
+          this.categories.push({ name: this.newCategoryName.trim(), icon: 'folder-simple-duotone.svg' });
           this.newCategoryName = '';
           this.showAddModal = false;
         }
       },
       startRename(index) {
         this.renamingIndex = index;
-        this.renamingName = this.categories[index];
+        this.renamingName = this.categories[index].name;
         this.showRenameModal = true;
       },
       renameCategory() {
         if (this.renamingName.trim() && this.renamingIndex !== null) {
-          this.categories[this.renamingIndex] = this.renamingName.trim();
+          this.categories[this.renamingIndex].name = this.renamingName.trim();
           this.showRenameModal = false;
           this.renamingIndex = null;
           this.renamingName = '';
@@ -165,50 +174,33 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
 
         <!-- Category Icon -->
         <div
-          class="absolute cursor-pointer"
+          class="absolute cursor-pointer bg-[#F2F2F2] rounded-lg flex items-center justify-center"
           style="width: 70px; height: 70px; left: 6px; top: 0px"
           @click="editMode && startRename(index)"
         >
-          <svg
-            width="70"
-            height="70"
-            viewBox="0 0 70 70"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect
-              opacity="0.2"
-              x="8.75"
-              y="8.75"
-              width="52.5"
-              height="52.5"
-              fill="black"
-            />
-            <rect
-              x="8.75"
-              y="8.75"
-              width="52.5"
-              height="52.5"
-              stroke="black"
-              stroke-width="5"
-            />
-          </svg>
+          <img
+            :src="'/static/assets/' + category.icon"
+            :alt="category.name"
+            class="w-[70%] h-[70%] object-contain"
+          />
 
-          <!-- List Icon (only in edit mode) -->
-          <svg
+          <!-- List Icon Overlay (only in edit mode) -->
+          <div
             x-show="editMode"
-            class="absolute"
-            style="left: 21px; top: 21px"
-            width="28"
-            height="28"
-            viewBox="0 0 28 28"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            class="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center rounded-lg"
           >
-            <rect x="2" y="5" width="24" height="3" fill="black" />
-            <rect x="2" y="12" width="24" height="3" fill="black" />
-            <rect x="2" y="19" width="24" height="3" fill="black" />
-          </svg>
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect x="2" y="5" width="24" height="3" fill="black" />
+              <rect x="2" y="12" width="24" height="3" fill="black" />
+              <rect x="2" y="19" width="24" height="3" fill="black" />
+            </svg>
+          </div>
         </div>
 
         <!-- Category Name -->
@@ -221,7 +213,7 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
             top: 70px;
             color: #000000;
           "
-          x-text="category"
+          x-text="category.name"
         ></p>
 
         <!-- Subcategory Count -->
