@@ -48,7 +48,8 @@
     }
   }"
   x-ref="container"
-  class="relative w-full h-screen overflow-y-auto pb-[100px]"
+  class="relative w-full h-screen pb-[100px]"
+  :class="showSuccess ? 'overflow-hidden' : 'overflow-y-auto'"
   style="background: #ffffff; min-height: 800px"
 >
   <!-- 입력 페이지 -->
@@ -506,14 +507,18 @@
 
     <!-- 사용처 -->
     <p
-      class="absolute w-[350px] left-[calc(50%-350px/2)] top-[360px] font-yidstreet font-bold text-[#1B1B1B] text-center break-words"
-      :class="(store || '편의점').length > 10 ? 'text-[32px] leading-[42px]' : (store || '편의점').length > 6 ? 'text-[42px] leading-[56px]' : 'text-[52px] leading-[68px]'"
-      x-text="store || '편의점'"
+      class="absolute w-[350px] left-[calc(50%-350px/2)] top-[360px] font-yidstreet font-bold text-center break-words"
+      :class="[
+        store ? 'text-[#1B1B1B]' : 'text-[#878787]',
+        (store || '사용처').length > 10 ? 'text-[32px] leading-[42px]' : (store || '사용처').length > 6 ? 'text-[42px] leading-[56px]' : 'text-[52px] leading-[68px]'
+      ]"
+      x-text="store || '사용처'"
     ></p>
 
     <!-- 날짜/시간 -->
     <p
-      class="absolute w-[285px] h-[104px] left-[calc(50%-285px/2+0.5px)] top-[480px] font-yidstreet font-bold text-[40px] leading-[52px] text-center text-[#1B1B1B]"
+      class="absolute w-[285px] h-[104px] left-[calc(50%-285px/2+0.5px)] top-[480px] font-yidstreet font-bold text-[40px] leading-[52px] text-center"
+      :class="receiptTime ? 'text-[#1B1B1B]' : 'text-[#878787]'"
       x-text="receiptTime ? formattedDateTime : (receiptDate ? receiptDate + ' 시간 미작성' : '시간 미작성')"
     ></p>
 
