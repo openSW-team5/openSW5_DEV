@@ -208,12 +208,15 @@
 
   <!-- 금액 및 카테고리 표시 -->
   <div
-    class="absolute w-[282px] h-[62px] left-[calc(50%-282px/2)] top-[401px] transition-all duration-300"
+    class="absolute w-[282px] left-[calc(50%-282px/2)] top-[401px] transition-all duration-300 flex items-center justify-center"
     :class="scrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'"
   >
     <p
-      class="font-yidstreet font-bold text-[48px] leading-[62px] text-center"
-      :class="total === 0 ? 'text-[#1B1B1B]' : 'text-[#AF4C4E]'"
+      class="font-yidstreet font-bold text-center whitespace-nowrap"
+      :class="[
+        total === 0 ? 'text-[#1B1B1B]' : 'text-[#AF4C4E]',
+        (total === 0 ? '0원' : '-' + formatNumber(total) + '원').length > 10 ? 'text-[32px] leading-[42px]' : (total === 0 ? '0원' : '-' + formatNumber(total) + '원').length > 8 ? 'text-[40px] leading-[52px]' : 'text-[48px] leading-[62px]'
+      ]"
       x-text="total === 0 ? '0원' : '-' + formatNumber(total) + '원'"
     ></p>
   </div>
