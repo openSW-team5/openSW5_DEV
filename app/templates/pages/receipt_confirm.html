@@ -517,9 +517,12 @@
 
     <!-- 날짜/시간 -->
     <p
-      class="absolute w-[285px] h-[104px] left-[calc(50%-285px/2+0.5px)] top-[480px] font-yidstreet font-bold text-[40px] leading-[52px] text-center"
-      :class="receiptTime ? 'text-[#1B1B1B]' : 'text-[#878787]'"
-      x-text="receiptTime ? formattedDateTime : (receiptDate ? receiptDate + ' 시간 미작성' : '시간 미작성')"
+      class="absolute w-[285px] left-[calc(50%-285px/2+0.5px)] top-[480px] font-yidstreet font-bold text-center"
+      :class="[
+        (receiptDate || receiptTime) ? 'text-[#1B1B1B]' : 'text-[#878787]',
+        receiptDate && receiptTime ? 'text-[32px] leading-[42px] whitespace-pre-line' : 'text-[40px] leading-[52px] whitespace-nowrap'
+      ]"
+      x-text="receiptDate && receiptTime ? receiptDate + '\n' + receiptTime : (receiptDate ? receiptDate : (receiptTime ? receiptTime : '시간 미작성'))"
     ></p>
 
     <!-- Footer 버튼 -->
