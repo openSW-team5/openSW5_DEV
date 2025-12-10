@@ -5,10 +5,12 @@
   x-data="{
     scrolled: false,
     showSuccess: false,
+    showCategoryDropdown: false,
     receiptDate: '',
     receiptTime: '',
     store: '',
     category: '식비',
+    categories: ['식비', '교통', '쇼핑', '여가', '의료', '주거', '통신', '기타'],
     products: [
       { id: 1, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 },
       { id: 2, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 },
@@ -222,17 +224,39 @@
     </div>
 
     <!-- 카테고리 선택 -->
-    <div
-      class="absolute w-[158px] h-[42px] left-[calc(50%-158px/2)] top-[463px] flex items-center justify-center gap-[5px] transition-all duration-300"
+    <div class="absolute left-[calc(50%-158px/2)] top-[463px] transition-all duration-300"
       :class="scrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'"
+      x-data="{ open: false }"
+      @click.away="open = false"
     >
-      <span
-        class="font-yidstreet font-bold text-[32px] leading-[42px] text-center text-black"
-        >식비</span
+      <button
+        @click="open = !open"
+        class="flex items-center justify-center gap-[5px] w-[158px] h-[42px] cursor-pointer"
       >
-      <svg width="25" height="25" viewBox="0 0 25 25" fill="none">
-        <path d="M3.90625 8.75L12.5 17.3438L21.0938 8.75" fill="black" />
-      </svg>
+        <span
+          class="font-yidstreet font-bold text-[32px] leading-[42px] text-center text-black"
+          x-text="category"
+        ></span>
+        <svg width="25" height="25" viewBox="0 0 25 25" fill="none">
+          <path d="M3.90625 8.75L12.5 17.3438L21.0938 8.75" fill="black" />
+        </svg>
+      </button>
+
+      <!-- 드롭다운 메뉴 -->
+      <div
+        x-show="open"
+        x-transition
+        class="absolute left-0 top-[50px] w-[158px] bg-white border-2 border-black rounded-[10px] shadow-lg z-50 max-h-[300px] overflow-y-auto"
+      >
+        <template x-for="cat in categories" :key="cat">
+          <button
+            @click="category = cat; open = false"
+            class="w-full px-4 py-3 text-left font-yidstreet font-bold text-[24px] text-black hover:bg-[#B4DE00] transition-colors"
+            :class="category === cat ? 'bg-[#B4DE00]' : ''"
+            x-text="cat"
+          ></button>
+        </template>
+      </div>
     </div>
 
     <!-- 검정색 박스 (영수증 정보) -->
