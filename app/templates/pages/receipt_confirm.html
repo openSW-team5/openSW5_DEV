@@ -303,7 +303,7 @@
       <!-- 상품 항목 리스트 -->
       <template x-for="(product, index) in products" :key="product.id">
         <div
-          class="relative h-[24px] mb-2"
+          class="relative h-[24px] mb-2 select-none"
           x-data="{
             startX: 0,
             currentX: 0,
@@ -314,6 +314,7 @@
             },
             handleTouchMove(e) {
               if (!this.isDragging) return;
+              e.preventDefault();
               this.currentX = e.touches[0].clientX;
               const diff = this.startX - this.currentX;
               if (diff > 50) {
@@ -326,12 +327,12 @@
               this.isDragging = false;
             }
           }"
-          @touchstart="handleTouchStart($event)"
+          @touchstart.passive="handleTouchStart($event)"
           @touchmove="handleTouchMove($event)"
-          @touchend="handleTouchEnd()"
+          @touchend.passive="handleTouchEnd()"
         >
           <div
-            class="flex items-center gap-[10px] transition-transform duration-300 absolute left-0 w-full touch-none"
+            class="flex items-center gap-[10px] transition-transform duration-300 absolute left-0 w-full"
             :style="product.swipedLeft ? 'transform: translateX(-43px)' : ''"
           >
             <input
@@ -340,6 +341,7 @@
               class="flex-grow h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
               placeholder="상품명"
               @focus="product.swipedLeft = false"
+              @touchstart.stop
             />
             <input
               type="number"
@@ -349,6 +351,7 @@
               class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
               placeholder="수량"
               @focus="product.swipedLeft = false"
+              @touchstart.stop
             />
             <input
               type="number"
@@ -358,6 +361,7 @@
               class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
               placeholder="단가"
               @focus="product.swipedLeft = false"
+              @touchstart.stop
             />
             <span
               class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
