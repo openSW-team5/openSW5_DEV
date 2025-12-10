@@ -7,9 +7,9 @@
     receiptDate: '',
     receiptTime: '',
     products: [
-      { id: 1, name: '', quantity: '', unitPrice: '', swipedLeft: false },
-      { id: 2, name: '', quantity: '', unitPrice: '', swipedLeft: false },
-      { id: 3, name: '', quantity: '', unitPrice: '', swipedLeft: false }
+      { id: 1, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 },
+      { id: 2, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 },
+      { id: 3, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 }
     ],
     nextId: 4,
     init() {
@@ -33,7 +33,7 @@
       return (this.receiptDate || '') + ' ' + (this.receiptTime || '');
     },
     addProduct() {
-      this.products.push({ id: this.nextId++, name: '', quantity: '', unitPrice: '', swipedLeft: false });
+      this.products.push({ id: this.nextId++, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 });
     },
     removeProduct(id) {
       this.products = this.products.filter(p => p.id !== id);
@@ -301,17 +301,38 @@
       </div>
 
       <!-- 상품 항목 리스트 -->
-      <template x-for="product in products" :key="product.id">
-        <div class="relative overflow-hidden h-[24px]">
+      <template x-for="(product, index) in products" :key="product.id">
+        <div
+          class="relative h-[24px] mb-2"
+          x-data="{
+            startX: 0,
+            currentX: 0,
+            isDragging: false,
+            handleTouchStart(e) {
+              this.startX = e.touches[0].clientX;
+              this.isDragging = true;
+            },
+            handleTouchMove(e) {
+              if (!this.isDragging) return;
+              this.currentX = e.touches[0].clientX;
+              const diff = this.startX - this.currentX;
+              if (diff > 50) {
+                product.swipedLeft = true;
+              } else if (diff < -50) {
+                product.swipedLeft = false;
+              }
+            },
+            handleTouchEnd() {
+              this.isDragging = false;
+            }
+          }"
+          @touchstart="handleTouchStart($event)"
+          @touchmove="handleTouchMove($event)"
+          @touchend="handleTouchEnd()"
+        >
           <div
-            class="flex items-center gap-[10px] transition-transform duration-300 absolute left-0 w-full"
+            class="flex items-center gap-[10px] transition-transform duration-300 absolute left-0 w-full touch-none"
             :style="product.swipedLeft ? 'transform: translateX(-43px)' : ''"
-            @touchstart="product.touchStartX = $event.touches[0].clientX"
-            @touchmove="
-              const diff = product.touchStartX - $event.touches[0].clientX;
-              if (diff > 50) product.swipedLeft = true;
-              else if (diff < -50) product.swipedLeft = false;
-            "
           >
             <input
               type="text"
@@ -339,7 +360,7 @@
               @focus="product.swipedLeft = false"
             />
             <span
-              class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right pointer-events-none"
+              class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
               x-text="formatNumber(subtotal(product))"
             ></span>
           </div>
