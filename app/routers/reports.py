@@ -1,10 +1,11 @@
 # app/routers/reports.py
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Request
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 
 from app.db.util import get_conn
+from app.services.auth import require_user_id  # ✅ 세션 기반 user_id
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
@@ -33,102 +34,148 @@ class DashboardOverview(BaseModel):
 
 
 # =========================
-# 1. 기존: /reports/monthly
+# 1. /reports/monthly (사용자별)
 # =========================
 
 @router.get("/monthly", response_model=dict)
 def monthly_report(
+    request: Request,
     month: Optional[str] = Query(
         None,
         description="YYYY-MM (예: 2025-09)"
-    )
+    ),
 ):
     """
-    월별 합계/카테고리 합계
+    로그인한 사용자 기준 월별 합계/카테고리 합계
     - month가 없으면: 최근 6개월치 한꺼번에 반환
     - month가 있으면: 해당 월만 상세 반환
     """
+    user_id = require_user_id(request)
+
     with get_conn() as conn:
+        cur = conn.cursor()
+
         if month:
-            total = conn.execute(
-                "SELECT month, month_total FROM v_month_totals WHERE month = ?",
-                (month,),
-            ).fetchone()
-            cats = conn.execute(
+            # 1) 해당 월 총합
+            total = cur.execute(
                 """
-                SELECT month, category, category_total
-                FROM v_month_category_totals
-                WHERE month = ?
+                SELECT
+                  substr(purchased_at, 1, 7) AS month,
+                  SUM(total) AS month_total
+                FROM receipts
+                WHERE user_id = ?
+                  AND status = 'CONFIRMED'
+                  AND is_deleted = 0
+                  AND substr(purchased_at, 1, 7) = ?
+                GROUP BY substr(purchased_at, 1, 7)
+                """,
+                (user_id, month),
+            ).fetchone()
+
+            # 2) 해당 월 카테고리별 합계
+            cats = cur.execute(
+                """
+                SELECT
+                  substr(r.purchased_at, 1, 7) AS month,
+                  COALESCE(ri.category, '미분류') AS category,
+                  SUM(ri.qty * ri.price) AS category_total
+                FROM receipts r
+                JOIN receipt_items ri ON ri.receipt_id = r.id
+                WHERE r.user_id = ?
+                  AND r.status = 'CONFIRMED'
+                  AND r.is_deleted = 0
+                  AND substr(r.purchased_at, 1, 7) = ?
+                GROUP BY substr(r.purchased_at, 1, 7),
+                         COALESCE(ri.category, '미분류')
                 ORDER BY category_total DESC
                 """,
-                (month,),
+                (user_id, month),
             ).fetchall()
+
             return {
                 "status": "ok",
                 "month": month,
                 "total": (total["month_total"] if total else 0),
                 "by_category": [
-                    {"category": r["category"], "total": r["category_total"]} for r in cats
+                    {"category": r["category"], "total": r["category_total"]}
+                    for r in cats
                 ],
             }
-        else:
-            totals = conn.execute(
+
+        # month가 없는 경우 → 최근 6개월
+        totals = cur.execute(
+            """
+            SELECT
+              substr(purchased_at, 1, 7) AS month,
+              SUM(total) AS month_total
+            FROM receipts
+            WHERE user_id = ?
+              AND status = 'CONFIRMED'
+              AND is_deleted = 0
+            GROUP BY substr(purchased_at, 1, 7)
+            ORDER BY month DESC
+            LIMIT 6
+            """,
+            (user_id,),
+        ).fetchall()
+
+        months = [r["month"] for r in totals]
+
+        if months:
+            cats = cur.execute(
                 """
-                SELECT month, month_total
-                FROM v_month_totals
-                ORDER BY month DESC
-                LIMIT 6
-                """
+                SELECT
+                  substr(r.purchased_at, 1, 7) AS month,
+                  COALESCE(ri.category, '미분류') AS category,
+                  SUM(ri.qty * ri.price) AS category_total
+                FROM receipts r
+                JOIN receipt_items ri ON ri.receipt_id = r.id
+                WHERE r.user_id = ?
+                  AND r.status = 'CONFIRMED'
+                  AND r.is_deleted = 0
+                  AND substr(r.purchased_at, 1, 7) IN ({})
+                GROUP BY substr(r.purchased_at, 1, 7),
+                         COALESCE(ri.category, '미분류')
+                ORDER BY month DESC, category_total DESC
+                """.format(",".join("?" * len(months))),
+                (user_id, *months),
             ).fetchall()
+        else:
+            cats = []
 
-            months = [r["month"] for r in totals]
-
-            if months:
-                cats = conn.execute(
-                    """
-                    SELECT month, category, category_total
-                    FROM v_month_category_totals
-                    WHERE month IN ({})
-                    ORDER BY month DESC, category_total DESC
-                    """.format(",".join("?" * len(months))),
-                    months,
-                ).fetchall()
-            else:
-                cats = []
-
-            by_month = {m: {"total": 0, "by_category": []} for m in months}
-            for r in totals:
-                by_month[r["month"]]["total"] = r["month_total"]
-            for r in cats:
-                by_month[r["month"]]["by_category"].append({
+        by_month = {m: {"total": 0, "by_category": []} for m in months}
+        for r in totals:
+            by_month[r["month"]]["total"] = r["month_total"]
+        for r in cats:
+            by_month[r["month"]]["by_category"].append(
+                {
                     "category": r["category"],
                     "total": r["category_total"],
-                })
+                }
+            )
 
-            return {"status": "ok", "months": by_month}
+        return {"status": "ok", "months": by_month}
 
 
 # =========================
-# 2. 신규: /reports/overview
+# 2. /reports/overview (대시보드용, 사용자별)
 # =========================
 
 @router.get("/overview", response_model=dict)
 def get_overview(
+    request: Request,
     month: Optional[str] = Query(
         default=None,
         description="조회할 월 (YYYY-MM). 비우면 이번 달."
     ),
-    user_id: int = Query(
-        default=1,
-        description="임시 사용자 ID (로그인 연동 전까지 1로 고정)"
-    ),
 ):
     """
-    대시보드용 개요 데이터:
+    로그인한 사용자 기준 대시보드용 개요 데이터:
     - 해당 월 총 지출
     - 카테고리별 합계 + 비율
     - 최근 5건 영수증
     """
+    user_id = require_user_id(request)
 
     # month 파라미터 없으면 현재 월로
     if not month:
