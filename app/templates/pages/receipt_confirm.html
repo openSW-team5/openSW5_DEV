@@ -435,24 +435,24 @@
 
     <!-- 금액 표시 -->
     <p
-      class="absolute w-[282px] h-[62px] left-[calc(50%-282px/2)] top-[401px] font-yidstreet font-bold text-[48px] leading-[62px] text-center"
+      class="absolute w-[282px] h-[62px] left-[calc(50%-282px/2)] top-[220px] font-yidstreet font-bold text-[48px] leading-[62px] text-center"
       :class="total === 0 ? 'text-[#1B1B1B]' : 'text-[#AF4C4E]'"
       x-text="total === 0 ? '0원' : '-' + formatNumber(total) + '원'"
     ></p>
 
     <!-- 카테고리 -->
-    <p class="absolute w-[64px] h-[42px] left-[calc(50%-64px/2)] top-[463px] font-yidstreet font-bold text-[32px] leading-[42px] text-[#000000]" x-text="category">
+    <p class="absolute w-[64px] h-[42px] left-[calc(50%-64px/2)] top-[300px] font-yidstreet font-bold text-[32px] leading-[42px] text-[#000000]" x-text="category">
     </p>
 
     <!-- 사용처 -->
     <p
-      class="absolute max-w-[350px] left-[calc(50%-175px)] top-[525px] font-yidstreet font-bold text-[#1B1B1B] text-center break-words"
+      class="absolute w-[350px] left-[calc(50%-350px/2)] top-[360px] font-yidstreet font-bold text-[#1B1B1B] text-center break-words"
       :class="(store || '편의점').length > 10 ? 'text-[32px] leading-[42px]' : (store || '편의점').length > 6 ? 'text-[42px] leading-[56px]' : 'text-[52px] leading-[68px]'"
       x-text="store || '편의점'"
     ></p>
 
     <!-- 날짜/시간 -->
-    <p class="absolute w-[285px] h-[104px] left-[calc(50%-285px/2+0.5px)] top-[655px] font-yidstreet font-bold text-[40px] leading-[52px] text-center text-[#1B1B1B]" x-text="formattedDateTime || '2025-10-25 18:53'">
+    <p class="absolute w-[285px] h-[104px] left-[calc(50%-285px/2+0.5px)] top-[480px] font-yidstreet font-bold text-[40px] leading-[52px] text-center text-[#1B1B1B]" x-text="receiptTime ? formattedDateTime : (receiptDate ? receiptDate + ' 시간 미작성' : '시간 미작성')">
     </p>
 
     <!-- Footer 버튼 -->
