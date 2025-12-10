@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from app.routers import health, receipts, users, reports
+from app.routers import health, receipts, users, reports, exports
 # ✅ 세션 유틸 임포트
 from app.services.session import verify_session_token, COOKIE_NAME
 
@@ -112,3 +112,4 @@ app.include_router(health.router)
 app.include_router(receipts.router)
 app.include_router(users.router)
 app.include_router(reports.router)
+app.include_router(exports.router) 
