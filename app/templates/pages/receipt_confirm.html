@@ -6,9 +6,12 @@
     scrolled: false,
     receiptDate: '',
     receiptTime: '',
-    product1: { quantity: '', unitPrice: '' },
-    product2: { quantity: '', unitPrice: '' },
-    product3: { quantity: '', unitPrice: '' },
+    products: [
+      { id: 1, name: '', quantity: '', unitPrice: '', swipedLeft: false },
+      { id: 2, name: '', quantity: '', unitPrice: '', swipedLeft: false },
+      { id: 3, name: '', quantity: '', unitPrice: '', swipedLeft: false }
+    ],
+    nextId: 4,
     init() {
       this.$refs.container.addEventListener('scroll', () => {
         this.scrolled = this.$refs.container.scrollTop > 100;
@@ -23,11 +26,17 @@
       return qty * price;
     },
     get total() {
-      return this.subtotal(this.product1) + this.subtotal(this.product2) + this.subtotal(this.product3);
+      return this.products.reduce((sum, product) => sum + this.subtotal(product), 0);
     },
     get formattedDateTime() {
       if (!this.receiptDate && !this.receiptTime) return '';
       return (this.receiptDate || '') + ' ' + (this.receiptTime || '');
+    },
+    addProduct() {
+      this.products.push({ id: this.nextId++, name: '', quantity: '', unitPrice: '', swipedLeft: false });
+    },
+    removeProduct(id) {
+      this.products = this.products.filter(p => p.id !== id);
     }
   }"
   x-ref="container"
@@ -291,96 +300,66 @@
         ></span>
       </div>
 
-      <!-- Frame 41: 상품 항목 1 -->
-      <div class="flex items-center gap-[10px]">
-        <input
-          type="text"
-          class="flex-grow h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="상품명"
-        />
-        <input
-          type="number"
-          x-model="product1.quantity"
-          min="0"
-          inputmode="numeric"
-          class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="수량"
-        />
-        <input
-          type="number"
-          x-model="product1.unitPrice"
-          min="0"
-          inputmode="numeric"
-          class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="단가"
-        />
-        <span
-          class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
-          x-text="formatNumber(subtotal(product1))"
-        ></span>
-      </div>
-
-      <!-- Frame 42: 상품 항목 2 -->
-      <div class="flex items-center gap-[10px]">
-        <input
-          type="text"
-          class="flex-grow h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="상품명"
-        />
-        <input
-          type="number"
-          x-model="product2.quantity"
-          min="0"
-          inputmode="numeric"
-          class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="수량"
-        />
-        <input
-          type="number"
-          x-model="product2.unitPrice"
-          min="0"
-          inputmode="numeric"
-          class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="단가"
-        />
-        <span
-          class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
-          x-text="formatNumber(subtotal(product2))"
-        ></span>
-      </div>
-
-      <!-- Frame 43: 상품 항목 3 -->
-      <div class="flex items-center gap-[10px]">
-        <input
-          type="text"
-          class="flex-grow h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="상품명"
-        />
-        <input
-          type="number"
-          x-model="product3.quantity"
-          min="0"
-          inputmode="numeric"
-          class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="수량"
-        />
-        <input
-          type="number"
-          x-model="product3.unitPrice"
-          min="0"
-          inputmode="numeric"
-          class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="단가"
-        />
-        <span
-          class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
-          x-text="formatNumber(subtotal(product3))"
-        ></span>
-      </div>
+      <!-- 상품 항목 리스트 -->
+      <template x-for="product in products" :key="product.id">
+        <div class="relative overflow-hidden">
+          <div
+            class="flex items-center gap-[10px] transition-transform duration-300"
+            :style="product.swipedLeft ? 'transform: translateX(-33px)' : ''"
+            @touchstart="product.touchStartX = $event.touches[0].clientX"
+            @touchmove="
+              const diff = product.touchStartX - $event.touches[0].clientX;
+              if (diff > 50) product.swipedLeft = true;
+              else if (diff < -50) product.swipedLeft = false;
+            "
+            @click="if (product.swipedLeft) product.swipedLeft = false"
+          >
+            <input
+              type="text"
+              x-model="product.name"
+              class="flex-grow h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+              placeholder="상품명"
+            />
+            <input
+              type="number"
+              x-model="product.quantity"
+              min="0"
+              inputmode="numeric"
+              class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+              placeholder="수량"
+            />
+            <input
+              type="number"
+              x-model="product.unitPrice"
+              min="0"
+              inputmode="numeric"
+              class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+              placeholder="단가"
+            />
+            <span
+              class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
+              x-text="formatNumber(subtotal(product))"
+            ></span>
+          </div>
+          <!-- 삭제 버튼 -->
+          <div
+            class="absolute right-0 top-0 h-full flex items-center"
+            :class="product.swipedLeft ? 'opacity-100' : 'opacity-0'"
+          >
+            <button
+              @click="removeProduct(product.id)"
+              class="w-[33px] h-[19px] border-[3px] border-[#AF4C4E] rounded-[20px] flex items-center justify-center"
+            >
+              <span class="font-montserrat font-bold text-[16px] text-[#AF4C4E]">-</span>
+            </button>
+          </div>
+        </div>
+      </template>
     </div>
 
     <!-- Add 버튼 -->
     <button
+      @click="addProduct()"
       class="absolute w-[83px] h-[26px] left-[calc(50%-83px/2+0.5px)] border-[3px] border-[#4CAF50] rounded-[20px] flex items-center justify-center transition-all duration-300"
       :class="scrolled ? 'top-[690px]' : 'top-[276px]'"
     >
@@ -397,9 +376,8 @@
   class="fixed bottom-0 left-0 right-0 max-w-[428px] mx-auto pb-4 px-4 z-50 bg-[#1B1B1B]"
 >
   <button
-    class="w-full h-[54px] bg-[#B4DE00] border border-[#111111] rounded-[70px] flex items-center justify-center gap-2"
+    class="w-full h-[54px] bg-[#B4DE00] border border-[#111111] rounded-[70px] flex items-center justify-center"
   >
-    </svg>
     <span class="font-satoshi font-medium text-[16px] text-[#111111]"
       >Done</span
     >
