@@ -341,13 +341,13 @@
           @touchend.passive="handleEnd()"
         >
           <div
-            class="flex items-center gap-[10px] transition-transform duration-300 absolute left-0 w-full"
+            class="flex items-center gap-[8px] transition-transform duration-300 absolute left-0 w-full"
             :style="product.swipedLeft ? 'transform: translateX(-43px)' : ''"
           >
             <input
               type="text"
               x-model="product.name"
-              class="flex-grow h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
+              class="flex-1 min-w-[40px] h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
               placeholder="상품명"
               @focus="product.swipedLeft = false"
             />
@@ -356,7 +356,7 @@
               x-model="product.quantity"
               min="0"
               inputmode="numeric"
-              class="w-[50px] h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
+              class="w-[45px] flex-shrink-0 h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
               placeholder="수량"
               @focus="product.swipedLeft = false"
             />
@@ -365,12 +365,12 @@
               x-model="product.unitPrice"
               min="0"
               inputmode="numeric"
-              class="w-[65px] h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
+              class="flex-1 min-w-[45px] h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
               placeholder="단가"
               @focus="product.swipedLeft = false"
             />
             <span
-              class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
+              class="min-w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right whitespace-nowrap"
               x-text="formatNumber(subtotal(product))"
             ></span>
           </div>
