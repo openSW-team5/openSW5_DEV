@@ -302,23 +302,23 @@
 
       <!-- 상품 항목 리스트 -->
       <template x-for="product in products" :key="product.id">
-        <div class="relative overflow-hidden">
+        <div class="relative overflow-hidden h-[24px]">
           <div
-            class="flex items-center gap-[10px] transition-transform duration-300"
-            :style="product.swipedLeft ? 'transform: translateX(-33px)' : ''"
+            class="flex items-center gap-[10px] transition-transform duration-300 absolute left-0 w-full"
+            :style="product.swipedLeft ? 'transform: translateX(-43px)' : ''"
             @touchstart="product.touchStartX = $event.touches[0].clientX"
             @touchmove="
               const diff = product.touchStartX - $event.touches[0].clientX;
               if (diff > 50) product.swipedLeft = true;
               else if (diff < -50) product.swipedLeft = false;
             "
-            @click="if (product.swipedLeft) product.swipedLeft = false"
           >
             <input
               type="text"
               x-model="product.name"
               class="flex-grow h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
               placeholder="상품명"
+              @focus="product.swipedLeft = false"
             />
             <input
               type="number"
@@ -327,6 +327,7 @@
               inputmode="numeric"
               class="w-[50px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
               placeholder="수량"
+              @focus="product.swipedLeft = false"
             />
             <input
               type="number"
@@ -335,24 +336,21 @@
               inputmode="numeric"
               class="w-[65px] h-[24px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
               placeholder="단가"
+              @focus="product.swipedLeft = false"
             />
             <span
-              class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right"
+              class="w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right pointer-events-none"
               x-text="formatNumber(subtotal(product))"
             ></span>
           </div>
           <!-- 삭제 버튼 -->
-          <div
-            class="absolute right-0 top-0 h-full flex items-center"
-            :class="product.swipedLeft ? 'opacity-100' : 'opacity-0'"
+          <button
+            @click="removeProduct(product.id)"
+            class="absolute right-0 top-0 h-[24px] w-[33px] border-[3px] border-[#AF4C4E] rounded-[20px] flex items-center justify-center transition-opacity duration-300"
+            :class="product.swipedLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'"
           >
-            <button
-              @click="removeProduct(product.id)"
-              class="w-[33px] h-[19px] border-[3px] border-[#AF4C4E] rounded-[20px] flex items-center justify-center"
-            >
-              <span class="font-montserrat font-bold text-[16px] text-[#AF4C4E]">-</span>
-            </button>
-          </div>
+            <span class="font-montserrat font-bold text-[16px] leading-[20px] text-[#AF4C4E]">-</span>
+          </button>
         </div>
       </template>
     </div>
