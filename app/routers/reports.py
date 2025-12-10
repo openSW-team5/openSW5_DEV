@@ -1,8 +1,19 @@
 # app/routers/reports.py
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from typing import Optional
 
 router = APIRouter(prefix="/reports", tags=["reports"])
+templates = Jinja2Templates(directory="app/templates")
+
+@router.get("/", response_class=HTMLResponse)
+def card_settings_page(request: Request):
+    """카드 설정 페이지"""
+    return templates.TemplateResponse(
+        "pages/card_settings.html",
+        {"request": request, "title": "카드 설정"}
+    )
 
 @router.get("/monthly", response_model=dict)
 def monthly_report(month: Optional[str] = Query(None, description="YYYY-MM (예: 2025-09)")):
