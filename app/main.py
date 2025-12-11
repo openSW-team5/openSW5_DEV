@@ -99,6 +99,13 @@ def category_asset_page(request: Request):
         {"request": request, "title": "카테고리 편집"}
     )
 
+@app.get("/budget-settings", response_class=HTMLResponse)
+def budget_settings_page(request: Request):
+    return templates.TemplateResponse(
+        "pages/budget_settings.html",
+        {"request": request, "title": "예산 설정"}
+    )
+
 @app.get("/receipts/confirm", response_class=HTMLResponse)
 def receipt_confirm_page(request: Request):
     return templates.TemplateResponse(

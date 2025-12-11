@@ -22,60 +22,8 @@
 
   <!-- Chart Card -->
   <div class="bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-6 mb-8">
-    <!-- Chart with grid lines -->
-    <div class="relative h-[183px]">
-      <!-- Y-axis labels -->
-      <div class="absolute left-0 top-0 bottom-0 w-[30px] flex flex-col justify-between text-right pr-3">
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦40K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦30K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-text">￦20K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦10K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦5K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦1K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦0.5K</span>
-      </div>
-
-      <!-- Chart area -->
-      <div class="absolute left-[50px] right-0 top-0 bottom-0">
-        <!-- Grid lines -->
-        <div class="absolute inset-0 flex flex-col justify-between">
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-        </div>
-
-        <!-- Chart line (simplified) -->
-        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 272 152" preserveAspectRatio="none">
-          <!-- Gradient fill -->
-          <defs>
-            <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" style="stop-color:rgba(180, 222, 0, 0.47);stop-opacity:1" />
-              <stop offset="100%" style="stop-color:rgba(196, 196, 196, 0);stop-opacity:0" />
-            </linearGradient>
-          </defs>
-          <path d="M0 100 L68 80 L136 60 L204 40 L272 30 L272 152 L0 152 Z" fill="url(#chartGradient)"/>
-          <path d="M0 100 L68 80 L136 60 L204 40 L272 30" stroke="#B4DE00" stroke-width="2" fill="none"/>
-          <circle cx="272" cy="30" r="4" fill="white" stroke="#B4DE00" stroke-width="2"/>
-        </svg>
-
-        <!-- X-axis labels -->
-        <div class="absolute bottom-[-20px] left-0 right-0 flex justify-between px-2">
-          <span class="font-montserrat font-semibold text-[10px] text-gray-light">Jan</span>
-          <span class="font-montserrat font-semibold text-[10px] text-gray-light">Feb</span>
-          <span class="font-montserrat font-semibold text-[10px] text-gray-light">Mar</span>
-          <span class="font-montserrat font-semibold text-[10px] text-text">Apr</span>
-          <span class="font-montserrat font-semibold text-[10px] text-gray-light">May</span>
-        </div>
-
-        <!-- Tooltip -->
-        <div class="absolute top-[20px] right-[10px] bg-white px-3 py-1 rounded shadow-sm">
-          <span class="font-montserrat font-semibold text-[15px] text-text">￦ 20,000</span>
-        </div>
-      </div>
+    <div class="relative" style="height: 220px;">
+      <canvas id="transactionsChart"></canvas>
     </div>
   </div>
 
@@ -166,7 +114,7 @@
   </div>
 
   <!-- Calendar View -->
-  <div id="calendar-container" class="hidden">
+  <div id="calendar-container" class="hidden px-[20px]" style="max-width: 100%; overflow-x: hidden;">
     <!-- Calendar grid will be dynamically loaded here -->
   </div>
 
@@ -177,8 +125,218 @@
   </div>
 </div>
 
+<!-- 영수증 상세 모달 -->
+<div id="receiptModal" class="fixed inset-0 z-50 hidden" style="background: rgba(0, 0, 0, 0.7); display: none; align-items: flex-start; justify-content: center; padding-top: 80px;" onclick="closeReceiptModal(event)">
+  <div class="relative" style="width: 400px; height: 600px;" onclick="event.stopPropagation()">
+    <!-- 영수증 SVG 배경 -->
+    <svg class="absolute inset-0 pointer-events-none" width="100%" height="100%" viewBox="0 0 354 535" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="filter0_d_209_1553" x="0" y="0" width="354" height="535" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+          <feOffset dy="4"/>
+          <feGaussianBlur stdDeviation="5"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.35 0"/>
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_209_1553"/>
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_209_1553" result="shape"/>
+        </filter>
+      </defs>
+      <g filter="url(#filter0_d_209_1553)">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10 6H344V515.001L334.722 521L325.444 515.001L316.167 521L306.889 515.001L297.611 521L288.333 515.001L279.056 521L269.778 515.001L260.5 521L251.222 515.001L241.944 521L232.667 515.001L223.389 521L214.111 515.001L204.833 521L195.556 515.001L186.278 521L177 515.001L167.722 521L158.444 515.001L149.167 521L139.889 515.001L130.611 521L121.333 515.001L112.056 521L102.778 515.001L93.5 521L84.2222 515.001L74.9444 521L65.6667 515.001L56.3889 521L47.1111 515.001L37.8333 521L28.5556 515.001L19.2778 521L10 515.001V6Z" fill="#F0F0F0"/>
+      </g>
+    </svg>
+
+    <!-- 모달 내용 -->
+    <div class="relative h-full flex flex-col" style="padding: 70px 30px 50px 30px;">
+      <!-- 스크롤 가능한 상단 영역 -->
+      <div class="flex-1 overflow-y-auto" style="margin-bottom: 16px;">
+        <!-- 상호명 -->
+        <h2 id="modalMerchant" class="font-yidstreet font-bold text-[40px] leading-[52px] text-center text-black" style="margin-bottom: 8px;"></h2>
+
+        <!-- 주소 -->
+        <p id="modalAddress" class="font-noto text-[16px] leading-[19px] text-center text-[#878787]" style="margin-bottom: 24px;"></p>
+
+        <!-- 날짜 -->
+        <p id="modalDate" class="font-montserrat text-[15px] leading-[18px] text-center text-black" style="margin-bottom: 16px;"></p>
+
+        <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
+
+        <!-- 결제 타입 -->
+        <div class="flex justify-between items-center" style="margin-bottom: 32px;">
+          <span class="font-noto text-[16px] leading-[19px] text-[#878787]">Token Type</span>
+          <div class="flex gap-2">
+            <button onclick="selectType('expense')" id="typeExpense" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
+              지출
+            </button>
+            <button onclick="selectType('income')" id="typeIncome" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
+              수입
+            </button>
+            <button onclick="selectType('transfer')" id="typeTransfer" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
+              이체
+            </button>
+          </div>
+        </div>
+
+        <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
+
+        <!-- 카테고리 (지출일 때만 표시) -->
+        <div id="categorySection" style="margin-bottom: 24px; position: relative; height: 19px;">
+          <span class="font-noto text-[16px] leading-[19px] text-[#878787]" style="position: absolute; left: 0;">카테고리</span>
+          <select id="categorySelect" class="border-0 bg-transparent font-noto text-[15px] text-black focus:outline-none" style="padding: 0; position: absolute; right: 0;" disabled>
+            <option value="">선택하세요</option>
+            <option value="식비">식비</option>
+            <option value="교통비">교통비</option>
+            <option value="카페/간식">카페/간식</option>
+            <option value="쇼핑">쇼핑</option>
+            <option value="문화/여가">문화/여가</option>
+            <option value="의료/건강">의료/건강</option>
+            <option value="생활용품">생활용품</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+
+        <!-- 상품 헤더 (지출일 때만 표시) -->
+        <div id="itemsHeader" class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787]" style="margin-bottom: 8px;">
+          <span class="flex-1">상품명</span>
+          <span class="w-[40px] text-center">수량</span>
+          <span class="w-[60px] text-right">단가</span>
+          <span class="w-[60px] text-right">소계</span>
+        </div>
+
+        <!-- 상품 목록 (지출일 때만 표시) -->
+        <div id="modalItems" style="margin-bottom: 16px; max-height: 200px; overflow-y: auto;"></div>
+
+        <div id="itemsDivider" class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
+      </div>
+
+      <!-- 하단 고정 영역 -->
+      <div class="flex-shrink-0">
+        <!-- 합계/금액 -->
+        <div class="flex justify-between font-satoshi font-bold text-[16px] text-black" style="margin-bottom: 12px;">
+          <span id="totalLabel">합계</span>
+          <span id="modalTotal"></span>
+        </div>
+
+        <!-- 버튼들 -->
+        <div id="modalActionButtons" class="flex justify-between items-center">
+          <button
+            onclick="closeReceiptModal()"
+            class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#1B1B1B] hover:bg-gray-100 transition-colors"
+            style="width: 125px; height: 38px;"
+          >
+            취소
+          </button>
+          <button
+            onclick="editReceipt()"
+            class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#1B1B1B] hover:bg-gray-100 transition-colors"
+            style="width: 125px; height: 38px;"
+          >
+            편집
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+// 전역 변수
+let receiptsData = [];
+let allReceiptsData = []; // 전체 데이터 보관용
+let transactionsChart = null;
+let selectedYear = new Date().getFullYear(); // 현재 년도
+
 document.addEventListener('DOMContentLoaded', async function() {
+  // Initialize Transactions Chart
+  const ctx = document.getElementById('transactionsChart');
+  transactionsChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: '지출',
+        data: [],
+        borderColor: '#B4DE00',
+        backgroundColor: (context) => {
+          const ctx = context.chart.ctx;
+          const gradient = ctx.createLinearGradient(0, 0, 0, 220);
+          gradient.addColorStop(0, 'rgba(180, 222, 0, 0.47)');
+          gradient.addColorStop(1, 'rgba(196, 196, 196, 0)');
+          return gradient;
+        },
+        fill: true,
+        tension: 0.4,
+        borderWidth: 3,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: 'white',
+        pointHoverBorderColor: '#B4DE00',
+        pointHoverBorderWidth: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          enabled: true,
+          backgroundColor: 'white',
+          titleColor: '#1B1B1B',
+          bodyColor: '#1B1B1B',
+          borderColor: '#E5E5E5',
+          borderWidth: 1,
+          padding: 10,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              return '￦ ' + context.parsed.y.toLocaleString();
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: '#F4F4F4',
+            borderDash: [5, 5]
+          },
+          ticks: {
+            font: {
+              family: 'Montserrat',
+              size: 10,
+              weight: 600
+            },
+            color: '#ABABAB',
+            callback: function(value) {
+              return '￦' + (value / 1000) + 'K';
+            }
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              family: 'Montserrat',
+              size: 10,
+              weight: 600
+            },
+            color: '#ABABAB'
+          }
+        }
+      }
+    }
+  });
+
   // Year selector arrow click handler
   const yearArrow = document.getElementById('yearArrow');
   const yearSelect = document.getElementById('yearSelect');
@@ -188,22 +346,19 @@ document.addEventListener('DOMContentLoaded', async function() {
       yearSelect.click();
     });
 
-    // Year change handler - update calendar when year changes
+    // Year change handler - update all views when year changes
     yearSelect.addEventListener('change', function() {
-      const selectedYear = parseInt(yearSelect.value);
+      selectedYear = parseInt(yearSelect.value);
       currentDate.setFullYear(selectedYear);
 
-      // Update calendar if in calendar view
-      if (currentView === 'calendar') {
-        updateCalendarView();
-      }
+      // Filter receipts by new year and update all views
+      filterReceiptsByYear();
     });
   }
 
   // View mode state
   let currentView = 'list'; // 'list' or 'calendar'
-  let currentDate = new Date();
-  let receiptsData = [];
+  let currentDate = new Date(); // Date 객체 유지 (기존 코드 호환)
 
   const transactionsContainer = document.getElementById('transactions-container');
   const calendarContainer = document.getElementById('calendar-container');
@@ -280,41 +435,45 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 
   function updateCalendarView() {
-    // Update month text
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                       'July', 'August', 'September', 'October', 'November', 'December'];
-    currentMonthText.textContent = monthNames[currentDate.getMonth()];
+    // Update month text (Day.js로 한글 월 표시)
+    dayjs.locale('ko');
+    currentMonthText.textContent = dayjs(currentDate).format('M월');
 
     // Render calendar grid
     renderCalendarGrid();
   }
 
   function renderCalendarGrid() {
-    // Calculate first day of the month and total days
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    // Day.js로 계산
+    const currentMonth = dayjs(currentDate);
+    const year = currentMonth.year();
+    const month = currentMonth.month();
+    const daysInMonth = currentMonth.daysInMonth();
+    const startingDayOfWeek = currentMonth.startOf('month').day(); // 0 = Sunday
 
     // Group receipts by date for this month
     const receiptsThisMonth = receiptsData.filter(receipt => {
-      const receiptDate = new Date(receipt.purchased_at);
-      return receiptDate.getFullYear() === year && receiptDate.getMonth() === month;
+      const receiptDate = dayjs(receipt.purchased_at);
+      return receiptDate.year() === year && receiptDate.month() === month;
     });
 
     // Create a map of date -> total amount
     const dateTotals = {};
     receiptsThisMonth.forEach(receipt => {
-      const day = new Date(receipt.purchased_at).getDate();
+      const day = dayjs(receipt.purchased_at).date();
       if (!dateTotals[day]) {
-        dateTotals[day] = { income: 0, expense: 0 };
+        dateTotals[day] = { income: 0, expense: 0, transfer: 0 };
       }
-      if (receipt.price >= 0) {
-        dateTotals[day].income += receipt.price;
+
+      // 거래 타입 구분
+      const type = receipt.type || 'expense';
+
+      if (type === 'income') {
+        dateTotals[day].income += receipt.total;
+      } else if (type === 'transfer') {
+        dateTotals[day].transfer += receipt.total;
       } else {
-        dateTotals[day].expense += Math.abs(receipt.price);
+        dateTotals[day].expense += receipt.total;
       }
     });
 
@@ -322,15 +481,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     let calendarHTML = '<div class="w-full">';
 
     // Day headers
-    calendarHTML += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 8px;">';
+    calendarHTML += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px;">';
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     dayNames.forEach(day => {
-      calendarHTML += `<div style="text-align: center; font-family: Montserrat; font-weight: 500; font-size: 12px;">${day}</div>`;
+      calendarHTML += `<div style="text-align: center; font-family: Montserrat; font-weight: 500; font-size: 10px;">${day}</div>`;
     });
     calendarHTML += '</div>';
 
     // Calendar grid
-    calendarHTML += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">';
+    calendarHTML += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;">';
 
     // Empty cells before first day
     for (let i = 0; i < startingDayOfWeek; i++) {
@@ -344,17 +503,20 @@ document.addEventListener('DOMContentLoaded', async function() {
 
       if (hasTransactions) {
         if (hasTransactions.income > 0) {
-          amountHTML += `<div style="font-size: 10px; color: #4CAF50; font-weight: 500;">+${hasTransactions.income.toLocaleString()}</div>`;
+          amountHTML += `<div style="font-size: 8px; color: #4CAF50; font-weight: 500;">${hasTransactions.income.toLocaleString()}</div>`;
         }
         if (hasTransactions.expense > 0) {
-          amountHTML += `<div style="font-size: 10px; color: #F44336; font-weight: 500;">-${hasTransactions.expense.toLocaleString()}</div>`;
+          amountHTML += `<div style="font-size: 8px; color: #AF4C4E; font-weight: 500;">${hasTransactions.expense.toLocaleString()}</div>`;
+        }
+        if (hasTransactions.transfer > 0) {
+          amountHTML += `<div style="font-size: 8px; color: #878787; font-weight: 500;">${hasTransactions.transfer.toLocaleString()}</div>`;
         }
       }
 
       const bgColor = hasTransactions ? '#F5F5F5' : 'transparent';
       calendarHTML += `
-        <div style="aspect-ratio: 1; border: 1px solid #E0E0E0; border-radius: 8px; padding: 4px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background-color: ${bgColor};">
-          <div style="font-family: Montserrat; font-size: 14px;">${day}</div>
+        <div style="aspect-ratio: 1; border: 1px solid #E0E0E0; border-radius: 6px; padding: 2px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background-color: ${bgColor};">
+          <div style="font-family: Montserrat; font-size: 11px; font-weight: 500;">${day}</div>
           ${amountHTML}
         </div>
       `;
@@ -440,31 +602,117 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   function renderTransactionCard(receipt) {
     const amount = receipt.total.toLocaleString();
-    const isExpense = receipt.total > 0;
+    // 타입별 색상: 지출(expense), 수입(income), 이체(transfer)
+    const type = receipt.type || 'expense'; // 기본값 지출
+    let amountColor, amountSign;
+
+    if (type === 'expense') {
+      amountColor = '#AF4C4E';
+      amountSign = '-';
+    } else if (type === 'income') {
+      amountColor = '#4CAF50';
+      amountSign = '+';
+    } else { // transfer
+      amountColor = '#878787';
+      amountSign = '';
+    }
 
     return `
-      <div class="bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-[20px] cursor-pointer hover:shadow-lg transition-shadow"
-           onclick="window.location.href='/receipt/${receipt.id}'">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-[12px]">
-            <div class="w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center flex-shrink-0">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                <path d="M3 9L5 3H19L21 9M3 9V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V9M3 9H21M9 13C9 14.6569 10.3431 16 12 16C13.6569 16 15 14.6569 15 13" stroke="#828282" stroke-width="2"/>
-              </svg>
+      <div class="relative" style="overflow: hidden;">
+        <div class="transaction-item bg-white rounded-[20px] p-[20px] cursor-pointer transition-transform duration-200 border-2 border-[#E0E0E0]"
+             style="position: relative; z-index: 2;"
+             data-receipt-id="${receipt.id}"
+             onclick="openReceiptModal(${receipt.id})">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-[12px]">
+              <div class="w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center flex-shrink-0">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                  <path d="M3 9L5 3H19L21 9M3 9V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V9M3 9H21M9 13C9 14.6569 10.3431 16 12 16C13.6569 16 15 14.6569 15 13" stroke="#828282" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="flex flex-col justify-center">
+                <h4 class="font-montserrat font-semibold text-[20px] leading-tight text-text mb-[2px]">${receipt.merchant}</h4>
+                <p class="font-montserrat text-[15px] leading-tight text-[#727272]">${type === 'expense' ? (receipt.category || '') : ''}</p>
+              </div>
             </div>
-            <div class="flex flex-col justify-center">
-              <h4 class="font-montserrat font-semibold text-[20px] leading-tight text-text mb-[2px]">${receipt.merchant}</h4>
-              <p class="font-montserrat text-[15px] leading-tight text-[#727272]">${receipt.status === 'CONFIRMED' ? 'Food' : 'Pending'}</p>
+            <div class="flex items-center">
+              <p class="font-montserrat font-semibold text-[20px]" style="color: ${amountColor}">
+                ${amountSign}${amount}원
+              </p>
             </div>
           </div>
-          <div class="flex items-center">
-            <p class="font-montserrat font-semibold text-[20px] ${isExpense ? 'text-[#FF6B6B]' : 'text-[#4CAF50]'}">
-              ${isExpense ? '-' : '+'}${amount}원
-            </p>
-          </div>
+        </div>
+
+        <!-- 삭제 버튼 (스와이프 시 나타남) -->
+        <div class="delete-button" style="position: absolute; top: 0; right: -98px; width: 98px; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 1; transition: right 0.2s;"
+             onclick="deleteReceipt(${receipt.id}); event.stopPropagation();">
+          <svg width="98" height="86" viewBox="0 0 98 86" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="94" height="82" rx="18" stroke="#AF4C4E" stroke-width="4"/>
+            <path d="M33.3739 33.04H35.9899V35.056C35.9899 36.48 35.7659 37.824 35.3179 39.088C34.8699 40.336 34.1899 41.432 33.2779 42.376C32.3659 43.32 31.1899 44.024 29.7499 44.488L28.1659 41.944C29.3979 41.544 30.3899 40.992 31.1419 40.288C31.9099 39.568 32.4699 38.76 32.8219 37.864C33.1899 36.952 33.3739 36.016 33.3739 35.056V33.04ZM34.0459 33.04H36.6139V35.368C36.6139 36.024 36.7099 36.672 36.9019 37.312C37.0939 37.952 37.3899 38.56 37.7899 39.136C38.1899 39.696 38.7019 40.2 39.3259 40.648C39.9659 41.08 40.7179 41.432 41.5819 41.704L40.0219 44.224C38.6619 43.776 37.5339 43.112 36.6379 42.232C35.7579 41.352 35.1019 40.32 34.6699 39.136C34.2539 37.952 34.0459 36.696 34.0459 35.368V33.04ZM42.6859 31.912H45.8779V45.328H42.6859V31.912ZM45.0139 37.312H48.8299V39.928H45.0139V37.312ZM31.0459 46.264H45.8779V54.136H42.6859V48.808H31.0459V46.264ZM66.516 31.888H69.564V54.112H66.516V31.888ZM59.196 39.496H62.892V42.088H59.196V39.496ZM62.028 32.248H65.004V53.104H62.028V32.248ZM54.42 35.512H56.82V37.792C56.82 39.04 56.724 40.272 56.532 41.488C56.356 42.704 56.076 43.856 55.692 44.944C55.308 46.016 54.804 46.984 54.18 47.848C53.556 48.712 52.804 49.424 51.924 49.984L50.028 47.632C51.116 46.944 51.98 46.08 52.62 45.04C53.26 43.984 53.716 42.832 53.988 41.584C54.276 40.32 54.42 39.056 54.42 37.792V35.512ZM55.14 35.512H57.516V37.792C57.516 39.024 57.652 40.24 57.924 41.44C58.196 42.64 58.644 43.736 59.268 44.728C59.892 45.704 60.74 46.504 61.812 47.128L59.964 49.432C58.78 48.728 57.836 47.776 57.132 46.576C56.428 45.376 55.916 44.024 55.596 42.52C55.292 41 55.14 39.424 55.14 37.792V35.512ZM50.844 34.12H60.756V36.688H50.844V34.12Z" fill="#AF4C4E"/>
+          </svg>
         </div>
       </div>
     `;
+  }
+
+  // Update chart with receipt data
+  function updateChart() {
+    if (!transactionsChart) return;
+
+    // Get all 12 months of selected year
+    const months = [];
+    const monthlyTotals = {};
+
+    for (let month = 0; month < 12; month++) {
+      const monthKey = `${selectedYear}-${String(month + 1).padStart(2, '0')}`;
+      const date = new Date(selectedYear, month, 1);
+      const monthLabel = date.toLocaleDateString('en-US', { month: 'short' });
+      months.push({ key: monthKey, label: monthLabel });
+      monthlyTotals[monthKey] = 0;
+    }
+
+    // Calculate monthly totals for expense type
+    receiptsData.forEach(receipt => {
+      if (receipt.type === 'expense' && receipt.purchased_at) {
+        const monthKey = receipt.purchased_at.substring(0, 7); // YYYY-MM
+        if (monthlyTotals.hasOwnProperty(monthKey)) {
+          monthlyTotals[monthKey] += receipt.total;
+        }
+      }
+    });
+
+    // Update chart
+    const labels = months.map(m => m.label);
+    const data = months.map(m => monthlyTotals[m.key]);
+
+    transactionsChart.data.labels = labels;
+    transactionsChart.data.datasets[0].data = data;
+    transactionsChart.update();
+  }
+
+  // Filter receipts by selected year
+  function filterReceiptsByYear() {
+    receiptsData = allReceiptsData.filter(receipt => {
+      if (!receipt.purchased_at) return false;
+      const year = parseInt(receipt.purchased_at.substring(0, 4));
+      return year === selectedYear;
+    });
+
+    // Update UI
+    if (receiptsData.length > 0) {
+      if (currentView === 'list') {
+        const groupedReceipts = groupReceiptsByDate(receiptsData);
+        renderGroupedTransactions(groupedReceipts);
+      } else {
+        updateCalendarView();
+      }
+    } else {
+      if (currentView === 'list') {
+        transactionsContainer.innerHTML = '<p class="text-center text-gray font-roboto text-[14px]">해당 년도에 거래내역이 없습니다</p>';
+      }
+    }
+
+    updateChart();
   }
 
   // Load receipts from API
@@ -477,26 +725,727 @@ document.addEventListener('DOMContentLoaded', async function() {
       console.log('Result:', result);
 
       if (result.status === 'ok' && result.data && result.data.length > 0) {
-        receiptsData = result.data;
-        console.log('Receipts data loaded:', receiptsData.length, 'receipts');
-        // Group receipts by date for list view
-        const groupedReceipts = groupReceiptsByDate(result.data);
-        renderGroupedTransactions(groupedReceipts);
+        allReceiptsData = result.data;
+        console.log('All receipts data loaded:', allReceiptsData.length, 'receipts');
+        // Filter by selected year
+        filterReceiptsByYear();
       } else {
         // No data or error status
         console.log('No data or error status:', result);
+        allReceiptsData = [];
         receiptsData = [];
         transactionsContainer.innerHTML = '<p class="text-center text-gray font-roboto text-[14px]">거래내역이 없습니다</p>';
+        updateChart(); // Update with empty data
       }
     } catch (error) {
       console.error('Error loading receipts:', error);
+      allReceiptsData = [];
       receiptsData = [];
       transactionsContainer.innerHTML = '<p class="text-center text-gray font-roboto text-[14px]">거래내역이 없습니다</p>';
+      updateChart(); // Update with empty data
     }
   }
 
+  // Make loadReceipts globally accessible
+  window.loadReceipts = loadReceipts;
+
   // Load receipts on page load
   await loadReceipts();
+
+  // ===== 스와이프 삭제 기능 (터치 + 마우스) =====
+  let swipeStartX = 0;
+  let swipeCurrentX = 0;
+  let swipeItem = null;
+  let isDragging = false;
+  window.wasSwiped = false; // 스와이프 여부 플래그 (전역)
+
+  document.addEventListener('touchstart', handleSwipeStart, { passive: true });
+  document.addEventListener('mousedown', handleSwipeStart);
+  document.addEventListener('touchmove', handleSwipeMove, { passive: false });
+  document.addEventListener('mousemove', handleSwipeMove);
+  document.addEventListener('touchend', handleSwipeEnd);
+  document.addEventListener('mouseup', handleSwipeEnd);
+
+  function handleSwipeStart(e) {
+    const target = e.target.closest('.transaction-item');
+    if (!target) return;
+
+    swipeItem = target.parentElement;
+    swipeStartX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    swipeCurrentX = swipeStartX;
+    isDragging = true;
+    window.wasSwiped = false;
+    swipeItem.style.transition = 'none';
+  }
+
+  function handleSwipeMove(e) {
+    if (!isDragging || !swipeItem) return;
+
+    swipeCurrentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    const diffX = swipeCurrentX - swipeStartX;
+
+    // 스와이프 거리가 10px 이상이면 스와이프로 간주
+    if (Math.abs(diffX) > 10) {
+      window.wasSwiped = true;
+    }
+
+    // 왼쪽으로만 스와이프 가능
+    if (diffX < 0) {
+      e.preventDefault();
+      const translateX = Math.max(diffX, -98); // 최대 98px
+      swipeItem.querySelector('.transaction-item').style.transform = `translateX(${translateX}px)`;
+      swipeItem.querySelector('.delete-button').style.right = `${-98 - translateX}px`;
+    }
+  }
+
+  function handleSwipeEnd() {
+    if (!isDragging || !swipeItem) return;
+
+    const diffX = swipeCurrentX - swipeStartX;
+    swipeItem.style.transition = 'all 0.3s ease';
+    swipeItem.querySelector('.transaction-item').style.transition = 'transform 0.3s ease';
+    swipeItem.querySelector('.delete-button').style.transition = 'right 0.3s ease';
+
+    // -50px 이상 스와이프하면 삭제 버튼 보이기
+    if (diffX < -50) {
+      swipeItem.querySelector('.transaction-item').style.transform = 'translateX(-98px)';
+      swipeItem.querySelector('.delete-button').style.right = '0px';
+    } else {
+      swipeItem.querySelector('.transaction-item').style.transform = 'translateX(0)';
+      swipeItem.querySelector('.delete-button').style.right = '-98px';
+    }
+
+    isDragging = false;
+    swipeItem = null;
+    swipeStartX = 0;
+    swipeCurrentX = 0;
+
+    // 스와이프였으면 잠시 후 플래그 리셋 (클릭 이벤트 전파 방지)
+    if (window.wasSwiped) {
+      setTimeout(() => {
+        window.wasSwiped = false;
+      }, 100);
+    }
+  }
+
+  // ===== 검색 기능 =====
 });
+
+// ===== 모달 함수들 (전역) =====
+let currentReceiptId = null;
+let currentReceiptType = 'expense'; // 현재 선택된 타입
+let currentReceiptCategory = null; // 현재 선택된 카테고리
+
+function updateTypeButtons(type, enabled) {
+  // 모든 버튼 초기화
+  document.querySelectorAll('.type-btn').forEach(btn => {
+    btn.style.borderColor = '#878787';
+    btn.style.backgroundColor = 'white';
+    btn.style.color = '#111111';
+
+    // 비활성화 상태 설정
+    if (!enabled) {
+      btn.style.cursor = 'not-allowed';
+    } else {
+      btn.style.cursor = 'pointer';
+    }
+  });
+
+  // 선택된 버튼 스타일 변경
+  const selectedBtn = document.getElementById('type' + type.charAt(0).toUpperCase() + type.slice(1));
+  if (selectedBtn) {
+    if (type === 'expense') {
+      selectedBtn.style.borderColor = '#FF6B6B';
+      selectedBtn.style.backgroundColor = '#FFE5E5';
+      selectedBtn.style.color = '#FF6B6B';
+    } else if (type === 'income') {
+      selectedBtn.style.borderColor = '#4CAF50';
+      selectedBtn.style.backgroundColor = '#E8F5E9';
+      selectedBtn.style.color = '#4CAF50';
+    } else if (type === 'transfer') {
+      selectedBtn.style.borderColor = '#2196F3';
+      selectedBtn.style.backgroundColor = '#E3F2FD';
+      selectedBtn.style.color = '#2196F3';
+    }
+
+    // 비활성화 상태에서도 색은 유지하되 약간 흐리게
+    if (!enabled) {
+      selectedBtn.style.opacity = '0.7';
+    } else {
+      selectedBtn.style.opacity = '1';
+    }
+  }
+}
+
+function selectType(type) {
+  // 편집 모드가 아니면 타입 변경 불가
+  if (!isEditMode) {
+    return;
+  }
+
+  currentReceiptType = type;
+
+  // 버튼 업데이트 (활성화 상태)
+  updateTypeButtons(type, true);
+
+  // UI 업데이트
+  const categorySection = document.getElementById('categorySection');
+  const categorySelect = document.getElementById('categorySelect');
+  const itemsHeader = document.getElementById('itemsHeader');
+  const modalItems = document.getElementById('modalItems');
+  const itemsDivider = document.getElementById('itemsDivider');
+  const totalLabel = document.getElementById('totalLabel');
+
+  if (type === 'expense') {
+    // 지출: 카테고리 및 상품 목록 표시
+    if (categorySection) categorySection.style.display = 'block';
+    if (categorySelect) categorySelect.removeAttribute('disabled');
+    if (itemsHeader) itemsHeader.style.display = 'flex';
+    if (itemsDivider) itemsDivider.style.display = 'block';
+    if (modalItems) modalItems.style.display = 'block';
+    if (totalLabel) totalLabel.textContent = '합계';
+  } else {
+    // 수입/이체: 카테고리 및 상품 목록 숨김
+    if (categorySection) categorySection.style.display = 'none';
+    if (categorySelect) categorySelect.setAttribute('disabled', 'disabled');
+    if (itemsHeader) itemsHeader.style.display = 'none';
+    if (itemsDivider) itemsDivider.style.display = 'none';
+    if (modalItems) modalItems.style.display = 'none';
+    if (totalLabel) totalLabel.textContent = '금액';
+  }
+}
+
+// 카테고리 select 이벤트 리스너
+document.addEventListener('DOMContentLoaded', function() {
+  const categorySelect = document.getElementById('categorySelect');
+  if (categorySelect) {
+    categorySelect.addEventListener('change', function() {
+      currentReceiptCategory = this.value;
+    });
+  }
+});
+
+async function openReceiptModal(receiptId) {
+  // 스와이프 중이었으면 모달 열지 않음
+  if (window.wasSwiped) {
+    window.wasSwiped = false;
+    return;
+  }
+
+  currentReceiptId = receiptId;
+  isEditMode = false; // 편집 모드 리셋
+
+  // API에서 상세 정보 가져오기 (상품 정보 포함)
+  try {
+    const response = await fetch(`/receipts/${receiptId}`);
+    const result = await response.json();
+
+    if (result.status !== 'ok' || !result.data) {
+      console.error('Failed to load receipt detail');
+      return;
+    }
+
+    const receipt = result.data;
+
+    // DOM 요소를 초기 상태로 복원 (편집 모드에서 변경된 경우)
+    const modalMerchantElem = document.getElementById('modalMerchant');
+    if (modalMerchantElem && modalMerchantElem.tagName === 'INPUT') {
+      const newElem = document.createElement('p');
+      newElem.id = 'modalMerchant';
+      newElem.className = 'font-yidstreet font-bold text-[40px] leading-[52px] text-center text-black';
+      newElem.style = 'margin-bottom: 8px;';
+      modalMerchantElem.parentNode.replaceChild(newElem, modalMerchantElem);
+    }
+
+    const modalAddressElem = document.getElementById('modalAddress');
+    if (modalAddressElem && modalAddressElem.tagName === 'INPUT') {
+      const newElem = document.createElement('p');
+      newElem.id = 'modalAddress';
+      newElem.className = 'font-noto text-[16px] leading-[19px] text-center text-[#878787]';
+      newElem.style = 'margin-bottom: 24px;';
+      modalAddressElem.parentNode.replaceChild(newElem, modalAddressElem);
+    }
+
+    let modalDateElem = document.getElementById('modalDate');
+    if (modalDateElem && modalDateElem.tagName === 'DIV') {
+      const newElem = document.createElement('p');
+      newElem.id = 'modalDate';
+      newElem.className = 'font-montserrat text-[15px] leading-[18px] text-center';
+      newElem.style = 'margin-bottom: 16px; color: #1b1b1b;';
+      modalDateElem.parentNode.replaceChild(newElem, modalDateElem);
+      modalDateElem = newElem; // 새로운 요소를 변수에 할당
+    }
+
+    // 모달 내용 채우기
+    document.getElementById('modalMerchant').textContent = receipt.merchant || '상호명 없음';
+    document.getElementById('modalAddress').textContent = receipt.address || '주소 없음';
+
+    // 날짜/시간 표시
+    if (receipt.purchased_at) {
+      const purchasedDate = dayjs(receipt.purchased_at);
+      // 시간 정보가 있는지 확인 (HH:mm:ss가 00:00:00이 아닌 경우)
+      const hasTime = purchasedDate.format('HH:mm:ss') !== '00:00:00';
+
+      if (hasTime) {
+        modalDateElem.textContent = purchasedDate.format('YYYY년 MM월 DD일 HH:mm');
+      } else {
+        modalDateElem.textContent = purchasedDate.format('YYYY년 MM월 DD일');
+      }
+      modalDateElem.style.color = '#1b1b1b';
+    } else {
+      modalDateElem.textContent = '날짜 미입력';
+      modalDateElem.style.color = '#878787';
+    }
+
+    // 타입 버튼 선택 및 초기화
+    currentReceiptType = receipt.type || 'expense';
+
+    // 타입 버튼 시각적 업데이트 (비활성화 상태)
+    updateTypeButtons(currentReceiptType, false);
+
+    document.getElementById('modalTotal').textContent = receipt.total.toLocaleString() + '원';
+
+    // 타입에 따라 UI 변경
+    const categorySection = document.getElementById('categorySection');
+    const itemsHeader = document.getElementById('itemsHeader');
+    const modalItems = document.getElementById('modalItems');
+    const itemsDivider = document.getElementById('itemsDivider');
+    const totalLabel = document.getElementById('totalLabel');
+
+    if (currentReceiptType === 'expense') {
+      // 지출: 카테고리 및 상품 목록 표시
+      categorySection.style.display = 'block';
+      itemsHeader.style.display = 'flex';
+      itemsDivider.style.display = 'block';
+      totalLabel.textContent = '합계';
+
+      // 카테고리 초기화
+      currentReceiptCategory = receipt.category || '';
+      const categorySelect = document.getElementById('categorySelect');
+      if (categorySelect) {
+        categorySelect.value = currentReceiptCategory;
+        // 편집 모드가 아니면 비활성화
+        categorySelect.setAttribute('disabled', 'disabled');
+      }
+
+      // 상품 목록 표시
+      if (receipt.items && receipt.items.length > 0) {
+        const itemsHtml = receipt.items.map(item => `
+          <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
+            <span class="flex-1">${item.name}</span>
+            <span class="w-[40px] text-center">${item.qty}</span>
+            <span class="w-[60px] text-right">${item.price.toLocaleString()}</span>
+            <span class="w-[60px] text-right">${item.subtotal.toLocaleString()}</span>
+          </div>
+        `).join('');
+        modalItems.innerHTML = itemsHtml;
+      } else {
+        modalItems.innerHTML = `
+          <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
+            <span class="flex-1">상품 정보 없음</span>
+            <span class="w-[40px] text-center">-</span>
+            <span class="w-[60px] text-right">-</span>
+            <span class="w-[60px] text-right">-</span>
+          </div>
+        `;
+      }
+      modalItems.style.display = 'block';
+    } else {
+      // 수입/이체: 카테고리 및 상품 목록 숨김
+      categorySection.style.display = 'none';
+      itemsHeader.style.display = 'none';
+      itemsDivider.style.display = 'none';
+      modalItems.style.display = 'none';
+      totalLabel.textContent = '금액';
+    }
+
+    // 버튼을 초기 상태(취소/편집)로 초기화
+    const modalActions = document.getElementById('modalActionButtons');
+    if (modalActions) {
+      modalActions.innerHTML = `
+        <button onclick="closeReceiptModal()" class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#878787] hover:bg-gray-100 transition-colors" style="width: 125px; height: 38px;">
+          취소
+        </button>
+        <button onclick="editReceipt()" class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#1B1B1B] hover:bg-gray-100 transition-colors" style="width: 125px; height: 38px;">
+          편집
+        </button>
+      `;
+    }
+
+    // 모달 표시
+    const modal = document.getElementById('receiptModal');
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  } catch (error) {
+    console.error('Error loading receipt detail:', error);
+  }
+}
+
+function closeReceiptModal(event) {
+  if (!event || event.target.id === 'receiptModal') {
+    const modal = document.getElementById('receiptModal');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+    currentReceiptId = null;
+    isEditMode = false; // 편집 모드 리셋
+  }
+}
+
+let isEditMode = false;
+let originalReceiptData = null;
+
+function editReceipt() {
+  if (!currentReceiptId) return;
+
+  isEditMode = true;
+
+  // 원본 데이터 저장 (취소 시 복구용)
+  const modalMerchant = document.getElementById('modalMerchant');
+  const modalAddress = document.getElementById('modalAddress');
+  const modalDate = document.getElementById('modalDate');
+
+  originalReceiptData = {
+    merchant: modalMerchant.textContent,
+    address: modalAddress.textContent,
+    date: modalDate.textContent
+  };
+
+  // 사용처를 input으로 변경
+  if (modalMerchant) {
+    const merchantValue = modalMerchant.textContent;
+    modalMerchant.outerHTML = `<input type="text" id="modalMerchant" class="font-yidstreet font-bold text-[40px] leading-[52px] text-center text-black border-2 border-[#B4DE00] rounded-[10px] px-2 w-full" style="margin-bottom: 8px;" value="${merchantValue}">`;
+  }
+
+  // 주소를 input으로 변경
+  if (modalAddress) {
+    const addressValue = modalAddress.textContent;
+    modalAddress.outerHTML = `<input type="text" id="modalAddress" class="font-noto text-[16px] leading-[19px] text-center text-[#878787] border-2 border-[#B4DE00] rounded-[10px] px-2 w-full" style="margin-bottom: 24px;" value="${addressValue}">`;
+  }
+
+  // 날짜를 input으로 변경 (날짜 + 시간)
+  if (modalDate) {
+    const dateText = modalDate.textContent;
+    let dateValue = '';
+    let timeValue = '';
+
+    if (dateText !== '날짜 미입력') {
+      // 기존 날짜 파싱
+      const receipt = receiptsData.find(r => r.id === currentReceiptId);
+      if (receipt && receipt.purchased_at) {
+        const purchasedDate = dayjs(receipt.purchased_at);
+        dateValue = purchasedDate.format('YYYY-MM-DD');
+
+        // 시간 정보가 있는지 확인
+        const hasTime = purchasedDate.format('HH:mm:ss') !== '00:00:00';
+        if (hasTime) {
+          timeValue = purchasedDate.format('HH:mm');
+        }
+      }
+    }
+
+    modalDate.outerHTML = `
+      <div id="modalDate" class="flex gap-2 justify-center items-center" style="margin-bottom: 16px;">
+        <input type="date" id="modalDateInput" class="font-montserrat text-[15px] text-center border-2 border-[#B4DE00] rounded-[10px] px-2" style="color: #1b1b1b;" value="${dateValue}">
+        <input type="time" id="modalTimeInput" class="font-montserrat text-[15px] text-center border-2 border-[#B4DE00] rounded-[10px] px-2" style="color: #1b1b1b;" value="${timeValue}" placeholder="시간(선택)">
+      </div>
+    `;
+  }
+
+  // 타입 버튼 활성화
+  updateTypeButtons(currentReceiptType, true);
+
+  // 카테고리 드롭다운 활성화 (지출인 경우에만)
+  if (currentReceiptType === 'expense') {
+    const categorySelect = document.getElementById('categorySelect');
+    if (categorySelect) {
+      categorySelect.removeAttribute('disabled');
+    }
+
+    // 상품 목록을 편집 가능하게 변경
+    makeItemsEditable();
+  }
+
+  // 버튼 변경: 취소/편집 → 취소/완료
+  const modalActions = document.getElementById('modalActionButtons');
+  if (modalActions) {
+    modalActions.innerHTML = `
+      <button onclick="cancelEdit()" class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#878787] hover:bg-gray-100 transition-colors" style="width: 125px; height: 38px;">
+        취소
+      </button>
+      <button onclick="saveReceipt()" class="rounded-full font-satoshi font-medium text-[16px] transition-colors" style="width: 125px; height: 38px; background-color: #4CAF50; border: 2px solid #4CAF50; color: white;">
+        완료
+      </button>
+    `;
+  }
+}
+
+function makeItemsEditable() {
+  const modalItems = document.getElementById('modalItems');
+  if (!modalItems) return;
+
+  const items = Array.from(modalItems.querySelectorAll('.flex.justify-between'));
+
+  items.forEach((item, index) => {
+    const spans = item.querySelectorAll('span');
+    if (spans.length < 4) return;
+
+    const name = spans[0].textContent;
+    const qty = spans[1].textContent;
+    const price = spans[2].textContent.replace(/,/g, '');
+
+    item.innerHTML = `
+      <input type="text" class="flex-1 border border-[#B4DE00] rounded text-[14px] font-satoshi font-bold text-[#878787]" value="${name}" data-field="name" data-index="${index}" style="padding: 2px 4px; margin-right: 4px;">
+      <input type="number" class="w-[35px] text-center border border-[#B4DE00] rounded text-[14px] font-satoshi font-bold text-[#878787]" value="${qty}" data-field="qty" data-index="${index}" style="padding: 2px 0;">
+      <input type="number" class="w-[60px] text-right border border-[#B4DE00] rounded text-[14px] font-satoshi font-bold text-[#878787]" value="${price}" data-field="price" data-index="${index}" style="padding: 2px 4px;">
+      <span class="w-[60px] text-right text-[14px] font-satoshi font-bold text-[#878787]" data-field="subtotal" data-index="${index}">${parseInt(qty) * parseInt(price)}</span>
+    `;
+
+    // 수량/가격 변경 시 소계 자동 계산
+    const qtyInput = item.querySelector('[data-field="qty"]');
+    const priceInput = item.querySelector('[data-field="price"]');
+    const subtotalSpan = item.querySelector('[data-field="subtotal"]');
+
+    const updateSubtotal = () => {
+      const q = parseInt(qtyInput.value) || 0;
+      const p = parseInt(priceInput.value) || 0;
+      subtotalSpan.textContent = (q * p).toLocaleString();
+    };
+
+    qtyInput.addEventListener('input', updateSubtotal);
+    priceInput.addEventListener('input', updateSubtotal);
+  });
+}
+
+function cancelEdit() {
+  isEditMode = false;
+
+  // input 필드들을 원래 텍스트로 복구
+  const modalMerchant = document.getElementById('modalMerchant');
+  const modalAddress = document.getElementById('modalAddress');
+  const modalDate = document.getElementById('modalDate');
+
+  if (modalMerchant && modalMerchant.tagName === 'INPUT') {
+    modalMerchant.outerHTML = `<h2 id="modalMerchant" class="font-yidstreet font-bold text-[40px] leading-[52px] text-center text-black" style="margin-bottom: 8px;">${originalReceiptData.merchant}</h2>`;
+  }
+
+  if (modalAddress && modalAddress.tagName === 'INPUT') {
+    modalAddress.outerHTML = `<p id="modalAddress" class="font-noto text-[16px] leading-[19px] text-center text-[#878787]" style="margin-bottom: 24px;">${originalReceiptData.address}</p>`;
+  }
+
+  if (modalDate && modalDate.classList.contains('flex')) {
+    // 날짜 input들을 원래 텍스트로 복구
+    const dateText = originalReceiptData.date;
+    let color = '#1b1b1b';
+    if (dateText === '날짜 미입력') {
+      color = '#878787';
+    }
+    modalDate.outerHTML = `<p id="modalDate" class="font-montserrat text-[15px] leading-[18px] text-center" style="margin-bottom: 16px; color: ${color};">${dateText}</p>`;
+  }
+
+  // 타입 버튼 비활성화
+  updateTypeButtons(currentReceiptType, false);
+
+  // 카테고리 드롭다운 비활성화
+  const categorySelect = document.getElementById('categorySelect');
+  if (categorySelect) {
+    categorySelect.setAttribute('disabled', 'disabled');
+  }
+
+  // 상품 목록을 원래 상태로 복구 (편집 모드였다면)
+  if (currentReceiptType === 'expense' && currentReceiptId) {
+    // API에서 다시 가져와서 복구
+    fetch(`/receipts/${currentReceiptId}`)
+      .then(res => res.json())
+      .then(result => {
+        if (result.status === 'ok' && result.data) {
+          const receipt = result.data;
+          const modalItems = document.getElementById('modalItems');
+          if (modalItems && receipt.items && receipt.items.length > 0) {
+            const itemsHtml = receipt.items.map(item => `
+              <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
+                <span class="flex-1">${item.name}</span>
+                <span class="w-[40px] text-center">${item.qty}</span>
+                <span class="w-[60px] text-right">${item.price.toLocaleString()}</span>
+                <span class="w-[60px] text-right">${item.subtotal.toLocaleString()}</span>
+              </div>
+            `).join('');
+            modalItems.innerHTML = itemsHtml;
+          }
+        }
+      });
+  }
+
+  // 버튼 복구: 취소/완료 → 취소/편집
+  const modalActions = document.getElementById('modalActionButtons');
+  if (modalActions) {
+    modalActions.innerHTML = `
+      <button
+        onclick="closeReceiptModal()"
+        class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#111111] hover:bg-gray-100 transition-colors"
+        style="width: 125px; height: 38px;"
+      >
+        취소
+      </button>
+      <button
+        onclick="editReceipt()"
+        class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#111111] hover:bg-gray-100 transition-colors"
+        style="width: 125px; height: 38px;"
+      >
+        편집
+      </button>
+    `;
+  }
+}
+
+async function saveReceipt() {
+  if (!currentReceiptId) return;
+
+  try {
+    // API에서 상세 정보 가져오기 (날짜, 상태 등)
+    const detailResponse = await fetch(`/receipts/${currentReceiptId}`);
+    const detailResult = await detailResponse.json();
+
+    if (detailResult.status !== 'ok' || !detailResult.data) {
+      throw new Error('영수증 정보를 가져올 수 없습니다.');
+    }
+
+    const receipt = detailResult.data;
+
+    // 수정된 값 가져오기
+    const merchantInput = document.getElementById('modalMerchant');
+    const addressInput = document.getElementById('modalAddress');
+    const categorySelect = document.getElementById('categorySelect');
+    const dateInput = document.getElementById('modalDateInput');
+    const timeInput = document.getElementById('modalTimeInput');
+
+    const merchant = merchantInput ? merchantInput.value : receipt.merchant;
+    const category = categorySelect ? categorySelect.value : null;
+
+    // 날짜/시간 조합
+    let purchasedAt = receipt.purchased_at;
+    if (dateInput) {
+      const dateValue = dateInput.value;
+      const timeValue = timeInput ? timeInput.value : '';
+
+      if (dateValue) {
+        if (timeValue) {
+          purchasedAt = `${dateValue} ${timeValue}:00`;
+        } else {
+          purchasedAt = `${dateValue}`;
+        }
+      }
+    }
+
+    // 상품 목록 수집 (지출인 경우에만)
+    let items = [];
+    let total = receipt.total;
+
+    if (currentReceiptType === 'expense') {
+      const modalItems = document.getElementById('modalItems');
+      if (modalItems) {
+        const itemRows = modalItems.querySelectorAll('.flex.justify-between');
+
+        itemRows.forEach(row => {
+          const nameInput = row.querySelector('[data-field="name"]');
+          const qtyInput = row.querySelector('[data-field="qty"]');
+          const priceInput = row.querySelector('[data-field="price"]');
+
+          if (nameInput && qtyInput && priceInput) {
+            const qty = parseInt(qtyInput.value) || 0;
+            const price = parseInt(priceInput.value) || 0;
+
+            items.push({
+              name: nameInput.value,
+              qty: qty,
+              price: price,
+              category: null
+            });
+          }
+        });
+
+        // 총액 재계산
+        total = items.reduce((sum, item) => sum + (item.qty * item.price), 0);
+      }
+    } else {
+      // 수입/이체의 경우 더미 아이템 추가
+      items = [{
+        name: currentReceiptType === 'income' ? '수입' : '이체',
+        qty: 1,
+        price: total,
+        category: null
+      }];
+    }
+
+    // API 호출하여 업데이트
+    const payload = {
+      merchant: merchant,
+      purchased_at: purchasedAt,
+      total: total,
+      status: receipt.status || 'CONFIRMED',
+      type: currentReceiptType,
+      category: category,
+      items: items,
+      image_path: receipt.image_path
+    };
+
+    console.log('Update payload:', payload);
+
+    const response = await fetch(`/receipts/${currentReceiptId}/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      // 성공 시 데이터 새로고침
+      await loadReceipts();
+
+      if (window.ToastHelper) {
+        window.ToastHelper.success('거래내역이 수정되었습니다.');
+      }
+
+      isEditMode = false;
+      closeReceiptModal();
+    } else {
+      const errorData = await response.json();
+      console.error('API Error:', errorData);
+      const errorMessage = typeof errorData.detail === 'string'
+        ? errorData.detail
+        : JSON.stringify(errorData.detail || errorData);
+      alert('수정에 실패했습니다: ' + errorMessage);
+      return;
+    }
+  } catch (error) {
+    console.error('Error updating receipt:', error);
+    alert('수정에 실패했습니다: ' + error.message);
+  }
+}
+
+async function deleteReceipt(receiptId) {
+  if (!confirm('이 거래내역을 삭제하시겠습니까?')) return;
+
+  try {
+    const response = await fetch(`/receipts/${receiptId}/delete`, {
+      method: 'POST'
+    });
+
+    if (response.ok) {
+      // 성공 시 목록에서 제거
+      receiptsData = receiptsData.filter(r => r.id !== receiptId);
+      const groupedReceipts = groupReceiptsByDate(receiptsData);
+      renderGroupedTransactions(groupedReceipts);
+      if (window.ToastHelper) {
+        window.ToastHelper.success('거래내역이 삭제되었습니다.');
+      }
+    } else {
+      throw new Error('삭제 실패');
+    }
+  } catch (error) {
+    console.error('Error deleting receipt:', error);
+    alert('삭제에 실패했습니다. 백엔드 API를 확인해주세요.');
+  }
+}
 </script>
 {% endblock %}

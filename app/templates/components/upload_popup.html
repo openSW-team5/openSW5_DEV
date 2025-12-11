@@ -1,29 +1,32 @@
-{# Upload Popup Component #}
-{# 사용법: {% include 'components/upload_popup.html' %} #}
+{# Upload Popup Component #} {# 사용법: {% include
+'components/upload_popup.html' %} #}
 
 <!-- Backdrop -->
-<div id="uploadPopup" class="hidden fixed inset-0 z-40" style="background: rgba(0, 0, 0, 0.7);" onclick="closeUploadPopup()">
-
+<div
+  id="uploadPopup"
+  class="hidden fixed inset-0 z-40"
+  style="background: rgba(0, 0, 0, 0.7)"
+  onclick="closeUploadPopup()"
+>
   <!-- Popup Container -->
   <div
     class="absolute"
     style="
       width: 388px;
       height: 266px;
-      left: calc(50% - 388px/2);
+      left: calc(50% - 388px / 2);
       bottom: 115px;
-      background: #F7F7F7;
+      background: #f7f7f7;
       border-radius: 27px;
     "
     onclick="event.stopPropagation()"
   >
-
     <!-- 설명 텍스트 -->
     <p
       class="absolute"
       style="
         width: 309px;
-        left: calc(50% - 309px/2 - 0.5px);
+        left: calc(50% - 309px / 2 - 0.5px);
         top: 20px;
         font-family: 'Inter';
         font-style: normal;
@@ -43,9 +46,9 @@
       style="
         width: 351px;
         height: 54px;
-        left: calc(50% - 351px/2 - 0.5px);
+        left: calc(50% - 351px / 2 - 0.5px);
         top: 50px;
-        background: #B4DE00;
+        background: #b4de00;
         border: 1px solid #111111;
         border-radius: 70px;
         padding: 16px 10px;
@@ -73,9 +76,9 @@
       style="
         width: 351px;
         height: 54px;
-        left: calc(50% - 351px/2 + 0.5px);
+        left: calc(50% - 351px / 2 + 0.5px);
         top: 115px;
-        background: #B4DE00;
+        background: #b4de00;
         border: 1px solid #111111;
         border-radius: 70px;
         padding: 16px 10px;
@@ -103,9 +106,9 @@
       style="
         width: 351px;
         height: 54px;
-        left: calc(50% - 351px/2 - 0.5px);
+        left: calc(50% - 351px / 2 - 0.5px);
         top: 180px;
-        background: #B4DE00;
+        background: #b4de00;
         border: 1px solid #111111;
         border-radius: 70px;
         padding: 16px 10px;
@@ -126,46 +129,112 @@
         사진 촬영
       </span>
     </button>
-
   </div>
 </div>
 
-<!-- Loading Popup (1차 자동인식) -->
-<div id="loadingPopup" class="hidden fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0, 0, 0, 0.7);">
+<!-- Loading Popup (대기화면) -->
+<div
+  id="loadingPopup"
+  class="hidden fixed inset-0 z-50"
+  style="background: #f0f0f0"
+>
+  <div class="relative w-full h-full max-w-[428px] mx-auto">
+    <!-- Receipt Loading SVG -->
+    <div
+      class="absolute"
+      style="
+        width: 373px;
+        height: 138px;
+        left: calc(50% - 373px / 2);
+        top: 226px;
+      "
+    >
+      <img
+        src="/static/assets/receipt-loading.svg"
+        alt="Receipt Loading"
+        style="width: 100%; height: 100%"
+      />
+    </div>
+
+    <!-- 영수증을 분석하고 있습니다 -->
+    <p
+      class="absolute font-satoshi font-medium text-[32px] leading-[43px] text-black text-center"
+      style="
+        width: 371px;
+        height: 43px;
+        left: calc(50% - 371px / 2 - 0.5px);
+        top: calc(50% + 20px);
+      "
+    >
+      영수증을 분석하고 있습니다
+    </p>
+
+    <!-- 업로드 → 텍스트 인식 → 카테고리 분류 -->
+    <p
+      class="absolute font-satoshi font-medium text-[20px] leading-[27px] text-[#878787] text-center"
+      style="
+        width: 329px;
+        height: 27px;
+        left: calc(50% - 329px / 2 - 0.5px);
+        top: calc(50% + 70px);
+      "
+    >
+      업로드 → 텍스트 인식 → 카테고리 분류
+    </p>
+
+    <!-- 잠시만 기다려주세요 -->
+    <p
+      class="absolute font-satoshi font-medium text-[25px] leading-[34px] text-black text-center"
+      style="width: 220px; left: calc(50% - 220px / 2); top: 620px"
+    >
+      잠시만 기다려주세요
+    </p>
+
+    <!-- 약 00초~00초 -->
+    <p
+      class="absolute font-satoshi font-medium text-[17px] leading-[23px] text-[#878787] text-center"
+      style="width: 95px; left: calc(50% - 95px / 2 - 0.5px); top: 660px"
+    >
+      약 2초~3초
+    </p>
+  </div>
+</div>
+
+<!-- Success Popup (1차 자동인식 완료) -->
+<div
+  id="successPopup"
+  class="hidden fixed inset-0 z-50 flex items-center justify-center"
+  style="background: rgba(0, 0, 0, 0.7)"
+>
   <div
-    class="absolute"
+    class="absolute flex items-center justify-center"
     style="
       width: 388px;
       height: 139px;
-      background: #F7F7F7;
+      background: #f7f7f7;
       border-radius: 27px;
     "
   >
     <p
-      class="absolute font-yidstreet font-bold text-center"
-      style="
-        width: 276px;
-        height: 62px;
-        left: calc(50% - 276px/2);
-        top: calc(50% - 62px/2 + 1px);
-        font-size: 48px;
-        line-height: 62px;
-        color: #000000;
-      "
+      class="font-yidstreet font-bold text-center text-[32px] leading-[42px] text-black"
     >
-      1차 자동인식
+      1차 자동인식 완료
     </p>
   </div>
 </div>
 
 <!-- Error Popup -->
-<div id="errorPopup" class="hidden fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0, 0, 0, 0.7);">
+<div
+  id="errorPopup"
+  class="hidden fixed inset-0 z-50 flex items-center justify-center"
+  style="background: rgba(0, 0, 0, 0.7)"
+>
   <div
     class="flex flex-col"
     style="
       width: 380px;
       height: 187px;
-      background: #FFFFFF;
+      background: #ffffff;
       box-shadow: 0px 4px 8px rgba(16, 24, 64, 0.08);
       border-radius: 8px;
     "
@@ -178,11 +247,14 @@
         height: 56px;
         padding: 16px 16px 16px 20px;
         gap: 10px;
-        background: #FFFFFF;
+        background: #ffffff;
         border-radius: 8px 8px 0px 0px;
       "
     >
-      <div class="flex flex-col" style="width: 310px; height: 24px; gap: 12px; flex-grow: 1;">
+      <div
+        class="flex flex-col"
+        style="width: 310px; height: 24px; gap: 12px; flex-grow: 1"
+      >
         <h3
           id="errorTitle"
           class="font-noto font-semibold flex items-center"
@@ -197,9 +269,20 @@
           에러 제목
         </h3>
       </div>
-      <button onclick="closeErrorPopup()" style="width: 24px; height: 24px;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 6L18 18M6 18L18 6" stroke="#6C6F75" stroke-width="2" stroke-linecap="round"/>
+      <button onclick="closeErrorPopup()" style="width: 24px; height: 24px">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6 6L18 18M6 18L18 6"
+            stroke="#6C6F75"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
         </svg>
       </button>
     </div>
@@ -207,12 +290,7 @@
     <!-- Content -->
     <div
       class="flex flex-col justify-center items-start"
-      style="
-        width: 380px;
-        height: 68px;
-        padding: 16px 24px;
-        gap: 16px;
-      "
+      style="width: 380px; height: 68px; padding: 16px 24px; gap: 16px"
     >
       <p
         id="errorMessage"
@@ -238,7 +316,7 @@
         height: 63px;
         padding: 16px 20px;
         gap: 8px;
-        background: #FFFFFF;
+        background: #ffffff;
         border-top: 1px solid rgba(34, 34, 38, 0.08);
         box-shadow: 0px 4px 4px rgba(16, 24, 64, 0.08);
         border-radius: 0px 0px 8px 8px;
@@ -252,8 +330,8 @@
           height: 31px;
           padding: 8px 16px;
           gap: 5px;
-          background: #1A1A1C;
-          border: 1px solid #1A1A1C;
+          background: #1a1a1c;
+          border: 1px solid #1a1a1c;
           box-shadow: 0px 1px 2px rgba(38, 110, 255, 0.05);
           border-radius: 3px;
         "
@@ -265,7 +343,7 @@
             height: 15px;
             font-size: 12px;
             line-height: 15px;
-            color: #FFFFFF;
+            color: #ffffff;
           "
         >
           확인
@@ -275,33 +353,115 @@
   </div>
 </div>
 
+<!-- Type Selection Popup -->
+<div
+  id="typeSelectionPopup"
+  class="hidden fixed inset-0 z-50"
+  style="background: rgba(0, 0, 0, 0.7)"
+  onclick="closeTypeSelectionPopup()"
+>
+  <div class="flex items-center justify-center h-full">
+    <div
+      style="
+        width: 388px;
+        background: #f7f7f7;
+        border-radius: 27px;
+        padding: 40px 20px;
+      "
+      onclick="event.stopPropagation()"
+    >
+      <h2
+        class="font-yidstreet font-bold text-[28px] text-center text-black mb-8"
+      >
+        거래 유형 선택
+      </h2>
+
+      <!-- 지출 버튼 -->
+      <button
+        onclick="selectReceiptType('expense')"
+        class="w-full h-[54px] mb-4 bg-[#FFE5E5] border-2 border-[#FF6B6B] rounded-[70px] flex items-center justify-center hover:opacity-90 transition-opacity"
+      >
+        <span class="font-satoshi font-medium text-[16px] text-[#FF6B6B]"
+          >지출</span
+        >
+      </button>
+
+      <!-- 수입 버튼 -->
+      <button
+        onclick="selectReceiptType('income')"
+        class="w-full h-[54px] mb-4 bg-[#E8F5E9] border-2 border-[#4CAF50] rounded-[70px] flex items-center justify-center hover:opacity-90 transition-opacity"
+      >
+        <span class="font-satoshi font-medium text-[16px] text-[#4CAF50]"
+          >수입</span
+        >
+      </button>
+
+      <!-- 이체 버튼 -->
+      <button
+        onclick="selectReceiptType('transfer')"
+        class="w-full h-[54px] bg-[#E3F2FD] border-2 border-[#2196F3] rounded-[70px] flex items-center justify-center hover:opacity-90 transition-opacity"
+      >
+        <span class="font-satoshi font-medium text-[16px] text-[#2196F3]"
+          >이체</span
+        >
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Hidden file inputs -->
-<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleFileSelect(this, 'camera')">
-<input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="handleFileSelect(this, 'gallery')">
+<input
+  type="file"
+  id="cameraInput"
+  accept="image/*"
+  capture="environment"
+  style="display: none"
+  onchange="handleFileSelect(this, 'camera')"
+/>
+<input
+  type="file"
+  id="galleryInput"
+  accept="image/*"
+  style="display: none"
+  onchange="handleFileSelect(this, 'gallery')"
+/>
 
 <script>
   function openUploadPopup() {
-    document.getElementById('uploadPopup').classList.remove('hidden');
+    document.getElementById("uploadPopup").classList.remove("hidden");
   }
 
   function closeUploadPopup() {
-    document.getElementById('uploadPopup').classList.add('hidden');
+    document.getElementById("uploadPopup").classList.add("hidden");
   }
 
   function handleCameraCapture() {
     closeUploadPopup();
-    document.getElementById('cameraInput').click();
+    document.getElementById("cameraInput").click();
   }
 
   function handleGallerySelect() {
     closeUploadPopup();
-    document.getElementById('galleryInput').click();
+    document.getElementById("galleryInput").click();
   }
 
   function handleManualInput() {
-    console.log('직접 입력 기능');
-    // TODO: 직접 입력 페이지로 이동
+    console.log("직접 입력 기능");
     closeUploadPopup();
+    showTypeSelectionPopup();
+  }
+
+  function showTypeSelectionPopup() {
+    document.getElementById("typeSelectionPopup").classList.remove("hidden");
+  }
+
+  function closeTypeSelectionPopup() {
+    document.getElementById("typeSelectionPopup").classList.add("hidden");
+  }
+
+  function selectReceiptType(type) {
+    closeTypeSelectionPopup();
+    window.location.href = `/receipts/confirm?type=${type}`;
   }
 
   async function handleFileSelect(input, source) {
@@ -321,12 +481,12 @@
 
       // OCR API 호출
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
       try {
-        const response = await fetch('/receipts/upload', {
-          method: 'POST',
-          body: formData
+        const response = await fetch("/receipts/upload", {
+          method: "POST",
+          body: formData,
         });
 
         const result = await response.json();
@@ -335,22 +495,37 @@
         setTimeout(() => {
           hideLoadingPopup();
 
-          if (response.ok && result.status === 'ok') {
+          if (response.ok && result.status === "ok") {
             // OCR 성공
-            console.log('OCR 결과:', result.ocr_raw);
-            // TODO: 다음 페이지로 이동하거나 결과 처리
-            // 예: window.location.href = `/receipts/confirm?data=${encodeURIComponent(JSON.stringify(result.ocr_raw))}`;
+            console.log("OCR 결과:", result.ocr_raw);
+
+            // OCR 결과를 sessionStorage에 저장
+            sessionStorage.setItem("ocrResult", JSON.stringify(result.ocr_raw));
+
+            // 성공 팝업 표시
+            showSuccessPopup();
+
+            // 1초 후 영수증 확인 페이지로 이동
+            setTimeout(() => {
+              hideSuccessPopup();
+              window.location.href = "/receipts/confirm?type=expense&from=ocr";
+            }, 1000);
           } else {
             // OCR 실패
-            showErrorPopup('recognition', '파일이 너무 어둡거나 인식할 수 없습니다.\n밝은곳에서 다시 촬영 해주십시오.');
+            showErrorPopup(
+              "recognition",
+              "파일이 너무 어둡거나 인식할 수 없습니다.\n밝은곳에서 다시 촬영 해주십시오."
+            );
           }
         }, 2000);
-
       } catch (error) {
-        console.error('Upload error:', error);
+        console.error("Upload error:", error);
         setTimeout(() => {
           hideLoadingPopup();
-          showErrorPopup('recognition', '파일이 너무 어둡거나 인식할 수 없습니다.\n밝은곳에서 다시 촬영 해주십시오.');
+          showErrorPopup(
+            "recognition",
+            "파일이 너무 어둡거나 인식할 수 없습니다.\n밝은곳에서 다시 촬영 해주십시오."
+          );
         }, 2000);
       }
     }
@@ -358,14 +533,15 @@
 
   function validateFile(file) {
     const maxSize = 10 * 1024 * 1024; // 10MB
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
     // 파일 형식 검증
     if (!allowedTypes.includes(file.type)) {
       return {
         valid: false,
-        errorType: 'fileType',
-        message: '지원하지 않는 파일 형식입니다\n이미지 파일(PNG, JPG)만 업로드 가능합니다.'
+        errorType: "fileType",
+        message:
+          "지원하지 않는 파일 형식입니다\n이미지 파일(PNG, JPG)만 업로드 가능합니다.",
       };
     }
 
@@ -373,8 +549,8 @@
     if (file.size > maxSize) {
       return {
         valid: false,
-        errorType: 'fileSize',
-        message: '파일 크기가 너무 큽니다\n최대 10MB까지 업로드 가능합니다.'
+        errorType: "fileSize",
+        message: "파일 크기가 너무 큽니다\n최대 10MB까지 업로드 가능합니다.",
       };
     }
 
@@ -382,26 +558,35 @@
   }
 
   function showLoadingPopup() {
-    document.getElementById('loadingPopup').classList.remove('hidden');
+    document.getElementById("loadingPopup").classList.remove("hidden");
   }
 
   function hideLoadingPopup() {
-    document.getElementById('loadingPopup').classList.add('hidden');
+    document.getElementById("loadingPopup").classList.add("hidden");
+  }
+
+  function showSuccessPopup() {
+    document.getElementById("successPopup").classList.remove("hidden");
+  }
+
+  function hideSuccessPopup() {
+    document.getElementById("successPopup").classList.add("hidden");
   }
 
   function showErrorPopup(errorType, message) {
     const titles = {
-      'fileType': '지원하지 않는 파일 형식',
-      'fileSize': '파일 크기 초과',
-      'recognition': '파일 인식 불가'
+      fileType: "지원하지 않는 파일 형식",
+      fileSize: "파일 크기 초과",
+      recognition: "파일 인식 불가",
     };
 
-    document.getElementById('errorTitle').textContent = titles[errorType] || '오류';
-    document.getElementById('errorMessage').textContent = message;
-    document.getElementById('errorPopup').classList.remove('hidden');
+    document.getElementById("errorTitle").textContent =
+      titles[errorType] || "오류";
+    document.getElementById("errorMessage").textContent = message;
+    document.getElementById("errorPopup").classList.remove("hidden");
   }
 
   function closeErrorPopup() {
-    document.getElementById('errorPopup').classList.add('hidden');
+    document.getElementById("errorPopup").classList.add("hidden");
   }
 </script>

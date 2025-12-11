@@ -86,6 +86,8 @@ class RegisterIn(BaseModel):
         if v is None:
             return v
         v = v.strip()
+        if not v:  # 빈 문자열이면 None으로 처리
+            return None
         if "@" not in v or "." not in v:
             raise ValueError("invalid email format")
         return v
@@ -340,6 +342,12 @@ async def user_page(request: Request):
             "user": user,
         },
     )
+
+
+@router.get("/notifications", response_class=HTMLResponse)
+async def notifications_page(request: Request):
+    """알림 페이지"""
+    return templates.TemplateResponse("pages/notifications.html", {"request": request, "title": "알림"})
 
 
 # ==========================
