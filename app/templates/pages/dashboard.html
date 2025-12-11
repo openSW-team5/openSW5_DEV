@@ -166,8 +166,7 @@
       class="absolute flex items-center font-montserrat font-semibold text-[20px] leading-[24px] text-black"
       style="left: 150px; top: 28px; width: 120px; height: 24px"
       x-text="formatNumber(totalSpent) + '원'"
-    >
-    </div>
+    ></div>
 
     <!-- Monthly budget label -->
     <div
@@ -182,12 +181,14 @@
       class="absolute flex items-center font-montserrat font-semibold text-[20px] leading-[24px] text-black"
       style="left: 150px; top: 80px; width: 120px; height: 24px"
       x-text="formatNumber(totalBudget) + '원'"
-    >
-    </div>
+    ></div>
   </div>
 
   <!-- Spendings Title -->
-  <div class="flex justify-center items-center mb-[13px]" style="margin-top: 25px">
+  <div
+    class="flex justify-center items-center mb-[13px]"
+    style="margin-top: 25px"
+  >
     <h2 class="font-montserrat font-bold text-[25px] leading-[30px] text-black">
       Spendings
     </h2>
@@ -418,7 +419,6 @@
 
     // Total Spent Chart
     const ctx = document.getElementById('totalSpentChart');
-    const isLoggedIn = {{ 'true' if user_id else 'false' }};
 
     // 사용량에 따른 색상 결정 함수
     function getTotalChartColor(percentage) {
