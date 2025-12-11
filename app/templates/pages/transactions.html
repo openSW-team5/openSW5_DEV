@@ -178,9 +178,9 @@
       <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
 
       <!-- 카테고리 (지출일 때만 표시) -->
-      <div id="categorySection" class="flex justify-between items-center" style="margin-bottom: 24px;">
-        <span class="font-noto text-[16px] leading-[19px] text-[#878787]">카테고리</span>
-        <select id="categorySelect" class="w-[200px] h-[38px] border-2 border-[#878787] rounded-[20px] px-4 font-noto text-[14px] focus:outline-none focus:border-primary transition-colors">
+      <div id="categorySection" style="margin-bottom: 24px; position: relative; height: 19px;">
+        <span class="font-noto text-[16px] leading-[19px] text-[#878787]" style="position: absolute; left: 0;">카테고리</span>
+        <select id="categorySelect" class="border-0 bg-transparent font-noto text-[15px] text-black focus:outline-none" style="padding: 0; position: absolute; right: 0;">
           <option value="">선택하세요</option>
           <option value="식비">식비</option>
           <option value="교통비">교통비</option>
@@ -813,6 +813,29 @@ function selectType(type) {
     selectedBtn.style.borderColor = '#2196F3';
     selectedBtn.style.backgroundColor = '#E3F2FD';
     selectedBtn.style.color = '#2196F3';
+  }
+
+  // UI 업데이트
+  const categorySection = document.getElementById('categorySection');
+  const itemsHeader = document.getElementById('itemsHeader');
+  const modalItems = document.getElementById('modalItems');
+  const itemsDivider = document.getElementById('itemsDivider');
+  const totalLabel = document.getElementById('totalLabel');
+
+  if (type === 'expense') {
+    // 지출: 카테고리 및 상품 목록 표시
+    if (categorySection) categorySection.style.display = 'block';
+    if (itemsHeader) itemsHeader.style.display = 'flex';
+    if (itemsDivider) itemsDivider.style.display = 'block';
+    if (modalItems) modalItems.style.display = 'block';
+    if (totalLabel) totalLabel.textContent = '합계';
+  } else {
+    // 수입/이체: 카테고리 및 상품 목록 숨김
+    if (categorySection) categorySection.style.display = 'none';
+    if (itemsHeader) itemsHeader.style.display = 'none';
+    if (itemsDivider) itemsDivider.style.display = 'none';
+    if (modalItems) modalItems.style.display = 'none';
+    if (totalLabel) totalLabel.textContent = '금액';
   }
 }
 
