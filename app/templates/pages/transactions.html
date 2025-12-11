@@ -458,14 +458,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         dateTotals[day] = { income: 0, expense: 0, transfer: 0 };
       }
 
-      // 거래 타입 구분 (merchant 이름으로 임시 구분)
-      const merchant = receipt.merchant || '';
-      const isIncome = merchant.includes('수입');
-      const isTransfer = merchant.includes('이체');
+      // 거래 타입 구분
+      const type = receipt.type || 'expense';
 
-      if (isIncome) {
+      if (type === 'income') {
         dateTotals[day].income += receipt.total;
-      } else if (isTransfer) {
+      } else if (type === 'transfer') {
         dateTotals[day].transfer += receipt.total;
       } else {
         dateTotals[day].expense += receipt.total;
@@ -498,10 +496,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
       if (hasTransactions) {
         if (hasTransactions.income > 0) {
-          amountHTML += `<div style="font-size: 8px; color: #4CAF50; font-weight: 500;">+${hasTransactions.income.toLocaleString()}</div>`;
+          amountHTML += `<div style="font-size: 8px; color: #4CAF50; font-weight: 500;">${hasTransactions.income.toLocaleString()}</div>`;
         }
         if (hasTransactions.expense > 0) {
-          amountHTML += `<div style="font-size: 8px; color: #AF4C4E; font-weight: 500;">-${hasTransactions.expense.toLocaleString()}</div>`;
+          amountHTML += `<div style="font-size: 8px; color: #AF4C4E; font-weight: 500;">${hasTransactions.expense.toLocaleString()}</div>`;
         }
         if (hasTransactions.transfer > 0) {
           amountHTML += `<div style="font-size: 8px; color: #878787; font-weight: 500;">${hasTransactions.transfer.toLocaleString()}</div>`;
@@ -599,14 +597,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     const amount = receipt.total.toLocaleString();
     // 타입별 색상: 지출(expense), 수입(income), 이체(transfer)
     const type = receipt.type || 'expense'; // 기본값 지출
-    let amountColor;
+    let amountColor, amountSign;
 
     if (type === 'expense') {
       amountColor = '#AF4C4E';
+      amountSign = '-';
     } else if (type === 'income') {
       amountColor = '#4CAF50';
+      amountSign = '+';
     } else { // transfer
       amountColor = '#878787';
+      amountSign = '';
     }
 
     return `
@@ -629,7 +630,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
             <div class="flex items-center">
               <p class="font-montserrat font-semibold text-[20px]" style="color: ${amountColor}">
-                ${amount}원
+                ${amountSign}${amount}원
               </p>
             </div>
           </div>
