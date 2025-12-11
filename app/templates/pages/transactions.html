@@ -566,8 +566,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     return `
-      <div class="relative overflow-hidden">
-        <div class="transaction-item bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-[20px] cursor-pointer hover:shadow-lg transition-all"
+      <div class="relative" style="overflow: hidden;">
+        <div class="transaction-item bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-[20px] cursor-pointer hover:shadow-lg transition-transform duration-200"
+             style="position: relative; z-index: 2;"
              data-receipt-id="${receipt.id}"
              onclick="openReceiptModal(${receipt.id})">
           <div class="flex items-center justify-between">
@@ -579,7 +580,7 @@ document.addEventListener('DOMContentLoaded', async function() {
               </div>
               <div class="flex flex-col justify-center">
                 <h4 class="font-montserrat font-semibold text-[20px] leading-tight text-text mb-[2px]">${receipt.merchant}</h4>
-                <p class="font-montserrat text-[15px] leading-tight text-[#727272]">${receipt.status === 'CONFIRMED' ? 'Food' : 'Pending'}</p>
+                <p class="font-montserrat text-[15px] leading-tight text-[#727272]">Food</p>
               </div>
             </div>
             <div class="flex items-center">
@@ -591,9 +592,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         </div>
 
         <!-- 삭제 버튼 (스와이프 시 나타남) -->
-        <div class="delete-button absolute top-0 right-[-98px] w-[98px] h-full flex items-center justify-center bg-[#AF4C4E] rounded-r-[20px] transition-all"
+        <div class="delete-button" style="position: absolute; top: 0; right: -98px; width: 98px; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 1; transition: right 0.2s;"
              onclick="deleteReceipt(${receipt.id}); event.stopPropagation();">
-          <span class="font-montserrat font-bold text-[24px] text-[#AF4C4E] bg-white px-3 py-1 rounded">삭제</span>
+          <svg width="98" height="86" viewBox="0 0 98 86" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="94" height="82" rx="18" stroke="#AF4C4E" stroke-width="4"/>
+            <path d="M33.3739 33.04H35.9899V35.056C35.9899 36.48 35.7659 37.824 35.3179 39.088C34.8699 40.336 34.1899 41.432 33.2779 42.376C32.3659 43.32 31.1899 44.024 29.7499 44.488L28.1659 41.944C29.3979 41.544 30.3899 40.992 31.1419 40.288C31.9099 39.568 32.4699 38.76 32.8219 37.864C33.1899 36.952 33.3739 36.016 33.3739 35.056V33.04ZM34.0459 33.04H36.6139V35.368C36.6139 36.024 36.7099 36.672 36.9019 37.312C37.0939 37.952 37.3899 38.56 37.7899 39.136C38.1899 39.696 38.7019 40.2 39.3259 40.648C39.9659 41.08 40.7179 41.432 41.5819 41.704L40.0219 44.224C38.6619 43.776 37.5339 43.112 36.6379 42.232C35.7579 41.352 35.1019 40.32 34.6699 39.136C34.2539 37.952 34.0459 36.696 34.0459 35.368V33.04ZM42.6859 31.912H45.8779V45.328H42.6859V31.912ZM45.0139 37.312H48.8299V39.928H45.0139V37.312ZM31.0459 46.264H45.8779V54.136H42.6859V48.808H31.0459V46.264ZM66.516 31.888H69.564V54.112H66.516V31.888ZM59.196 39.496H62.892V42.088H59.196V39.496ZM62.028 32.248H65.004V53.104H62.028V32.248ZM54.42 35.512H56.82V37.792C56.82 39.04 56.724 40.272 56.532 41.488C56.356 42.704 56.076 43.856 55.692 44.944C55.308 46.016 54.804 46.984 54.18 47.848C53.556 48.712 52.804 49.424 51.924 49.984L50.028 47.632C51.116 46.944 51.98 46.08 52.62 45.04C53.26 43.984 53.716 42.832 53.988 41.584C54.276 40.32 54.42 39.056 54.42 37.792V35.512ZM55.14 35.512H57.516V37.792C57.516 39.024 57.652 40.24 57.924 41.44C58.196 42.64 58.644 43.736 59.268 44.728C59.892 45.704 60.74 46.504 61.812 47.128L59.964 49.432C58.78 48.728 57.836 47.776 57.132 46.576C56.428 45.376 55.916 44.024 55.596 42.52C55.292 41 55.14 39.424 55.14 37.792V35.512ZM50.844 34.12H60.756V36.688H50.844V34.12Z" fill="#AF4C4E"/>
+          </svg>
         </div>
       </div>
     `;
