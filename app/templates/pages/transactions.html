@@ -242,17 +242,18 @@
 <script>
 // 전역 변수
 let receiptsData = [];
+let transactionsChart = null;
 
 document.addEventListener('DOMContentLoaded', async function() {
   // Initialize Transactions Chart
   const ctx = document.getElementById('transactionsChart');
-  new Chart(ctx, {
+  transactionsChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+      labels: [],
       datasets: [{
         label: '지출',
-        data: [10000, 15000, 20000, 25000, 30000],
+        data: [],
         borderColor: '#B4DE00',
         backgroundColor: (context) => {
           const ctx = context.chart.ctx;
@@ -654,6 +655,42 @@ document.addEventListener('DOMContentLoaded', async function() {
     `;
   }
 
+  // Update chart with receipt data
+  function updateChart() {
+    if (!transactionsChart) return;
+
+    // Get last 6 months
+    const now = new Date();
+    const months = [];
+    const monthlyTotals = {};
+
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const monthLabel = date.toLocaleDateString('en-US', { month: 'short' });
+      months.push({ key: monthKey, label: monthLabel });
+      monthlyTotals[monthKey] = 0;
+    }
+
+    // Calculate monthly totals for expense type
+    receiptsData.forEach(receipt => {
+      if (receipt.type === 'expense' && receipt.purchased_at) {
+        const monthKey = receipt.purchased_at.substring(0, 7); // YYYY-MM
+        if (monthlyTotals.hasOwnProperty(monthKey)) {
+          monthlyTotals[monthKey] += receipt.total;
+        }
+      }
+    });
+
+    // Update chart
+    const labels = months.map(m => m.label);
+    const data = months.map(m => monthlyTotals[m.key]);
+
+    transactionsChart.data.labels = labels;
+    transactionsChart.data.datasets[0].data = data;
+    transactionsChart.update();
+  }
+
   // Load receipts from API
   async function loadReceipts() {
     try {
@@ -669,16 +706,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Group receipts by date for list view
         const groupedReceipts = groupReceiptsByDate(result.data);
         renderGroupedTransactions(groupedReceipts);
+        // Update chart with real data
+        updateChart();
       } else {
         // No data or error status
         console.log('No data or error status:', result);
         receiptsData = [];
         transactionsContainer.innerHTML = '<p class="text-center text-gray font-roboto text-[14px]">거래내역이 없습니다</p>';
+        updateChart(); // Update with empty data
       }
     } catch (error) {
       console.error('Error loading receipts:', error);
       receiptsData = [];
       transactionsContainer.innerHTML = '<p class="text-center text-gray font-roboto text-[14px]">거래내역이 없습니다</p>';
+      updateChart(); // Update with empty data
     }
   }
 
