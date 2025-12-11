@@ -33,10 +33,13 @@
 >
   <!-- Total Spent & Monthly Budget Card -->
   <div
-    class="relative w-[358px] h-[110px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[31px]"
+    class="relative w-[358px] h-[110px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[25px]"
   >
     <!-- Circular Progress Chart -->
-    <div class="absolute" style="left: 33px; top: 13px; width: 84px; height: 84px">
+    <div
+      class="absolute"
+      style="left: 33px; top: 13px; width: 84px; height: 84px"
+    >
       <canvas id="totalSpentChart"></canvas>
     </div>
 
@@ -132,8 +135,10 @@
 
   <!-- Category Cards (Dynamic) -->
   <template x-for="(category, index) in categories" :key="index">
-    <div class="flex justify-center mb-[31px]"
-         x-init="$nextTick(() => {
+    <div
+      class="flex justify-center"
+      style="margin-bottom: 15px"
+      x-init="$nextTick(() => {
            const ctx = document.getElementById('categoryChart' + index);
            const percentage = ((category.spent / category.budget) * 100).toFixed(2);
            const remaining = category.budget - category.spent;
@@ -176,7 +181,8 @@
                }
              }]
            });
-         })">
+         })"
+    >
       <div class="relative w-[358px] h-[86px]">
         <!-- Card Background -->
         <div
@@ -184,7 +190,10 @@
         ></div>
 
         <!-- Progress circle -->
-        <div class="absolute" style="left: 4.75%; top: 12.79%; width: 17.88%; height: 74.42%">
+        <div
+          class="absolute"
+          style="left: 4.75%; top: 12.79%; width: 17.88%; height: 74.42%"
+        >
           <canvas :id="'categoryChart' + index"></canvas>
         </div>
 
