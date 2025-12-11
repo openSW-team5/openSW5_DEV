@@ -405,28 +405,32 @@
     }
   });
 
-  // Month navigation
-  let currentDate = new Date();
+  // Month navigation with Day.js
+  dayjs.locale('ko');
+  let currentDate = dayjs();
   const currentMonthText = document.getElementById('currentMonth');
   const prevMonthBtn = document.getElementById('prevMonthBtn');
   const nextMonthBtn = document.getElementById('nextMonthBtn');
 
   function updateMonthDisplay() {
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                       'July', 'August', 'September', 'October', 'November', 'December'];
-    currentMonthText.textContent = monthNames[currentDate.getMonth()];
+    // 한글 월 이름 표시 (예: "12월")
+    currentMonthText.textContent = currentDate.format('M월');
 
-    // Here you can add logic to fetch and update data based on selected month
-    console.log("Selected month:", currentDate.getMonth() + 1, "Year:", currentDate.getFullYear());
+    // 해당 월의 시작/끝 날짜 계산
+    const startOfMonth = currentDate.startOf('month').format('YYYY-MM-DD');
+    const endOfMonth = currentDate.endOf('month').format('YYYY-MM-DD');
+
+    console.log("조회 기간:", startOfMonth, "~", endOfMonth);
+    console.log("선택된 월:", currentDate.format('YYYY년 M월'));
   }
 
   prevMonthBtn.addEventListener('click', function() {
-    currentDate.setMonth(currentDate.getMonth() - 1);
+    currentDate = currentDate.subtract(1, 'month');
     updateMonthDisplay();
   });
 
   nextMonthBtn.addEventListener('click', function() {
-    currentDate.setMonth(currentDate.getMonth() + 1);
+    currentDate = currentDate.add(1, 'month');
     updateMonthDisplay();
   });
 
