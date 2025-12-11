@@ -755,8 +755,8 @@ async function deleteReceipt(receiptId) {
   if (!confirm('이 거래내역을 삭제하시겠습니까?')) return;
 
   try {
-    const response = await fetch(`/receipts/${receiptId}`, {
-      method: 'DELETE'
+    const response = await fetch(`/receipts/${receiptId}/delete`, {
+      method: 'POST'
     });
 
     if (response.ok) {
