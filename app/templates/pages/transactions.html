@@ -213,7 +213,7 @@
       </div>
 
       <!-- 버튼들 -->
-      <div class="flex justify-between items-center">
+      <div id="modalActionButtons" class="flex justify-between items-center">
         <button
           onclick="closeReceiptModal()"
           class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#111111] hover:bg-gray-100 transition-colors"
@@ -1026,13 +1026,13 @@ function editReceipt() {
   }
 
   // 버튼 변경: 취소/편집 → 취소/완료
-  const modalActions = document.querySelector('.flex.justify-between.mb-\\[24px\\]');
+  const modalActions = document.getElementById('modalActionButtons');
   if (modalActions) {
     modalActions.innerHTML = `
-      <button onclick="cancelEdit()" class="rounded-full bg-transparent border border-[#878787] font-satoshi font-medium text-[16px] text-[#878787] hover:bg-gray-100 transition-colors" style="width: 125px; height: 38px;">
+      <button onclick="cancelEdit()" class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#878787] hover:bg-gray-100 transition-colors" style="width: 125px; height: 38px;">
         취소
       </button>
-      <button onclick="saveReceipt()" class="rounded-full bg-[#4CAF50] border border-[#4CAF50] font-satoshi font-medium text-[16px] text-white hover:bg-[#45a049] transition-colors" style="width: 125px; height: 38px;">
+      <button onclick="saveReceipt()" class="border border-[#4CAF50] rounded-full bg-[#4CAF50] font-satoshi font-medium text-[16px] text-white hover:bg-[#45a049] transition-colors" style="width: 125px; height: 38px;">
         완료
       </button>
     `;
