@@ -612,7 +612,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     return `
       <div class="relative" style="overflow: hidden;">
-        <div class="transaction-item bg-white rounded-[20px] p-[20px] cursor-pointer transition-transform duration-200"
+        <div class="transaction-item bg-white rounded-[20px] p-[20px] cursor-pointer transition-transform duration-200 border-2 border-[#E0E0E0]"
              style="position: relative; z-index: 2;"
              data-receipt-id="${receipt.id}"
              onclick="openReceiptModal(${receipt.id})">
@@ -953,11 +953,32 @@ function closeReceiptModal(event) {
 }
 
 let isEditMode = false;
+let originalReceiptData = null;
 
 function editReceipt() {
   if (!currentReceiptId) return;
 
   isEditMode = true;
+
+  // 원본 데이터 저장 (취소 시 복구용)
+  const modalMerchant = document.getElementById('modalMerchant');
+  const modalAddress = document.getElementById('modalAddress');
+  originalReceiptData = {
+    merchant: modalMerchant.textContent,
+    address: modalAddress.textContent
+  };
+
+  // 사용처를 input으로 변경
+  if (modalMerchant) {
+    const merchantValue = modalMerchant.textContent;
+    modalMerchant.outerHTML = `<input type="text" id="modalMerchant" class="font-yidstreet font-bold text-[40px] leading-[52px] text-center text-black border-2 border-[#B4DE00] rounded-[10px] px-2 w-full" style="margin-bottom: 8px;" value="${merchantValue}">`;
+  }
+
+  // 주소를 input으로 변경
+  if (modalAddress) {
+    const addressValue = modalAddress.textContent;
+    modalAddress.outerHTML = `<input type="text" id="modalAddress" class="font-noto text-[16px] leading-[19px] text-center text-[#878787] border-2 border-[#B4DE00] rounded-[10px] px-2 w-full" style="margin-bottom: 24px;" value="${addressValue}">`;
+  }
 
   // 카테고리 드롭다운 활성화 (지출인 경우에만)
   if (currentReceiptType === 'expense') {
@@ -965,40 +986,78 @@ function editReceipt() {
     if (categorySelect) {
       categorySelect.removeAttribute('disabled');
     }
+
+    // 상품 목록을 편집 가능하게 변경
+    makeItemsEditable();
   }
 
-  // 버튼 변경: 취소/편집 → 저장/취소
+  // 버튼 변경: 취소/편집 → 취소/완료
   const modalActions = document.querySelector('.flex.justify-between.mb-\\[24px\\]');
   if (modalActions) {
     modalActions.innerHTML = `
       <button onclick="cancelEdit()" class="rounded-full bg-transparent border border-[#878787] font-satoshi font-medium text-[16px] text-[#878787] hover:bg-gray-100 transition-colors" style="width: 125px; height: 38px;">
         취소
       </button>
-      <button onclick="saveReceipt()" class="rounded-full bg-[#B4DE00] border border-[#111111] font-satoshi font-medium text-[16px] text-[#111111] hover:bg-[#a0c900] transition-colors" style="width: 125px; height: 38px;">
-        저장
+      <button onclick="saveReceipt()" class="rounded-full bg-[#4CAF50] border border-[#4CAF50] font-satoshi font-medium text-[16px] text-white hover:bg-[#45a049] transition-colors" style="width: 125px; height: 38px;">
+        완료
       </button>
     `;
   }
 }
 
+function makeItemsEditable() {
+  const modalItems = document.getElementById('modalItems');
+  if (!modalItems) return;
+
+  const items = Array.from(modalItems.querySelectorAll('.flex.justify-between'));
+
+  items.forEach((item, index) => {
+    const spans = item.querySelectorAll('span');
+    if (spans.length < 4) return;
+
+    const name = spans[0].textContent;
+    const qty = spans[1].textContent;
+    const price = spans[2].textContent.replace(/,/g, '');
+
+    item.innerHTML = `
+      <input type="text" class="flex-1 border border-[#B4DE00] rounded px-1 text-[14px] font-satoshi font-bold text-[#878787]" value="${name}" data-field="name" data-index="${index}">
+      <input type="number" class="w-[26px] text-center border border-[#B4DE00] rounded px-1 text-[14px] font-satoshi font-bold text-[#878787]" value="${qty}" data-field="qty" data-index="${index}">
+      <input type="number" class="w-[60px] text-right border border-[#B4DE00] rounded px-1 text-[14px] font-satoshi font-bold text-[#878787]" value="${price}" data-field="price" data-index="${index}">
+      <span class="w-[60px] text-right text-[14px] font-satoshi font-bold text-[#878787]" data-field="subtotal" data-index="${index}">${parseInt(qty) * parseInt(price)}</span>
+    `;
+
+    // 수량/가격 변경 시 소계 자동 계산
+    const qtyInput = item.querySelector('[data-field="qty"]');
+    const priceInput = item.querySelector('[data-field="price"]');
+    const subtotalSpan = item.querySelector('[data-field="subtotal"]');
+
+    const updateSubtotal = () => {
+      const q = parseInt(qtyInput.value) || 0;
+      const p = parseInt(priceInput.value) || 0;
+      subtotalSpan.textContent = (q * p).toLocaleString();
+    };
+
+    qtyInput.addEventListener('input', updateSubtotal);
+    priceInput.addEventListener('input', updateSubtotal);
+  });
+}
+
 function cancelEdit() {
   isEditMode = false;
 
-  // 카테고리 드롭다운 비활성화
-  const categorySelect = document.getElementById('categorySelect');
-  if (categorySelect) {
-    categorySelect.setAttribute('disabled', 'disabled');
+  // 모달을 다시 열어서 원래 상태로 복구
+  if (currentReceiptId) {
+    openReceiptModal(currentReceiptId);
+  } else {
+    closeReceiptModal();
   }
-
-  // 모달 닫기
-  closeReceiptModal();
 }
 
 async function saveReceipt() {
   if (!currentReceiptId) return;
 
   try {
-    // API에서 상세 정보 가져오기
+    // API에서 상세 정보 가져오기 (날짜, 상태 등)
     const detailResponse = await fetch(`/receipts/${currentReceiptId}`);
     const detailResult = await detailResponse.json();
 
@@ -1008,9 +1067,45 @@ async function saveReceipt() {
 
     const receipt = detailResult.data;
 
-    // 카테고리 값 가져오기
+    // 수정된 값 가져오기
+    const merchantInput = document.getElementById('modalMerchant');
+    const addressInput = document.getElementById('modalAddress');
     const categorySelect = document.getElementById('categorySelect');
+
+    const merchant = merchantInput ? merchantInput.value : receipt.merchant;
     const category = categorySelect ? categorySelect.value : null;
+
+    // 상품 목록 수집 (지출인 경우에만)
+    let items = [];
+    let total = receipt.total;
+
+    if (currentReceiptType === 'expense') {
+      const modalItems = document.getElementById('modalItems');
+      if (modalItems) {
+        const itemRows = modalItems.querySelectorAll('.flex.justify-between');
+
+        itemRows.forEach(row => {
+          const nameInput = row.querySelector('[data-field="name"]');
+          const qtyInput = row.querySelector('[data-field="qty"]');
+          const priceInput = row.querySelector('[data-field="price"]');
+
+          if (nameInput && qtyInput && priceInput) {
+            const qty = parseInt(qtyInput.value) || 0;
+            const price = parseInt(priceInput.value) || 0;
+
+            items.push({
+              name: nameInput.value,
+              qty: qty,
+              price: price,
+              category: null
+            });
+          }
+        });
+
+        // 총액 재계산
+        total = items.reduce((sum, item) => sum + (item.qty * item.price), 0);
+      }
+    }
 
     // API 호출하여 업데이트
     const response = await fetch(`/receipts/${currentReceiptId}/update`, {
@@ -1019,13 +1114,13 @@ async function saveReceipt() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        merchant: receipt.merchant,
+        merchant: merchant,
         purchased_at: receipt.purchased_at,
-        total: receipt.total,
+        total: total,
         status: receipt.status || 'CONFIRMED',
         type: currentReceiptType,
         category: category,
-        items: receipt.items || [],
+        items: items.length > 0 ? items : receipt.items || [],
         image_path: receipt.image_path
       })
     });
