@@ -1032,7 +1032,7 @@ function editReceipt() {
       <button onclick="cancelEdit()" class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#878787] hover:bg-gray-100 transition-colors" style="width: 125px; height: 38px;">
         취소
       </button>
-      <button onclick="saveReceipt()" class="border border-[#4CAF50] rounded-full bg-[#4CAF50] font-satoshi font-medium text-[16px] text-white hover:bg-[#45a049] transition-colors" style="width: 125px; height: 38px;">
+      <button onclick="saveReceipt()" class="rounded-full font-satoshi font-medium text-[16px] transition-colors" style="width: 125px; height: 38px; background-color: #4CAF50; border: 2px solid #4CAF50; color: white;">
         완료
       </button>
     `;
@@ -1076,12 +1076,18 @@ function makeItemsEditable() {
   });
 }
 
-function cancelEdit() {
+async function cancelEdit() {
   isEditMode = false;
 
-  // 모달을 다시 열어서 원래 상태로 복구
+  // 모달을 닫고 다시 열어서 원래 상태로 복구
   if (currentReceiptId) {
-    openReceiptModal(currentReceiptId);
+    const receiptId = currentReceiptId;
+    closeReceiptModal();
+
+    // 잠시 대기 후 다시 열기
+    setTimeout(async () => {
+      await openReceiptModal(receiptId);
+    }, 100);
   } else {
     closeReceiptModal();
   }
