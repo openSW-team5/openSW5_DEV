@@ -145,7 +145,7 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
     <template x-for="(category, index) in categories" :key="index">
       <div
         class="absolute"
-        :style="`width: 82px; height: 109px; left: ${39 + (index % 3) * 134}px; top: ${180 + Math.floor(index / 3) * 157}px`"
+        :style="`width: 82px; height: 109px; left: ${39 + (index % 3) * 134}px; top: ${180 + Math.floor(index / 3) * 125}px`"
       >
         <!-- X Button (only in edit mode) -->
         <button
@@ -214,20 +214,6 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
           "
           x-text="category.name"
         ></p>
-
-        <!-- Subcategory Count -->
-        <p
-          class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center"
-          style="
-            width: 82px;
-            height: 18px;
-            left: 0px;
-            top: 91px;
-            color: #878787;
-          "
-        >
-          소분류 00개
-        </p>
       </div>
     </template>
 
@@ -240,7 +226,7 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
         width: 150px;
         height: 54px;
         left: calc(50% - 150px / 2);
-        top: 650px;
+        top: 550px;
         border: 1px solid #878787;
         border-radius: 70px;
         padding: 16px 10px;
@@ -257,7 +243,7 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
     <div
       x-show="editMode"
       class="absolute"
-      style="left: 0; right: 0; top: 650px"
+      style="left: 0; right: 0; top: 550px"
     >
       <!-- Cancel Button -->
       <button
