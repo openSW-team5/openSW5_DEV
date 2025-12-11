@@ -67,11 +67,17 @@
             }));
           payload.total = this.total;
         } else {
-          // For income/transfer, use manual amount
+          // For income/transfer, use manual amount and create a single dummy item
           payload.total = Number(this.manualAmount) || 0;
-          payload.items = []; // Empty items array
+          payload.items = [{
+            name: this.receiptType === 'income' ? '수입' : '이체',
+            qty: 1,
+            price: Number(this.manualAmount) || 0,
+            category: null
+          }];
         }
 
+        console.log('Sending payload:', payload);
         const response = await fetch('/receipts/confirm', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -81,11 +87,13 @@
         if (response.ok) {
           this.showSuccess = true;
         } else {
-          alert('저장에 실패했습니다.');
+          const errorData = await response.json();
+          console.error('API Error:', errorData);
+          alert('저장에 실패했습니다: ' + (errorData.detail || '알 수 없는 오류'));
         }
       } catch (error) {
         console.error('Error submitting receipt:', error);
-        alert('오류가 발생했습니다.');
+        alert('오류가 발생했습니다: ' + error.message);
       }
     }
   }"
@@ -113,57 +121,6 @@
         x-show="receiptType === 'transfer'"
         class="font-yidstreet font-bold text-2xl text-[#878787]"
       >이체</h2>
-    </div>
-
-    <!-- 수입/이체용 배경 박스 (큰 검정색 박스 밖) -->
-    <div
-      x-show="receiptType !== 'expense'"
-      class="absolute w-[351px] left-[38px] top-[470px] h-[190px] bg-[#0F0F0F] rounded-[12px] z-5"
-    ></div>
-
-    <!-- 수입/이체용 입력 필드 (큰 검정색 박스 밖) -->
-    <div
-      x-show="receiptType !== 'expense'"
-      class="absolute w-[351px] left-[38px] top-[470px] h-[190px] flex flex-col gap-[20px] p-4 border border-[#4F4F4F] rounded-[5px] z-10"
-    >
-      <!-- Frame 36: Date -->
-      <div class="flex items-center gap-[10px]">
-        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0">Date</span>
-        <input
-          type="date"
-          x-model="receiptDate"
-          class="flex-1 h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          style="direction: ltr; text-align: left"
-        />
-        <input
-          type="time"
-          x-model="receiptTime"
-          class="w-[80px] h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          style="direction: ltr; text-align: left"
-        />
-      </div>
-
-      <!-- Frame 37: Store -->
-      <div class="flex items-center gap-[50px]">
-        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0">거래처</span>
-        <input
-          type="text"
-          x-model="store"
-          class="flex-grow h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="거래처/상대방 이름"
-        />
-      </div>
-
-      <!-- Amount -->
-      <div class="flex items-center gap-[50px]">
-        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0">금액</span>
-        <input
-          type="number"
-          x-model="manualAmount"
-          class="flex-grow h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-          placeholder="금액 입력"
-        />
-      </div>
     </div>
 
     <!-- 회전된 카드 이미지 (상단) -->
@@ -361,7 +318,7 @@
     <!-- 검정색 박스 (영수증 정보) -->
     <div
       class="absolute w-full left-0 bg-[#1B1B1B] transition-all duration-300"
-      :class="receiptType === 'expense' ? (scrolled ? 'h-[800px] top-[264px]' : 'h-[426px] top-[516px]') : 'h-[220px] top-[680px]'"
+      :class="receiptType === 'expense' ? (scrolled ? 'h-[800px] top-[264px]' : 'h-[426px] top-[516px]') : 'h-[260px] top-[516px]'"
     >
       <!-- Up Arrow (카드 선택 버튼) - 지출일 때만 표시 -->
       <div
@@ -373,15 +330,7 @@
         </svg>
       </div>
 
-      <!-- 배경 박스 (입력 필드 뒤) - 지출일 때만 -->
-      <div
-        x-show="receiptType === 'expense'"
-        class="absolute w-[351px] left-[38px] bg-[#0F0F0F] rounded-[12px] transition-all duration-300"
-        :class="scrolled ? 'h-[660px] top-[12px]' : 'h-[265px] top-[23px]'"
-        style="z-index: 5"
-      ></div>
-
-      <!-- Frame 36 - 영수증 상세 정보 (지출일 때만) -->
+      <!-- Frame 36 - 영수증 상세 정보 (지출) -->
       <div
         x-show="receiptType === 'expense'"
         class="absolute w-[351px] left-[38px] flex flex-col gap-[17px] p-4 border border-[#4F4F4F] rounded-[5px] transition-all duration-300"
@@ -578,10 +527,57 @@
           >
         </button>
       </div>
+
+      <!-- Frame 36 - 영수증 상세 정보 (수입/이체) -->
+      <div
+        x-show="receiptType !== 'expense'"
+        class="absolute w-[351px] left-[38px] flex flex-col gap-[20px] p-4 border border-[#4F4F4F] rounded-[5px]"
+        style="top: 23px; z-index: 10"
+      >
+        <!-- Frame 36: Date -->
+        <div class="flex items-center gap-[10px]">
+          <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0">Date</span>
+          <input
+            type="date"
+            x-model="receiptDate"
+            class="flex-1 h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+            style="direction: ltr; text-align: left"
+          />
+          <input
+            type="time"
+            x-model="receiptTime"
+            class="w-[80px] h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+            style="direction: ltr; text-align: left"
+          />
+        </div>
+
+        <!-- Frame 37: Store -->
+        <div class="flex items-center gap-[50px]">
+          <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0">거래처</span>
+          <input
+            type="text"
+            x-model="store"
+            class="flex-grow h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+            placeholder="거래처/상대방 이름"
+          />
+        </div>
+
+        <!-- Amount -->
+        <div class="flex items-center gap-[50px]">
+          <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0">금액</span>
+          <input
+            type="number"
+            x-model="manualAmount"
+            class="flex-grow h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+            placeholder="금액 입력"
+          />
+        </div>
+      </div>
     </div>
 
     <!-- 확인 버튼 (홈으로 돌아가기) - 하단 고정 -->
     <div
+      x-show="!showSuccess"
       class="fixed bottom-0 left-0 right-0 max-w-[428px] mx-auto pb-4 px-4 z-50 bg-[#1B1B1B]"
     >
       <button
