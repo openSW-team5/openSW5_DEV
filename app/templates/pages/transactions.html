@@ -125,7 +125,71 @@
   </div>
 </div>
 
+<!-- 영수증 상세 모달 -->
+<div id="receiptModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" onclick="closeReceiptModal(event)">
+  <div class="relative w-[334px] h-[515px] bg-[#F0F0F0] rounded-[20px] shadow-[0px_4px_10px_rgba(0,0,0,0.35)]" onclick="event.stopPropagation()">
+    <!-- 영수증 SVG 배경 -->
+    <svg class="absolute inset-0 pointer-events-none" width="334" height="515" viewBox="0 0 334 515" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H334V515.001L324.722 521L315.444 515.001L306.167 521L296.889 515.001L287.611 521L278.333 515.001L269.056 521L259.778 515.001L250.5 521L241.222 515.001L231.944 521L222.667 515.001L213.389 521L204.111 515.001L194.833 521L185.556 515.001L176.278 521L167 515.001L157.722 521L148.444 515.001L139.167 521L129.889 515.001L120.611 521L111.333 515.001L102.056 521L92.7778 515.001L83.5 521L74.2222 515.001L64.9444 521L55.6667 515.001L46.3889 521L37.1111 515.001L27.8333 521L18.5556 515.001L9.27778 521L0 515.001V0Z" fill="#F0F0F0"/>
+    </svg>
+
+    <!-- 모달 내용 -->
+    <div class="relative p-6 overflow-y-auto h-full">
+      <!-- 상호명 -->
+      <h2 id="modalMerchant" class="font-noto font-bold text-[36px] text-center text-black mb-2"></h2>
+
+      <!-- 주소 -->
+      <p id="modalAddress" class="font-noto text-[16px] text-center text-[#878787] mb-4"></p>
+
+      <!-- 날짜 -->
+      <p id="modalDate" class="font-roboto text-[14px] text-center text-black mb-6"></p>
+
+      <div class="border-t border-dashed border-[#979797] mb-4"></div>
+
+      <!-- 결제 타입 -->
+      <div class="flex justify-between mb-2">
+        <span class="font-noto text-[14px] text-[#6D7278]">Token Type</span>
+        <span id="modalType" class="font-noto text-[14px] text-black"></span>
+      </div>
+
+      <div class="border-t border-dashed border-[#979797] mb-4"></div>
+
+      <!-- 상품 헤더 -->
+      <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
+        <span class="flex-1">상품명</span>
+        <span class="w-[26px] text-center">수량</span>
+        <span class="w-[40px] text-right">단가</span>
+        <span class="w-[40px] text-right">소계</span>
+      </div>
+
+      <!-- 상품 목록 -->
+      <div id="modalItems" class="mb-4"></div>
+
+      <div class="border-t border-dashed border-[#979797] mb-4"></div>
+
+      <!-- 합계 -->
+      <div class="flex justify-between font-satoshi font-bold text-[14px] text-black mb-6">
+        <span>합계</span>
+        <span id="modalTotal"></span>
+      </div>
+
+      <!-- 버튼들 -->
+      <div class="flex gap-4 justify-center">
+        <button onclick="closeReceiptModal()" class="w-[125px] h-[38px] border border-[#878787] rounded-[70px] font-satoshi font-medium text-[16px] text-[#111111] hover:bg-gray-100 transition-colors">
+          취소
+        </button>
+        <button onclick="editReceipt()" class="w-[125px] h-[38px] border border-[#878787] rounded-[70px] font-satoshi font-medium text-[16px] text-[#111111] hover:bg-gray-100 transition-colors">
+          수정하기
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+// 전역 변수
+let receiptsData = [];
+
 document.addEventListener('DOMContentLoaded', async function() {
   // Initialize Transactions Chart
   const ctx = document.getElementById('transactionsChart');
@@ -241,7 +305,6 @@ document.addEventListener('DOMContentLoaded', async function() {
   // View mode state
   let currentView = 'list'; // 'list' or 'calendar'
   let currentDate = new Date();
-  let receiptsData = [];
 
   const transactionsContainer = document.getElementById('transactions-container');
   const calendarContainer = document.getElementById('calendar-container');
@@ -478,28 +541,50 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   function renderTransactionCard(receipt) {
     const amount = receipt.total.toLocaleString();
-    const isExpense = receipt.total > 0;
+    // 타입별 색상: 지출(expense), 수입(income), 이체(transfer)
+    const type = receipt.type || 'expense'; // 기본값 지출
+    let amountColor, amountSign;
+
+    if (type === 'expense') {
+      amountColor = '#AF4C4E';
+      amountSign = '-';
+    } else if (type === 'income') {
+      amountColor = '#4CAF50';
+      amountSign = '+';
+    } else { // transfer
+      amountColor = '#878787';
+      amountSign = '';
+    }
 
     return `
-      <div class="bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-[20px] cursor-pointer hover:shadow-lg transition-shadow"
-           onclick="window.location.href='/receipt/${receipt.id}'">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-[12px]">
-            <div class="w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center flex-shrink-0">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                <path d="M3 9L5 3H19L21 9M3 9V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V9M3 9H21M9 13C9 14.6569 10.3431 16 12 16C13.6569 16 15 14.6569 15 13" stroke="#828282" stroke-width="2"/>
-              </svg>
+      <div class="relative overflow-hidden">
+        <div class="transaction-item bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-[20px] cursor-pointer hover:shadow-lg transition-all"
+             data-receipt-id="${receipt.id}"
+             onclick="openReceiptModal(${receipt.id})">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-[12px]">
+              <div class="w-[56px] h-[52px] bg-[#F2F2F2] rounded-[8px] flex items-center justify-center flex-shrink-0">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                  <path d="M3 9L5 3H19L21 9M3 9V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V9M3 9H21M9 13C9 14.6569 10.3431 16 12 16C13.6569 16 15 14.6569 15 13" stroke="#828282" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="flex flex-col justify-center">
+                <h4 class="font-montserrat font-semibold text-[20px] leading-tight text-text mb-[2px]">${receipt.merchant}</h4>
+                <p class="font-montserrat text-[15px] leading-tight text-[#727272]">${receipt.status === 'CONFIRMED' ? 'Food' : 'Pending'}</p>
+              </div>
             </div>
-            <div class="flex flex-col justify-center">
-              <h4 class="font-montserrat font-semibold text-[20px] leading-tight text-text mb-[2px]">${receipt.merchant}</h4>
-              <p class="font-montserrat text-[15px] leading-tight text-[#727272]">${receipt.status === 'CONFIRMED' ? 'Food' : 'Pending'}</p>
+            <div class="flex items-center">
+              <p class="font-montserrat font-semibold text-[20px]" style="color: ${amountColor}">
+                ${amountSign}${amount}원
+              </p>
             </div>
           </div>
-          <div class="flex items-center">
-            <p class="font-montserrat font-semibold text-[20px] ${isExpense ? 'text-[#FF6B6B]' : 'text-[#4CAF50]'}">
-              ${isExpense ? '-' : '+'}${amount}원
-            </p>
-          </div>
+        </div>
+
+        <!-- 삭제 버튼 (스와이프 시 나타남) -->
+        <div class="delete-button absolute top-0 right-[-98px] w-[98px] h-full flex items-center justify-center bg-[#AF4C4E] rounded-r-[20px] transition-all"
+             onclick="deleteReceipt(${receipt.id}); event.stopPropagation();">
+          <span class="font-montserrat font-bold text-[24px] text-[#AF4C4E] bg-white px-3 py-1 rounded">삭제</span>
         </div>
       </div>
     `;
@@ -535,6 +620,160 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   // Load receipts on page load
   await loadReceipts();
+
+  // ===== 스와이프 삭제 기능 (터치 + 마우스) =====
+  let swipeStartX = 0;
+  let swipeCurrentX = 0;
+  let swipeItem = null;
+  let isDragging = false;
+
+  document.addEventListener('touchstart', handleSwipeStart, { passive: true });
+  document.addEventListener('mousedown', handleSwipeStart);
+  document.addEventListener('touchmove', handleSwipeMove, { passive: false });
+  document.addEventListener('mousemove', handleSwipeMove);
+  document.addEventListener('touchend', handleSwipeEnd);
+  document.addEventListener('mouseup', handleSwipeEnd);
+
+  function handleSwipeStart(e) {
+    const target = e.target.closest('.transaction-item');
+    if (!target) return;
+
+    swipeItem = target.parentElement;
+    swipeStartX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    isDragging = true;
+    swipeItem.style.transition = 'none';
+  }
+
+  function handleSwipeMove(e) {
+    if (!isDragging || !swipeItem) return;
+
+    swipeCurrentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    const diffX = swipeCurrentX - swipeStartX;
+
+    // 왼쪽으로만 스와이프 가능
+    if (diffX < 0) {
+      e.preventDefault();
+      const translateX = Math.max(diffX, -98); // 최대 98px
+      swipeItem.querySelector('.transaction-item').style.transform = `translateX(${translateX}px)`;
+      swipeItem.querySelector('.delete-button').style.right = `${-98 - translateX}px`;
+    }
+  }
+
+  function handleSwipeEnd() {
+    if (!isDragging || !swipeItem) return;
+
+    const diffX = swipeCurrentX - swipeStartX;
+    swipeItem.style.transition = 'all 0.3s ease';
+    swipeItem.querySelector('.transaction-item').style.transition = 'transform 0.3s ease';
+    swipeItem.querySelector('.delete-button').style.transition = 'right 0.3s ease';
+
+    // -50px 이상 스와이프하면 삭제 버튼 보이기
+    if (diffX < -50) {
+      swipeItem.querySelector('.transaction-item').style.transform = 'translateX(-98px)';
+      swipeItem.querySelector('.delete-button').style.right = '0px';
+    } else {
+      swipeItem.querySelector('.transaction-item').style.transform = 'translateX(0)';
+      swipeItem.querySelector('.delete-button').style.right = '-98px';
+    }
+
+    isDragging = false;
+    swipeItem = null;
+    swipeStartX = 0;
+    swipeCurrentX = 0;
+  }
+
+  // ===== 검색 기능 =====
+  const searchIcon = document.querySelector('a[href="/search"]');
+  if (searchIcon) {
+    searchIcon.onclick = function(e) {
+      e.preventDefault();
+      const searchTerm = prompt('검색어를 입력하세요:');
+      if (searchTerm && searchTerm.trim()) {
+        filterTransactions(searchTerm.trim());
+      }
+    };
+  }
+
+  function filterTransactions(searchTerm) {
+    const filtered = receiptsData.filter(receipt => {
+      return receipt.merchant.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             (receipt.category && receipt.category.toLowerCase().includes(searchTerm.toLowerCase()));
+    });
+
+    if (filtered.length > 0) {
+      const groupedReceipts = groupReceiptsByDate(filtered);
+      renderGroupedTransactions(groupedReceipts);
+    } else {
+      transactionsContainer.innerHTML = '<p class="text-center text-gray font-roboto text-[14px]">검색 결과가 없습니다</p>';
+    }
+  }
 });
+
+// ===== 모달 함수들 (전역) =====
+let currentReceiptId = null;
+
+function openReceiptModal(receiptId) {
+  currentReceiptId = receiptId;
+  const receipt = receiptsData.find(r => r.id === receiptId);
+  if (!receipt) return;
+
+  // 모달 내용 채우기
+  document.getElementById('modalMerchant').textContent = receipt.merchant || '상호명 없음';
+  document.getElementById('modalAddress').textContent = receipt.address || '주소 없음';
+  document.getElementById('modalDate').textContent = dayjs(receipt.purchased_at).format('YYYY년 MM월 DD일');
+  document.getElementById('modalType').textContent = receipt.type === 'expense' ? '지출' : receipt.type === 'income' ? '수입' : '이체';
+  document.getElementById('modalTotal').textContent = receipt.total.toLocaleString() + '원';
+
+  // 상품 목록 (임시로 빈 값)
+  document.getElementById('modalItems').innerHTML = `
+    <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
+      <span class="flex-1">상품 정보 없음</span>
+      <span class="w-[6px]">-</span>
+      <span class="w-[40px] text-right">-</span>
+      <span class="w-[40px] text-right">-</span>
+    </div>
+  `;
+
+  // 모달 표시
+  document.getElementById('receiptModal').classList.remove('hidden');
+}
+
+function closeReceiptModal(event) {
+  if (!event || event.target.id === 'receiptModal') {
+    document.getElementById('receiptModal').classList.add('hidden');
+    currentReceiptId = null;
+  }
+}
+
+function editReceipt() {
+  if (!currentReceiptId) return;
+  alert('수정 기능은 백엔드 API 연동 후 구현됩니다.');
+  closeReceiptModal();
+}
+
+async function deleteReceipt(receiptId) {
+  if (!confirm('이 거래내역을 삭제하시겠습니까?')) return;
+
+  try {
+    const response = await fetch(`/receipts/${receiptId}`, {
+      method: 'DELETE'
+    });
+
+    if (response.ok) {
+      // 성공 시 목록에서 제거
+      receiptsData = receiptsData.filter(r => r.id !== receiptId);
+      const groupedReceipts = groupReceiptsByDate(receiptsData);
+      renderGroupedTransactions(groupedReceipts);
+      if (window.ToastHelper) {
+        window.ToastHelper.success('거래내역이 삭제되었습니다.');
+      }
+    } else {
+      throw new Error('삭제 실패');
+    }
+  } catch (error) {
+    console.error('Error deleting receipt:', error);
+    alert('삭제에 실패했습니다. 백엔드 API를 확인해주세요.');
+  }
+}
 </script>
 {% endblock %}
