@@ -1,32 +1,42 @@
-{% set navbar_variant = 'back-notify' %}
-{% set back_url = '/dashboard' %}
-{% set footer_active = 'default' %}
-{% extends "base.html" %}
+{% set navbar_variant = 'back-notify' %} {% set back_url = '/dashboard' %} {% set footer_active = 'default' %} {%
+extends "base.html" %} {% block content %}
 
-{% block content %}
+<div class="max-w-md mx-auto px-5" style="padding-top: 107px; padding-bottom: 107px">
+    <!-- User Profile Section -->
+    <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787]">
+        <!-- Profile Image -->
+        <div class="relative w-20 h-20">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="40" fill="#C4C4C4" />
+                <g clip-path="url(#clip0_196_886)">
+                    <path
+                        opacity="0.2"
+                        d="M40 48.75C49.665 48.75 57.5 40.915 57.5 31.25C57.5 21.585 49.665 13.75 40 13.75C30.335 13.75 22.5 21.585 22.5 31.25C22.5 40.915 30.335 48.75 40 48.75Z"
+                        fill="black" />
+                    <path
+                        d="M40 48.75C49.665 48.75 57.5 40.915 57.5 31.25C57.5 21.585 49.665 13.75 40 13.75C30.335 13.75 22.5 21.585 22.5 31.25C22.5 40.915 30.335 48.75 40 48.75Z"
+                        stroke="black"
+                        stroke-width="4"
+                        stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path
+                        d="M13.75 64.0625C19.0465 54.9105 28.666 48.75 40 48.75C51.334 48.75 60.9535 54.9105 66.25 64.0625"
+                        stroke="black"
+                        stroke-width="4"
+                        stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </g>
+                <defs>
+                    <clipPath id="clip0_196_886">
+                        <rect width="70" height="70" fill="white" transform="translate(5 5)" />
+                    </clipPath>
+                </defs>
+            </svg>
+        </div>
 
-<div class="max-w-md mx-auto px-5" style="padding-top: 107px; padding-bottom: 107px;">
-  <!-- User Profile Section -->
-  <div class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787]">
-    <!-- Profile Image -->
-    <div class="relative w-20 h-20">
-      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="40" cy="40" r="40" fill="#C4C4C4"/>
-        <g clip-path="url(#clip0_196_886)">
-          <path opacity="0.2" d="M40 48.75C49.665 48.75 57.5 40.915 57.5 31.25C57.5 21.585 49.665 13.75 40 13.75C30.335 13.75 22.5 21.585 22.5 31.25C22.5 40.915 30.335 48.75 40 48.75Z" fill="black"/>
-          <path d="M40 48.75C49.665 48.75 57.5 40.915 57.5 31.25C57.5 21.585 49.665 13.75 40 13.75C30.335 13.75 22.5 21.585 22.5 31.25C22.5 40.915 30.335 48.75 40 48.75Z" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M13.75 64.0625C19.0465 54.9105 28.666 48.75 40 48.75C51.334 48.75 60.9535 54.9105 66.25 64.0625" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_196_886">
-            <rect width="70" height="70" fill="white" transform="translate(5 5)"/>
-          </clipPath>
-        </defs>
-      </svg>
+        <!-- User Name -->
+        <h2 class="font-noto font-bold text-[24px] text-[#1B1B1B]">{{ (user.name) }}님</h2>
     </div>
-
-    <!-- User Name -->
-    <h2 class="font-noto font-bold text-[24px] text-[#1B1B1B]">User</h2>
   </div>
 
   <!-- Menu List -->
@@ -128,7 +138,7 @@
     </a>
 
     <!-- Logout -->
-    <a href="#" class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
+    <a href="/users/logout" class="flex items-center gap-5 py-6 border-b-[1.5px] border-[#878787] cursor-pointer hover:bg-gray-50 transition-colors">
       <!-- Logout Icon -->
       <div class="w-[45px] h-[45px] flex items-center justify-center">
         <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -154,6 +164,8 @@
       </div>
     </a>
   </div>
+
+ 
 </div>
 
 {% endblock %}
