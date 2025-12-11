@@ -177,6 +177,21 @@
 
       <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
 
+      <!-- 카테고리 (지출일 때만 표시) -->
+      <div id="categorySection" style="margin-bottom: 24px;">
+        <span class="font-noto text-[16px] leading-[19px] text-[#878787] block mb-3">카테고리</span>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="selectCategory('식비')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">식비</button>
+          <button onclick="selectCategory('교통비')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">교통비</button>
+          <button onclick="selectCategory('카페/간식')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">카페/간식</button>
+          <button onclick="selectCategory('쇼핑')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">쇼핑</button>
+          <button onclick="selectCategory('문화/여가')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">문화/여가</button>
+          <button onclick="selectCategory('의료/건강')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">의료/건강</button>
+          <button onclick="selectCategory('생활용품')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">생활용품</button>
+          <button onclick="selectCategory('기타')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">기타</button>
+        </div>
+      </div>
+
       <!-- 상품 헤더 (지출일 때만 표시) -->
       <div id="itemsHeader" class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787]" style="margin-bottom: 8px;">
         <span class="flex-1">상품명</span>
@@ -771,6 +786,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 // ===== 모달 함수들 (전역) =====
 let currentReceiptId = null;
 let currentReceiptType = 'expense'; // 현재 선택된 타입
+let currentReceiptCategory = null; // 현재 선택된 카테고리
 
 function selectType(type) {
   currentReceiptType = type;
@@ -799,6 +815,27 @@ function selectType(type) {
   }
 }
 
+function selectCategory(category) {
+  currentReceiptCategory = category;
+
+  // 모든 카테고리 버튼 초기화
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.style.borderColor = '#878787';
+    btn.style.backgroundColor = 'white';
+    btn.style.color = '#111111';
+  });
+
+  // 선택된 버튼 스타일 변경
+  const buttons = document.querySelectorAll('.category-btn');
+  buttons.forEach(btn => {
+    if (btn.textContent.trim() === category) {
+      btn.style.borderColor = '#B4DE00';
+      btn.style.backgroundColor = '#F0F8D0';
+      btn.style.color = '#111111';
+    }
+  });
+}
+
 function openReceiptModal(receiptId) {
   // 스와이프 중이었으면 모달 열지 않음
   if (window.wasSwiped) {
@@ -822,16 +859,24 @@ function openReceiptModal(receiptId) {
   document.getElementById('modalTotal').textContent = receipt.total.toLocaleString() + '원';
 
   // 타입에 따라 UI 변경
+  const categorySection = document.getElementById('categorySection');
   const itemsHeader = document.getElementById('itemsHeader');
   const modalItems = document.getElementById('modalItems');
   const itemsDivider = document.getElementById('itemsDivider');
   const totalLabel = document.getElementById('totalLabel');
 
   if (currentReceiptType === 'expense') {
-    // 지출: 상품 목록 표시
+    // 지출: 카테고리 및 상품 목록 표시
+    categorySection.style.display = 'block';
     itemsHeader.style.display = 'flex';
     itemsDivider.style.display = 'block';
     totalLabel.textContent = '합계';
+
+    // 카테고리 초기화 (기본값이나 기존 값 설정)
+    currentReceiptCategory = receipt.category || null;
+    if (currentReceiptCategory) {
+      selectCategory(currentReceiptCategory);
+    }
 
     // 상품 목록 (임시로 빈 값)
     modalItems.innerHTML = `
@@ -844,7 +889,8 @@ function openReceiptModal(receiptId) {
     `;
     modalItems.style.display = 'block';
   } else {
-    // 수입/이체: 상품 목록 숨김
+    // 수입/이체: 카테고리 및 상품 목록 숨김
+    categorySection.style.display = 'none';
     itemsHeader.style.display = 'none';
     itemsDivider.style.display = 'none';
     modalItems.style.display = 'none';
