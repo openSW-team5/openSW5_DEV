@@ -3,6 +3,7 @@
 
 <div
   x-data="{
+    receiptType: new URLSearchParams(window.location.search).get('type') || 'expense',
     scrolled: false,
     showSuccess: false,
     showCategoryDropdown: false,
@@ -10,7 +11,8 @@
     receiptTime: '',
     store: '',
     category: '식비',
-    categories: ['식비', '교통', '쇼핑', '여가', '의료', '주거', '통신', '기타'],
+    categories: ['식비', '교통비', '카페/간식', '쇼핑', '문화/여가', '의료/건강', '생활용품', '기타'],
+    manualAmount: 0,
     products: [
       { id: 1, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 },
       { id: 2, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 },
@@ -43,8 +45,48 @@
     removeProduct(id) {
       this.products = this.products.filter(p => p.id !== id);
     },
-    submitReceipt() {
-      this.showSuccess = true;
+    async submitReceipt() {
+      try {
+        const payload = {
+          type: this.receiptType,
+          merchant: this.store,
+          purchased_at: this.receiptDate,
+          status: 'CONFIRMED'
+        };
+
+        if (this.receiptType === 'expense') {
+          // Add category and items for expense
+          payload.category = this.category;
+          payload.items = this.products
+            .filter(p => p.name && p.quantity && p.unitPrice)
+            .map(p => ({
+              name: p.name,
+              qty: Number(p.quantity),
+              price: Number(p.unitPrice),
+              category: null
+            }));
+          payload.total = this.total;
+        } else {
+          // For income/transfer, use manual amount
+          payload.total = Number(this.manualAmount) || 0;
+          payload.items = []; // Empty items array
+        }
+
+        const response = await fetch('/receipts/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          this.showSuccess = true;
+        } else {
+          alert('저장에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('Error submitting receipt:', error);
+        alert('오류가 발생했습니다.');
+      }
     }
   }"
   x-ref="container"
@@ -224,42 +266,6 @@
       ></p>
     </div>
 
-    <!-- 카테고리 선택 -->
-    <div class="absolute left-[calc(50%-158px/2)] top-[463px] transition-all duration-300"
-      :class="scrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'"
-      x-data="{ open: false }"
-      @click.away="open = false"
-    >
-      <button
-        @click="open = !open"
-        class="flex items-center justify-center gap-[5px] w-[158px] h-[42px] cursor-pointer"
-      >
-        <span
-          class="font-yidstreet font-bold text-[32px] leading-[42px] text-center text-black"
-          x-text="category"
-        ></span>
-        <svg width="25" height="25" viewBox="0 0 25 25" fill="none">
-          <path d="M3.90625 8.75L12.5 17.3438L21.0938 8.75" fill="black" />
-        </svg>
-      </button>
-
-      <!-- 드롭다운 메뉴 -->
-      <div
-        x-show="open"
-        x-transition
-        class="absolute left-0 top-[50px] w-[158px] bg-white border-2 border-black rounded-[10px] shadow-lg z-50 max-h-[300px] overflow-y-auto"
-      >
-        <template x-for="cat in categories" :key="cat">
-          <button
-            @click="category = cat; open = false"
-            class="w-full px-4 py-3 text-left font-yidstreet font-bold text-[24px] text-black hover:bg-[#B4DE00] transition-colors"
-            :class="category === cat ? 'bg-[#B4DE00]' : ''"
-            x-text="cat"
-          ></button>
-        </template>
-      </div>
-    </div>
-
     <!-- 검정색 박스 (영수증 정보) -->
     <div
       class="absolute w-full left-0 bg-[#1B1B1B] transition-all duration-300"
@@ -280,18 +286,6 @@
         :class="scrolled ? 'h-[660px] top-[12px]' : 'h-[265px] top-[23px]'"
         style="max-height: 660px"
       >
-        <!-- Frame 35: Name -->
-        <div class="flex items-center gap-[50px]">
-          <span
-            class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-grow"
-            >Name</span
-          >
-          <span
-            class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0]"
-            >credit card</span
-          >
-        </div>
-
         <!-- Frame 36: Date -->
         <div class="flex items-center gap-[10px]">
           <span
@@ -312,22 +306,59 @@
           />
         </div>
 
-        <!-- Frame 37: Store -->
+        <!-- Frame 37: Store (거래처) -->
         <div class="flex items-center gap-[50px]">
           <span
             class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0"
-            >Store</span
+            >거래처</span
           >
           <input
             type="text"
             x-model="store"
             class="flex-grow h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-            placeholder="사용처"
+            placeholder="거래처/상대방 이름"
           />
         </div>
 
-        <!-- Frame 40: Total -->
-        <div class="flex items-center gap-[50px]">
+        <!-- 카테고리 선택 (지출일 때만 표시) -->
+        <div x-show="receiptType === 'expense'" class="flex items-center gap-[50px]">
+          <span
+            class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0"
+            >카테고리</span
+          >
+          <select
+            x-model="category"
+            class="flex-grow h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+            style="direction: rtl"
+          >
+            <option value="">선택하세요</option>
+            <option value="식비">식비</option>
+            <option value="교통비">교통비</option>
+            <option value="카페/간식">카페/간식</option>
+            <option value="쇼핑">쇼핑</option>
+            <option value="문화/여가">문화/여가</option>
+            <option value="의료/건강">의료/건강</option>
+            <option value="생활용품">생활용품</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+
+        <!-- Amount (for income/transfer) -->
+        <div x-show="receiptType !== 'expense'" class="flex items-center gap-[50px]">
+          <span
+            class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0"
+            >금액</span
+          >
+          <input
+            type="number"
+            x-model="manualAmount"
+            class="flex-grow h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+            placeholder="금액 입력"
+          />
+        </div>
+
+        <!-- Frame 40: Total (for expense only) -->
+        <div x-show="receiptType === 'expense'" class="flex items-center gap-[50px]">
           <span
             class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-grow"
             >Total</span
@@ -338,7 +369,8 @@
           ></span>
         </div>
 
-        <!-- 상품 항목 리스트 -->
+        <!-- 상품 항목 리스트 (지출일 때만 표시) -->
+        <div x-show="receiptType === 'expense'">
         <template x-for="(product, index) in products" :key="product.id">
           <div
             class="relative h-[19px] mb-2 select-none"
@@ -442,9 +474,11 @@
             </button>
           </div>
         </template>
+        </div>
       </div>
 
-      <!-- Add 버튼 -->
+      <!-- Add 버튼 (지출일 때만 표시) -->
+      <div x-show="receiptType === 'expense'">
       <button
         @click="addProduct()"
         class="absolute w-[83px] h-[26px] left-[calc(50%-83px/2+0.5px)] border-[3px] border-[#4CAF50] rounded-[20px] flex items-center justify-center transition-all duration-300"
@@ -455,6 +489,7 @@
           >Add</span
         >
       </button>
+      </div>
     </div>
 
     <!-- 확인 버튼 (홈으로 돌아가기) - 하단 고정 -->
@@ -491,28 +526,49 @@
     >
       <p
         class="font-yidstreet font-bold text-center whitespace-nowrap"
+        x-show="receiptType === 'expense'"
         :class="[
           total === 0 ? 'text-[#1B1B1B]' : 'text-[#AF4C4E]',
           (total === 0 ? '0원' : '-' + formatNumber(total) + '원').length > 10 ? 'text-[32px] leading-[42px]' : (total === 0 ? '0원' : '-' + formatNumber(total) + '원').length > 8 ? 'text-[40px] leading-[52px]' : 'text-[48px] leading-[62px]'
         ]"
         x-text="total === 0 ? '0원' : '-' + formatNumber(total) + '원'"
       ></p>
+      <p
+        class="font-yidstreet font-bold text-center whitespace-nowrap"
+        x-show="receiptType === 'income'"
+        :class="[
+          manualAmount === 0 ? 'text-[#1B1B1B]' : 'text-[#4CAF50]',
+          (manualAmount === 0 ? '0원' : '+' + formatNumber(manualAmount) + '원').length > 10 ? 'text-[32px] leading-[42px]' : (manualAmount === 0 ? '0원' : '+' + formatNumber(manualAmount) + '원').length > 8 ? 'text-[40px] leading-[52px]' : 'text-[48px] leading-[62px]'
+        ]"
+        x-text="manualAmount === 0 ? '0원' : '+' + formatNumber(manualAmount) + '원'"
+      ></p>
+      <p
+        class="font-yidstreet font-bold text-center whitespace-nowrap"
+        x-show="receiptType === 'transfer'"
+        :class="[
+          manualAmount === 0 ? 'text-[#1B1B1B]' : 'text-[#878787]',
+          (manualAmount === 0 ? '0원' : formatNumber(manualAmount) + '원').length > 10 ? 'text-[32px] leading-[42px]' : (manualAmount === 0 ? '0원' : formatNumber(manualAmount) + '원').length > 8 ? 'text-[40px] leading-[52px]' : 'text-[48px] leading-[62px]'
+        ]"
+        x-text="manualAmount === 0 ? '0원' : formatNumber(manualAmount) + '원'"
+      ></p>
     </div>
 
-    <!-- 카테고리 -->
+    <!-- 카테고리 (지출일 때만 표시) -->
     <p
+      x-show="receiptType === 'expense'"
       class="absolute w-[64px] h-[42px] left-[calc(50%-64px/2)] top-[300px] font-yidstreet font-bold text-[32px] leading-[42px] text-[#000000]"
       x-text="category"
     ></p>
 
-    <!-- 사용처 -->
+    <!-- 거래처 -->
     <p
-      class="absolute w-[350px] left-[calc(50%-350px/2)] top-[360px] font-yidstreet font-bold text-center break-words"
+      class="absolute w-[350px] left-[calc(50%-350px/2)] font-yidstreet font-bold text-center break-words"
       :class="[
+        receiptType === 'expense' ? 'top-[360px]' : 'top-[300px]',
         store ? 'text-[#1B1B1B]' : 'text-[#878787]',
-        (store || '사용처').length > 10 ? 'text-[32px] leading-[42px]' : (store || '사용처').length > 6 ? 'text-[42px] leading-[56px]' : 'text-[52px] leading-[68px]'
+        (store || '거래처').length > 10 ? 'text-[32px] leading-[42px]' : (store || '거래처').length > 6 ? 'text-[42px] leading-[56px]' : 'text-[52px] leading-[68px]'
       ]"
-      x-text="store || '사용처'"
+      x-text="store || '거래처'"
     ></p>
 
     <!-- 날짜/시간 -->

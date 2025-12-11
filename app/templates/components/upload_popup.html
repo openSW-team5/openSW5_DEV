@@ -275,6 +275,39 @@
   </div>
 </div>
 
+<!-- Type Selection Popup -->
+<div id="typeSelectionPopup" class="hidden fixed inset-0 z-50" style="background: rgba(0, 0, 0, 0.7);" onclick="closeTypeSelectionPopup()">
+  <div class="flex items-center justify-center h-full">
+    <div style="width: 388px; background: #F7F7F7; border-radius: 27px; padding: 40px 20px;" onclick="event.stopPropagation()">
+      <h2 class="font-yidstreet font-bold text-[28px] text-center text-black mb-8">거래 유형 선택</h2>
+
+      <!-- 지출 버튼 -->
+      <button
+        onclick="selectReceiptType('expense')"
+        class="w-full h-[54px] mb-4 bg-[#AF4C4E] border border-[#111111] rounded-[70px] flex items-center justify-center hover:opacity-90 transition-opacity"
+      >
+        <span class="font-satoshi font-medium text-[16px] text-white">지출</span>
+      </button>
+
+      <!-- 수입 버튼 -->
+      <button
+        onclick="selectReceiptType('income')"
+        class="w-full h-[54px] mb-4 bg-[#4CAF50] border border-[#111111] rounded-[70px] flex items-center justify-center hover:opacity-90 transition-opacity"
+      >
+        <span class="font-satoshi font-medium text-[16px] text-white">수입</span>
+      </button>
+
+      <!-- 이체 버튼 -->
+      <button
+        onclick="selectReceiptType('transfer')"
+        class="w-full h-[54px] bg-[#878787] border border-[#111111] rounded-[70px] flex items-center justify-center hover:opacity-90 transition-opacity"
+      >
+        <span class="font-satoshi font-medium text-[16px] text-white">이체</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Hidden file inputs -->
 <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleFileSelect(this, 'camera')">
 <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="handleFileSelect(this, 'gallery')">
@@ -301,7 +334,20 @@
   function handleManualInput() {
     console.log('직접 입력 기능');
     closeUploadPopup();
-    window.location.href = '/receipts/confirm';
+    showTypeSelectionPopup();
+  }
+
+  function showTypeSelectionPopup() {
+    document.getElementById('typeSelectionPopup').classList.remove('hidden');
+  }
+
+  function closeTypeSelectionPopup() {
+    document.getElementById('typeSelectionPopup').classList.add('hidden');
+  }
+
+  function selectReceiptType(type) {
+    closeTypeSelectionPopup();
+    window.location.href = `/receipts/confirm?type=${type}`;
   }
 
   async function handleFileSelect(input, source) {
