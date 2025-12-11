@@ -180,7 +180,7 @@
       <!-- 카테고리 (지출일 때만 표시) -->
       <div id="categorySection" style="margin-bottom: 24px; position: relative; height: 19px;">
         <span class="font-noto text-[16px] leading-[19px] text-[#878787]" style="position: absolute; left: 0;">카테고리</span>
-        <select id="categorySelect" class="border-0 bg-transparent font-noto text-[15px] text-black focus:outline-none" style="padding: 0; position: absolute; right: 0;">
+        <select id="categorySelect" class="border-0 bg-transparent font-noto text-[15px] text-black focus:outline-none" style="padding: 0; position: absolute; right: 0;" disabled>
           <option value="">선택하세요</option>
           <option value="식비">식비</option>
           <option value="교통비">교통비</option>
@@ -855,6 +855,7 @@ async function openReceiptModal(receiptId) {
   }
 
   currentReceiptId = receiptId;
+  isEditMode = false; // 편집 모드 리셋
 
   // API에서 상세 정보 가져오기 (상품 정보 포함)
   try {
@@ -898,6 +899,8 @@ async function openReceiptModal(receiptId) {
       const categorySelect = document.getElementById('categorySelect');
       if (categorySelect) {
         categorySelect.value = currentReceiptCategory;
+        // 편집 모드가 아니면 비활성화
+        categorySelect.setAttribute('disabled', 'disabled');
       }
 
       // 상품 목록 표시
@@ -949,10 +952,101 @@ function closeReceiptModal(event) {
   }
 }
 
+let isEditMode = false;
+
 function editReceipt() {
   if (!currentReceiptId) return;
-  alert('수정 기능은 백엔드 API 연동 후 구현됩니다.');
+
+  isEditMode = true;
+
+  // 카테고리 드롭다운 활성화 (지출인 경우에만)
+  if (currentReceiptType === 'expense') {
+    const categorySelect = document.getElementById('categorySelect');
+    if (categorySelect) {
+      categorySelect.removeAttribute('disabled');
+    }
+  }
+
+  // 버튼 변경: 취소/편집 → 저장/취소
+  const modalActions = document.querySelector('.flex.justify-between.mb-\\[24px\\]');
+  if (modalActions) {
+    modalActions.innerHTML = `
+      <button onclick="cancelEdit()" class="rounded-full bg-transparent border border-[#878787] font-satoshi font-medium text-[16px] text-[#878787] hover:bg-gray-100 transition-colors" style="width: 125px; height: 38px;">
+        취소
+      </button>
+      <button onclick="saveReceipt()" class="rounded-full bg-[#B4DE00] border border-[#111111] font-satoshi font-medium text-[16px] text-[#111111] hover:bg-[#a0c900] transition-colors" style="width: 125px; height: 38px;">
+        저장
+      </button>
+    `;
+  }
+}
+
+function cancelEdit() {
+  isEditMode = false;
+
+  // 카테고리 드롭다운 비활성화
+  const categorySelect = document.getElementById('categorySelect');
+  if (categorySelect) {
+    categorySelect.setAttribute('disabled', 'disabled');
+  }
+
+  // 모달 닫기
   closeReceiptModal();
+}
+
+async function saveReceipt() {
+  if (!currentReceiptId) return;
+
+  try {
+    // API에서 상세 정보 가져오기
+    const detailResponse = await fetch(`/receipts/${currentReceiptId}`);
+    const detailResult = await detailResponse.json();
+
+    if (detailResult.status !== 'ok' || !detailResult.data) {
+      throw new Error('영수증 정보를 가져올 수 없습니다.');
+    }
+
+    const receipt = detailResult.data;
+
+    // 카테고리 값 가져오기
+    const categorySelect = document.getElementById('categorySelect');
+    const category = categorySelect ? categorySelect.value : null;
+
+    // API 호출하여 업데이트
+    const response = await fetch(`/receipts/${currentReceiptId}/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        merchant: receipt.merchant,
+        purchased_at: receipt.purchased_at,
+        total: receipt.total,
+        status: receipt.status || 'CONFIRMED',
+        type: currentReceiptType,
+        category: category,
+        items: receipt.items || [],
+        image_path: receipt.image_path
+      })
+    });
+
+    if (response.ok) {
+      // 성공 시 데이터 새로고침
+      await loadReceipts();
+
+      if (window.ToastHelper) {
+        window.ToastHelper.success('거래내역이 수정되었습니다.');
+      }
+
+      isEditMode = false;
+      closeReceiptModal();
+    } else {
+      throw new Error('업데이트 실패');
+    }
+  } catch (error) {
+    console.error('Error updating receipt:', error);
+    alert('수정에 실패했습니다.');
+  }
 }
 
 async function deleteReceipt(receiptId) {
