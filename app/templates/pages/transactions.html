@@ -901,7 +901,24 @@ async function openReceiptModal(receiptId) {
     // 모달 내용 채우기
     document.getElementById('modalMerchant').textContent = receipt.merchant || '상호명 없음';
     document.getElementById('modalAddress').textContent = receipt.address || '주소 없음';
-    document.getElementById('modalDate').textContent = dayjs(receipt.purchased_at).format('YYYY년 MM월 DD일');
+
+    // 날짜/시간 표시
+    const modalDateElem = document.getElementById('modalDate');
+    if (receipt.purchased_at) {
+      const purchasedDate = dayjs(receipt.purchased_at);
+      // 시간 정보가 있는지 확인 (HH:mm:ss가 00:00:00이 아닌 경우)
+      const hasTime = purchasedDate.format('HH:mm:ss') !== '00:00:00';
+
+      if (hasTime) {
+        modalDateElem.textContent = purchasedDate.format('YYYY년 MM월 DD일 HH:mm');
+      } else {
+        modalDateElem.textContent = purchasedDate.format('YYYY년 MM월 DD일');
+      }
+      modalDateElem.style.color = '#1b1b1b';
+    } else {
+      modalDateElem.textContent = '날짜 미입력';
+      modalDateElem.style.color = '#878787';
+    }
 
     // 타입 버튼 선택 및 초기화
     currentReceiptType = receipt.type || 'expense';
@@ -994,9 +1011,12 @@ function editReceipt() {
   // 원본 데이터 저장 (취소 시 복구용)
   const modalMerchant = document.getElementById('modalMerchant');
   const modalAddress = document.getElementById('modalAddress');
+  const modalDate = document.getElementById('modalDate');
+
   originalReceiptData = {
     merchant: modalMerchant.textContent,
-    address: modalAddress.textContent
+    address: modalAddress.textContent,
+    date: modalDate.textContent
   };
 
   // 사용처를 input으로 변경
@@ -1009,6 +1029,35 @@ function editReceipt() {
   if (modalAddress) {
     const addressValue = modalAddress.textContent;
     modalAddress.outerHTML = `<input type="text" id="modalAddress" class="font-noto text-[16px] leading-[19px] text-center text-[#878787] border-2 border-[#B4DE00] rounded-[10px] px-2 w-full" style="margin-bottom: 24px;" value="${addressValue}">`;
+  }
+
+  // 날짜를 input으로 변경 (날짜 + 시간)
+  if (modalDate) {
+    const dateText = modalDate.textContent;
+    let dateValue = '';
+    let timeValue = '';
+
+    if (dateText !== '날짜 미입력') {
+      // 기존 날짜 파싱
+      const receipt = receiptsData.find(r => r.id === currentReceiptId);
+      if (receipt && receipt.purchased_at) {
+        const purchasedDate = dayjs(receipt.purchased_at);
+        dateValue = purchasedDate.format('YYYY-MM-DD');
+
+        // 시간 정보가 있는지 확인
+        const hasTime = purchasedDate.format('HH:mm:ss') !== '00:00:00';
+        if (hasTime) {
+          timeValue = purchasedDate.format('HH:mm');
+        }
+      }
+    }
+
+    modalDate.outerHTML = `
+      <div id="modalDate" class="flex gap-2 justify-center items-center" style="margin-bottom: 16px;">
+        <input type="date" id="modalDateInput" class="font-montserrat text-[15px] text-center border-2 border-[#B4DE00] rounded-[10px] px-2" style="color: #1b1b1b;" value="${dateValue}">
+        <input type="time" id="modalTimeInput" class="font-montserrat text-[15px] text-center border-2 border-[#B4DE00] rounded-[10px] px-2" style="color: #1b1b1b;" value="${timeValue}" placeholder="시간(선택)">
+      </div>
+    `;
   }
 
   // 타입 버튼 활성화
@@ -1111,9 +1160,26 @@ async function saveReceipt() {
     const merchantInput = document.getElementById('modalMerchant');
     const addressInput = document.getElementById('modalAddress');
     const categorySelect = document.getElementById('categorySelect');
+    const dateInput = document.getElementById('modalDateInput');
+    const timeInput = document.getElementById('modalTimeInput');
 
     const merchant = merchantInput ? merchantInput.value : receipt.merchant;
     const category = categorySelect ? categorySelect.value : null;
+
+    // 날짜/시간 조합
+    let purchasedAt = receipt.purchased_at;
+    if (dateInput) {
+      const dateValue = dateInput.value;
+      const timeValue = timeInput ? timeInput.value : '';
+
+      if (dateValue) {
+        if (timeValue) {
+          purchasedAt = `${dateValue} ${timeValue}:00`;
+        } else {
+          purchasedAt = `${dateValue}`;
+        }
+      }
+    }
 
     // 상품 목록 수집 (지출인 경우에만)
     let items = [];
@@ -1155,7 +1221,7 @@ async function saveReceipt() {
       },
       body: JSON.stringify({
         merchant: merchant,
-        purchased_at: receipt.purchased_at,
+        purchased_at: purchasedAt,
         total: total,
         status: receipt.status || 'CONFIRMED',
         type: currentReceiptType,
