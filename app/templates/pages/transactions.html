@@ -627,7 +627,7 @@ document.addEventListener('DOMContentLoaded', async function() {
               </div>
               <div class="flex flex-col justify-center">
                 <h4 class="font-montserrat font-semibold text-[20px] leading-tight text-text mb-[2px]">${receipt.merchant}</h4>
-                <p class="font-montserrat text-[15px] leading-tight text-[#727272]">Food</p>
+                <p class="font-montserrat text-[15px] leading-tight text-[#727272]">${type === 'expense' ? (receipt.category || '') : ''}</p>
               </div>
             </div>
             <div class="flex items-center">
@@ -849,7 +849,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-function openReceiptModal(receiptId) {
+async function openReceiptModal(receiptId) {
   // 스와이프 중이었으면 모달 열지 않음
   if (window.wasSwiped) {
     window.wasSwiped = false;
@@ -857,64 +857,89 @@ function openReceiptModal(receiptId) {
   }
 
   currentReceiptId = receiptId;
-  const receipt = receiptsData.find(r => r.id === receiptId);
-  if (!receipt) return;
 
-  // 모달 내용 채우기
-  document.getElementById('modalMerchant').textContent = receipt.merchant || '상호명 없음';
-  document.getElementById('modalAddress').textContent = receipt.address || '주소 없음';
-  document.getElementById('modalDate').textContent = dayjs(receipt.purchased_at).format('YYYY년 MM월 DD일');
+  // API에서 상세 정보 가져오기 (상품 정보 포함)
+  try {
+    const response = await fetch(`/api/receipts/${receiptId}`);
+    const result = await response.json();
 
-  // 타입 버튼 선택
-  currentReceiptType = receipt.type || 'expense';
-  selectType(currentReceiptType);
-
-  document.getElementById('modalTotal').textContent = receipt.total.toLocaleString() + '원';
-
-  // 타입에 따라 UI 변경
-  const categorySection = document.getElementById('categorySection');
-  const itemsHeader = document.getElementById('itemsHeader');
-  const modalItems = document.getElementById('modalItems');
-  const itemsDivider = document.getElementById('itemsDivider');
-  const totalLabel = document.getElementById('totalLabel');
-
-  if (currentReceiptType === 'expense') {
-    // 지출: 카테고리 및 상품 목록 표시
-    categorySection.style.display = 'block';
-    itemsHeader.style.display = 'flex';
-    itemsDivider.style.display = 'block';
-    totalLabel.textContent = '합계';
-
-    // 카테고리 초기화 (기본값이나 기존 값 설정)
-    currentReceiptCategory = receipt.category || '';
-    const categorySelect = document.getElementById('categorySelect');
-    if (categorySelect) {
-      categorySelect.value = currentReceiptCategory;
+    if (result.status !== 'ok' || !result.data) {
+      console.error('Failed to load receipt detail');
+      return;
     }
 
-    // 상품 목록 (임시로 빈 값)
-    modalItems.innerHTML = `
-      <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
-        <span class="flex-1">상품 정보 없음</span>
-        <span class="w-[26px] text-center">-</span>
-        <span class="w-[60px] text-right">-</span>
-        <span class="w-[60px] text-right">-</span>
-      </div>
-    `;
-    modalItems.style.display = 'block';
-  } else {
-    // 수입/이체: 카테고리 및 상품 목록 숨김
-    categorySection.style.display = 'none';
-    itemsHeader.style.display = 'none';
-    itemsDivider.style.display = 'none';
-    modalItems.style.display = 'none';
-    totalLabel.textContent = '금액';
-  }
+    const receipt = result.data;
 
-  // 모달 표시
-  const modal = document.getElementById('receiptModal');
-  modal.classList.remove('hidden');
-  modal.style.display = 'flex';
+    // 모달 내용 채우기
+    document.getElementById('modalMerchant').textContent = receipt.merchant || '상호명 없음';
+    document.getElementById('modalAddress').textContent = receipt.address || '주소 없음';
+    document.getElementById('modalDate').textContent = dayjs(receipt.purchased_at).format('YYYY년 MM월 DD일');
+
+    // 타입 버튼 선택
+    currentReceiptType = receipt.type || 'expense';
+    selectType(currentReceiptType);
+
+    document.getElementById('modalTotal').textContent = receipt.total.toLocaleString() + '원';
+
+    // 타입에 따라 UI 변경
+    const categorySection = document.getElementById('categorySection');
+    const itemsHeader = document.getElementById('itemsHeader');
+    const modalItems = document.getElementById('modalItems');
+    const itemsDivider = document.getElementById('itemsDivider');
+    const totalLabel = document.getElementById('totalLabel');
+
+    if (currentReceiptType === 'expense') {
+      // 지출: 카테고리 및 상품 목록 표시
+      categorySection.style.display = 'block';
+      itemsHeader.style.display = 'flex';
+      itemsDivider.style.display = 'block';
+      totalLabel.textContent = '합계';
+
+      // 카테고리 초기화
+      currentReceiptCategory = receipt.category || '';
+      const categorySelect = document.getElementById('categorySelect');
+      if (categorySelect) {
+        categorySelect.value = currentReceiptCategory;
+      }
+
+      // 상품 목록 표시
+      if (receipt.items && receipt.items.length > 0) {
+        const itemsHtml = receipt.items.map(item => `
+          <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
+            <span class="flex-1">${item.name}</span>
+            <span class="w-[26px] text-center">${item.qty}</span>
+            <span class="w-[60px] text-right">${item.price.toLocaleString()}</span>
+            <span class="w-[60px] text-right">${item.subtotal.toLocaleString()}</span>
+          </div>
+        `).join('');
+        modalItems.innerHTML = itemsHtml;
+      } else {
+        modalItems.innerHTML = `
+          <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
+            <span class="flex-1">상품 정보 없음</span>
+            <span class="w-[26px] text-center">-</span>
+            <span class="w-[60px] text-right">-</span>
+            <span class="w-[60px] text-right">-</span>
+          </div>
+        `;
+      }
+      modalItems.style.display = 'block';
+    } else {
+      // 수입/이체: 카테고리 및 상품 목록 숨김
+      categorySection.style.display = 'none';
+      itemsHeader.style.display = 'none';
+      itemsDivider.style.display = 'none';
+      modalItems.style.display = 'none';
+      totalLabel.textContent = '금액';
+    }
+
+    // 모달 표시
+    const modal = document.getElementById('receiptModal');
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  } catch (error) {
+    console.error('Error loading receipt detail:', error);
+  }
 }
 
 function closeReceiptModal(event) {

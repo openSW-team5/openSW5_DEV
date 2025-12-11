@@ -61,16 +61,14 @@
               }
             }
 
-            // merchant 이름으로 수입/이체 제외 (임시 - 백엔드에서 note 필드 추가 필요)
-            const merchant = receipt.merchant || '';
-            const isIncome = merchant.includes('수입');
-            const isTransfer = merchant.includes('이체');
+            // type 필드로 수입/이체 제외
+            const type = receipt.type || 'expense';
 
-            if (!isIncome && !isTransfer && receipt.total > 0) {
+            if (type === 'expense' && receipt.total > 0) {
               totalExpense += receipt.total;
 
-              // 카테고리 매핑 - 일단 모든 지출을 '기타'로 분류
-              const categoryName = '기타';
+              // 실제 카테고리 사용
+              const categoryName = receipt.category || '기타';
               categorySpent[categoryName] = (categorySpent[categoryName] || 0) + receipt.total;
             }
           });

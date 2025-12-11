@@ -44,6 +44,7 @@ CREATE TABLE receipts (
   purchased_at  TEXT NOT NULL,                 -- YYYY-MM-DD
   status        TEXT NOT NULL CHECK(status IN ('PENDING','CONFIRMED')),
   type          TEXT NOT NULL DEFAULT 'expense' CHECK(type IN ('expense','income','transfer')),
+  category      TEXT,                          -- 카테고리 (식비, 교통비 등)
   image_path    TEXT,                          -- OCR 원본 파일 경로 (선택)
   note          TEXT,
   created_at    TEXT DEFAULT (datetime('now')),
