@@ -147,87 +147,93 @@
     </svg>
 
     <!-- 모달 내용 -->
-    <div class="relative overflow-y-auto h-full" style="padding: 70px 30px 30px 30px;">
-      <!-- 상호명 -->
-      <h2 id="modalMerchant" class="font-yidstreet font-bold text-[40px] leading-[52px] text-center text-black" style="margin-bottom: 8px;"></h2>
+    <div class="relative h-full flex flex-col" style="padding: 70px 30px 30px 30px;">
+      <!-- 스크롤 가능한 상단 영역 -->
+      <div class="flex-1 overflow-y-auto" style="margin-bottom: 16px;">
+        <!-- 상호명 -->
+        <h2 id="modalMerchant" class="font-yidstreet font-bold text-[40px] leading-[52px] text-center text-black" style="margin-bottom: 8px;"></h2>
 
-      <!-- 주소 -->
-      <p id="modalAddress" class="font-noto text-[16px] leading-[19px] text-center text-[#878787]" style="margin-bottom: 24px;"></p>
+        <!-- 주소 -->
+        <p id="modalAddress" class="font-noto text-[16px] leading-[19px] text-center text-[#878787]" style="margin-bottom: 24px;"></p>
 
-      <!-- 날짜 -->
-      <p id="modalDate" class="font-montserrat text-[15px] leading-[18px] text-center text-black" style="margin-bottom: 16px;"></p>
+        <!-- 날짜 -->
+        <p id="modalDate" class="font-montserrat text-[15px] leading-[18px] text-center text-black" style="margin-bottom: 16px;"></p>
 
-      <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
+        <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
 
-      <!-- 결제 타입 -->
-      <div class="flex justify-between items-center" style="margin-bottom: 32px;">
-        <span class="font-noto text-[16px] leading-[19px] text-[#878787]">Token Type</span>
-        <div class="flex gap-2">
-          <button onclick="selectType('expense')" id="typeExpense" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
-            지출
+        <!-- 결제 타입 -->
+        <div class="flex justify-between items-center" style="margin-bottom: 32px;">
+          <span class="font-noto text-[16px] leading-[19px] text-[#878787]">Token Type</span>
+          <div class="flex gap-2">
+            <button onclick="selectType('expense')" id="typeExpense" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
+              지출
+            </button>
+            <button onclick="selectType('income')" id="typeIncome" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
+              수입
+            </button>
+            <button onclick="selectType('transfer')" id="typeTransfer" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
+              이체
+            </button>
+          </div>
+        </div>
+
+        <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
+
+        <!-- 카테고리 (지출일 때만 표시) -->
+        <div id="categorySection" style="margin-bottom: 24px; position: relative; height: 19px;">
+          <span class="font-noto text-[16px] leading-[19px] text-[#878787]" style="position: absolute; left: 0;">카테고리</span>
+          <select id="categorySelect" class="border-0 bg-transparent font-noto text-[15px] text-black focus:outline-none" style="padding: 0; position: absolute; right: 0;" disabled>
+            <option value="">선택하세요</option>
+            <option value="식비">식비</option>
+            <option value="교통비">교통비</option>
+            <option value="카페/간식">카페/간식</option>
+            <option value="쇼핑">쇼핑</option>
+            <option value="문화/여가">문화/여가</option>
+            <option value="의료/건강">의료/건강</option>
+            <option value="생활용품">생활용품</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+
+        <!-- 상품 헤더 (지출일 때만 표시) -->
+        <div id="itemsHeader" class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787]" style="margin-bottom: 8px;">
+          <span class="flex-1">상품명</span>
+          <span class="w-[40px] text-center">수량</span>
+          <span class="w-[60px] text-right">단가</span>
+          <span class="w-[60px] text-right">소계</span>
+        </div>
+
+        <!-- 상품 목록 (지출일 때만 표시) -->
+        <div id="modalItems" style="margin-bottom: 16px; max-height: 200px; overflow-y: auto;"></div>
+
+        <div id="itemsDivider" class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
+      </div>
+
+      <!-- 하단 고정 영역 -->
+      <div class="flex-shrink-0">
+        <!-- 합계/금액 -->
+        <div class="flex justify-between font-satoshi font-bold text-[16px] text-black" style="margin-bottom: 24px;">
+          <span id="totalLabel">합계</span>
+          <span id="modalTotal"></span>
+        </div>
+
+        <!-- 버튼들 -->
+        <div id="modalActionButtons" class="flex justify-between items-center">
+          <button
+            onclick="closeReceiptModal()"
+            class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#1B1B1B] hover:bg-gray-100 transition-colors"
+            style="width: 125px; height: 38px;"
+          >
+            취소
           </button>
-          <button onclick="selectType('income')" id="typeIncome" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
-            수입
-          </button>
-          <button onclick="selectType('transfer')" id="typeTransfer" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
-            이체
+          <button
+            onclick="editReceipt()"
+            class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#1B1B1B] hover:bg-gray-100 transition-colors"
+            style="width: 125px; height: 38px;"
+          >
+            편집
           </button>
         </div>
-      </div>
-
-      <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
-
-      <!-- 카테고리 (지출일 때만 표시) -->
-      <div id="categorySection" style="margin-bottom: 24px; position: relative; height: 19px;">
-        <span class="font-noto text-[16px] leading-[19px] text-[#878787]" style="position: absolute; left: 0;">카테고리</span>
-        <select id="categorySelect" class="border-0 bg-transparent font-noto text-[15px] text-black focus:outline-none" style="padding: 0; position: absolute; right: 0;" disabled>
-          <option value="">선택하세요</option>
-          <option value="식비">식비</option>
-          <option value="교통비">교통비</option>
-          <option value="카페/간식">카페/간식</option>
-          <option value="쇼핑">쇼핑</option>
-          <option value="문화/여가">문화/여가</option>
-          <option value="의료/건강">의료/건강</option>
-          <option value="생활용품">생활용품</option>
-          <option value="기타">기타</option>
-        </select>
-      </div>
-
-      <!-- 상품 헤더 (지출일 때만 표시) -->
-      <div id="itemsHeader" class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787]" style="margin-bottom: 8px;">
-        <span class="flex-1">상품명</span>
-        <span class="w-[26px] text-center">수량</span>
-        <span class="w-[60px] text-right">단가</span>
-        <span class="w-[60px] text-right">소계</span>
-      </div>
-
-      <!-- 상품 목록 (지출일 때만 표시) -->
-      <div id="modalItems" style="margin-bottom: 16px;"></div>
-
-      <div id="itemsDivider" class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
-
-      <!-- 합계/금액 -->
-      <div class="flex justify-between font-satoshi font-bold text-[16px] text-black" style="margin-bottom: 32px;">
-        <span id="totalLabel">합계</span>
-        <span id="modalTotal"></span>
-      </div>
-
-      <!-- 버튼들 -->
-      <div id="modalActionButtons" class="flex justify-between items-center">
-        <button
-          onclick="closeReceiptModal()"
-          class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#1B1B1B] hover:bg-gray-100 transition-colors"
-          style="width: 125px; height: 38px;"
-        >
-          취소
-        </button>
-        <button
-          onclick="editReceipt()"
-          class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#1B1B1B] hover:bg-gray-100 transition-colors"
-          style="width: 125px; height: 38px;"
-        >
-          편집
-        </button>
       </div>
     </div>
   </div>
@@ -956,7 +962,7 @@ async function openReceiptModal(receiptId) {
         const itemsHtml = receipt.items.map(item => `
           <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
             <span class="flex-1">${item.name}</span>
-            <span class="w-[26px] text-center">${item.qty}</span>
+            <span class="w-[40px] text-center">${item.qty}</span>
             <span class="w-[60px] text-right">${item.price.toLocaleString()}</span>
             <span class="w-[60px] text-right">${item.subtotal.toLocaleString()}</span>
           </div>
@@ -966,7 +972,7 @@ async function openReceiptModal(receiptId) {
         modalItems.innerHTML = `
           <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
             <span class="flex-1">상품 정보 없음</span>
-            <span class="w-[26px] text-center">-</span>
+            <span class="w-[40px] text-center">-</span>
             <span class="w-[60px] text-right">-</span>
             <span class="w-[60px] text-right">-</span>
           </div>
@@ -1103,9 +1109,9 @@ function makeItemsEditable() {
     const price = spans[2].textContent.replace(/,/g, '');
 
     item.innerHTML = `
-      <input type="text" class="flex-1 border border-[#B4DE00] rounded px-1 text-[14px] font-satoshi font-bold text-[#878787]" value="${name}" data-field="name" data-index="${index}">
-      <input type="number" class="w-[26px] text-center border border-[#B4DE00] rounded px-1 text-[14px] font-satoshi font-bold text-[#878787]" value="${qty}" data-field="qty" data-index="${index}">
-      <input type="number" class="w-[60px] text-right border border-[#B4DE00] rounded px-1 text-[14px] font-satoshi font-bold text-[#878787]" value="${price}" data-field="price" data-index="${index}">
+      <input type="text" class="flex-1 border border-[#B4DE00] rounded px-1 text-[14px] font-satoshi font-bold text-[#878787] mr-1" value="${name}" data-field="name" data-index="${index}">
+      <input type="number" class="w-[40px] text-center border border-[#B4DE00] rounded px-1 text-[14px] font-satoshi font-bold text-[#878787]" value="${qty}" data-field="qty" data-index="${index}" style="padding: 2px;">
+      <input type="number" class="w-[60px] text-right border border-[#B4DE00] rounded px-1 text-[14px] font-satoshi font-bold text-[#878787]" value="${price}" data-field="price" data-index="${index}" style="padding: 2px;">
       <span class="w-[60px] text-right text-[14px] font-satoshi font-bold text-[#878787]" data-field="subtotal" data-index="${index}">${parseInt(qty) * parseInt(price)}</span>
     `;
 
@@ -1173,7 +1179,7 @@ function cancelEdit() {
             const itemsHtml = receipt.items.map(item => `
               <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
                 <span class="flex-1">${item.name}</span>
-                <span class="w-[26px] text-center">${item.qty}</span>
+                <span class="w-[40px] text-center">${item.qty}</span>
                 <span class="w-[60px] text-right">${item.price.toLocaleString()}</span>
                 <span class="w-[60px] text-right">${item.subtotal.toLocaleString()}</span>
               </div>
