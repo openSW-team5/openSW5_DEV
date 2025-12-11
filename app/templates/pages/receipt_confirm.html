@@ -91,11 +91,81 @@
   }"
   x-ref="container"
   class="relative w-full h-screen pb-[100px]"
-  :class="showSuccess ? 'overflow-hidden' : 'overflow-y-auto'"
+  :class="showSuccess ? 'overflow-hidden' : (receiptType === 'expense' ? 'overflow-y-auto' : 'overflow-hidden')"
   style="background: #ffffff; min-height: 800px"
 >
   <!-- 입력 페이지 -->
   <div x-show="!showSuccess">
+    <!-- 거래 유형 타이틀 (navbar 아래) -->
+    <div class="absolute w-full left-0 top-[110px] text-center z-20">
+      <!-- 지출 -->
+      <h2
+        x-show="receiptType === 'expense'"
+        class="font-yidstreet font-bold text-2xl text-[#AF4C4E]"
+      >지출</h2>
+      <!-- 수입 -->
+      <h2
+        x-show="receiptType === 'income'"
+        class="font-yidstreet font-bold text-2xl text-[#4CAF50]"
+      >수입</h2>
+      <!-- 이체 -->
+      <h2
+        x-show="receiptType === 'transfer'"
+        class="font-yidstreet font-bold text-2xl text-[#878787]"
+      >이체</h2>
+    </div>
+
+    <!-- 수입/이체용 배경 박스 (큰 검정색 박스 밖) -->
+    <div
+      x-show="receiptType !== 'expense'"
+      class="absolute w-[351px] left-[38px] top-[470px] h-[190px] bg-[#0F0F0F] rounded-[12px] z-5"
+    ></div>
+
+    <!-- 수입/이체용 입력 필드 (큰 검정색 박스 밖) -->
+    <div
+      x-show="receiptType !== 'expense'"
+      class="absolute w-[351px] left-[38px] top-[470px] h-[190px] flex flex-col gap-[20px] p-4 border border-[#4F4F4F] rounded-[5px] z-10"
+    >
+      <!-- Frame 36: Date -->
+      <div class="flex items-center gap-[10px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0">Date</span>
+        <input
+          type="date"
+          x-model="receiptDate"
+          class="flex-1 h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+          style="direction: ltr; text-align: left"
+        />
+        <input
+          type="time"
+          x-model="receiptTime"
+          class="w-[80px] h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+          style="direction: ltr; text-align: left"
+        />
+      </div>
+
+      <!-- Frame 37: Store -->
+      <div class="flex items-center gap-[50px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0">거래처</span>
+        <input
+          type="text"
+          x-model="store"
+          class="flex-grow h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+          placeholder="거래처/상대방 이름"
+        />
+      </div>
+
+      <!-- Amount -->
+      <div class="flex items-center gap-[50px]">
+        <span class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0">금액</span>
+        <input
+          type="number"
+          x-model="manualAmount"
+          class="flex-grow h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
+          placeholder="금액 입력"
+        />
+      </div>
+    </div>
+
     <!-- 회전된 카드 이미지 (상단) -->
     <div
       class="absolute left-[94px] transition-all duration-300"
@@ -251,12 +321,14 @@
       </svg>
     </div>
 
-    <!-- 금액 및 카테고리 표시 -->
+    <!-- 금액 표시 -->
     <div
       class="absolute w-[282px] left-[calc(50%-282px/2)] top-[401px] transition-all duration-300 flex items-center justify-center"
-      :class="scrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'"
+      :class="(receiptType === 'expense' && scrolled) ? 'opacity-0 pointer-events-none' : 'opacity-100'"
     >
+      <!-- 지출 -->
       <p
+        x-show="receiptType === 'expense'"
         class="font-yidstreet font-bold text-center whitespace-nowrap"
         :class="[
         total === 0 ? 'text-[#1B1B1B]' : 'text-[#AF4C4E]',
@@ -264,15 +336,36 @@
       ]"
         x-text="total === 0 ? '0원' : '-' + formatNumber(total) + '원'"
       ></p>
+      <!-- 수입 -->
+      <p
+        x-show="receiptType === 'income'"
+        class="font-yidstreet font-bold text-center whitespace-nowrap"
+        :class="[
+          manualAmount === 0 ? 'text-[#1B1B1B]' : 'text-[#4CAF50]',
+          (manualAmount === 0 ? '0원' : '+' + formatNumber(manualAmount) + '원').length > 10 ? 'text-[32px] leading-[42px]' : (manualAmount === 0 ? '0원' : '+' + formatNumber(manualAmount) + '원').length > 8 ? 'text-[40px] leading-[52px]' : 'text-[48px] leading-[62px]'
+        ]"
+        x-text="manualAmount === 0 ? '0원' : '+' + formatNumber(manualAmount) + '원'"
+      ></p>
+      <!-- 이체 -->
+      <p
+        x-show="receiptType === 'transfer'"
+        class="font-yidstreet font-bold text-center whitespace-nowrap"
+        :class="[
+          manualAmount === 0 ? 'text-[#1B1B1B]' : 'text-[#878787]',
+          (manualAmount === 0 ? '0원' : formatNumber(manualAmount) + '원').length > 10 ? 'text-[32px] leading-[42px]' : (manualAmount === 0 ? '0원' : formatNumber(manualAmount) + '원').length > 8 ? 'text-[40px] leading-[52px]' : 'text-[48px] leading-[62px]'
+        ]"
+        x-text="manualAmount === 0 ? '0원' : formatNumber(manualAmount) + '원'"
+      ></p>
     </div>
 
     <!-- 검정색 박스 (영수증 정보) -->
     <div
       class="absolute w-full left-0 bg-[#1B1B1B] transition-all duration-300"
-      :class="scrolled ? 'h-[800px] top-[264px]' : 'h-[426px] top-[516px]'"
+      :class="receiptType === 'expense' ? (scrolled ? 'h-[800px] top-[264px]' : 'h-[426px] top-[516px]') : 'h-[220px] top-[680px]'"
     >
-      <!-- Up Arrow (카드 선택 버튼) -->
+      <!-- Up Arrow (카드 선택 버튼) - 지출일 때만 표시 -->
       <div
+        x-show="receiptType === 'expense'"
         class="absolute w-[12px] h-[12px] left-[285px] top-[43px] rotate-180 cursor-pointer"
       >
         <svg viewBox="0 0 12 12" fill="none">
@@ -280,11 +373,20 @@
         </svg>
       </div>
 
-      <!-- Frame 36 - 영수증 상세 정보 -->
+      <!-- 배경 박스 (입력 필드 뒤) - 지출일 때만 -->
       <div
-        class="absolute w-[351px] left-[38px] flex flex-col gap-[17px] p-4 border border-[#4F4F4F] rounded-[5px] overflow-y-auto transition-all duration-300"
+        x-show="receiptType === 'expense'"
+        class="absolute w-[351px] left-[38px] bg-[#0F0F0F] rounded-[12px] transition-all duration-300"
         :class="scrolled ? 'h-[660px] top-[12px]' : 'h-[265px] top-[23px]'"
-        style="max-height: 660px"
+        style="z-index: 5"
+      ></div>
+
+      <!-- Frame 36 - 영수증 상세 정보 (지출일 때만) -->
+      <div
+        x-show="receiptType === 'expense'"
+        class="absolute w-[351px] left-[38px] flex flex-col gap-[17px] p-4 border border-[#4F4F4F] rounded-[5px] transition-all duration-300"
+        :class="scrolled ? 'h-[660px] overflow-y-auto' : 'h-[265px] overflow-y-auto'"
+        :style="scrolled ? 'top: 12px; max-height: 660px; z-index: 10' : 'top: 23px; max-height: 660px; z-index: 10'"
       >
         <!-- Frame 36: Date -->
         <div class="flex items-center gap-[10px]">
@@ -320,8 +422,8 @@
           />
         </div>
 
-        <!-- 카테고리 선택 (지출일 때만 표시) -->
-        <div x-show="receiptType === 'expense'" class="flex items-center gap-[50px]">
+        <!-- 카테고리 선택 (지출일 때만) -->
+        <div class="flex items-center gap-[50px]">
           <span
             class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0"
             >카테고리</span
@@ -343,22 +445,8 @@
           </select>
         </div>
 
-        <!-- Amount (for income/transfer) -->
-        <div x-show="receiptType !== 'expense'" class="flex items-center gap-[50px]">
-          <span
-            class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-shrink-0"
-            >금액</span
-          >
-          <input
-            type="number"
-            x-model="manualAmount"
-            class="flex-grow h-[24px] bg-transparent border-b border-[#878787] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0]"
-            placeholder="금액 입력"
-          />
-        </div>
-
-        <!-- Frame 40: Total (for expense only) -->
-        <div x-show="receiptType === 'expense'" class="flex items-center gap-[50px]">
+        <!-- Frame 40: Total -->
+        <div class="flex items-center gap-[50px]">
           <span
             class="font-satoshi font-medium text-[14px] leading-[19px] text-[#F0F0F0] flex-grow"
             >Total</span
@@ -369,12 +457,12 @@
           ></span>
         </div>
 
-        <!-- 상품 항목 리스트 (지출일 때만 표시) -->
-        <div x-show="receiptType === 'expense'">
-        <template x-for="(product, index) in products" :key="product.id">
-          <div
-            class="relative h-[19px] mb-2 select-none"
-            x-data="{
+        <!-- 상품 항목 리스트 -->
+        <div>
+          <template x-for="(product, index) in products" :key="product.id">
+            <div
+              class="relative h-[19px] mb-4 select-none"
+              x-data="{
             startX: 0,
             currentX: 0,
             isDragging: false,
@@ -402,93 +490,93 @@
               this.isDragging = false;
             }
           }"
-            @mousedown="handleStart($event)"
-            @mousemove="handleMove($event)"
-            @mouseup="handleEnd()"
-            @mouseleave="handleEnd()"
-            @touchstart.passive="handleStart($event)"
-            @touchmove="handleMove($event)"
-            @touchend.passive="handleEnd()"
-          >
-            <div
-              class="flex items-center gap-[8px] transition-transform duration-300 absolute left-0 w-full"
-              :style="product.swipedLeft ? 'transform: translateX(-43px)' : ''"
+              @mousedown="handleStart($event)"
+              @mousemove="handleMove($event)"
+              @mouseup="handleEnd()"
+              @mouseleave="handleEnd()"
+              @touchstart.passive="handleStart($event)"
+              @touchmove="handleMove($event)"
+              @touchend.passive="handleEnd()"
             >
-              <input
-                type="text"
-                x-model="product.name"
-                class="flex-1 min-w-[40px] h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
-                placeholder="상품명"
-                @focus="product.swipedLeft = false"
-              />
-              <input
-                type="number"
-                x-model="product.quantity"
-                min="0"
-                inputmode="numeric"
-                class="w-[45px] flex-shrink-0 h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
-                placeholder="수량"
-                @focus="product.swipedLeft = false"
-              />
-              <input
-                type="number"
-                x-model="product.unitPrice"
-                min="0"
-                inputmode="numeric"
-                class="flex-1 min-w-[45px] h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
-                placeholder="단가"
-                @focus="product.swipedLeft = false"
-              />
-              <span
-                class="min-w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right whitespace-nowrap"
-                x-text="formatNumber(subtotal(product))"
-              ></span>
-            </div>
-            <!-- 삭제 버튼 -->
-            <button
-              @click="removeProduct(product.id)"
-              class="absolute right-0 top-0 transition-opacity duration-300"
-              :class="product.swipedLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'"
-            >
-              <svg
-                width="33"
-                height="19"
-                viewBox="0 0 33 19"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+              <div
+                class="flex items-center gap-[8px] transition-transform duration-300 absolute left-0 w-full"
+                :style="product.swipedLeft ? 'transform: translateX(-43px)' : ''"
               >
-                <rect
-                  x="1.5"
-                  y="1.5"
-                  width="30"
-                  height="16"
-                  rx="8"
-                  stroke="#AF4C4E"
-                  stroke-width="3"
+                <input
+                  type="text"
+                  x-model="product.name"
+                  class="flex-1 min-w-[40px] h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
+                  placeholder="상품명"
+                  @focus="product.swipedLeft = false"
                 />
-                <path
-                  d="M14.246 10.496V8.496H18.774V10.496H14.246Z"
-                  fill="#AF4C4E"
+                <input
+                  type="number"
+                  x-model="product.quantity"
+                  min="0"
+                  inputmode="numeric"
+                  class="w-[45px] flex-shrink-0 h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-medium text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
+                  placeholder="수량"
+                  @focus="product.swipedLeft = false"
                 />
-              </svg>
-            </button>
-          </div>
-        </template>
+                <input
+                  type="number"
+                  x-model="product.unitPrice"
+                  min="0"
+                  inputmode="numeric"
+                  class="flex-1 min-w-[45px] h-[19px] bg-transparent border-b border-[#4F4F4F] text-[#878787] font-satoshi font-bold text-[14px] text-right focus:outline-none focus:border-[#B4DE00] focus:text-[#F0F0F0] pointer-events-auto"
+                  placeholder="단가"
+                  @focus="product.swipedLeft = false"
+                />
+                <span
+                  class="min-w-[65px] font-satoshi font-bold text-[14px] leading-[19px] text-[#F0F0F0] text-right whitespace-nowrap"
+                  x-text="formatNumber(subtotal(product))"
+                ></span>
+              </div>
+              <!-- 삭제 버튼 -->
+              <button
+                @click="removeProduct(product.id)"
+                class="absolute right-0 top-0 transition-opacity duration-300"
+                :class="product.swipedLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+              >
+                <svg
+                  width="33"
+                  height="19"
+                  viewBox="0 0 33 19"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="1.5"
+                    y="1.5"
+                    width="30"
+                    height="16"
+                    rx="8"
+                    stroke="#AF4C4E"
+                    stroke-width="3"
+                  />
+                  <path
+                    d="M14.246 10.496V8.496H18.774V10.496H14.246Z"
+                    fill="#AF4C4E"
+                  />
+                </svg>
+              </button>
+            </div>
+          </template>
         </div>
       </div>
 
       <!-- Add 버튼 (지출일 때만 표시) -->
       <div x-show="receiptType === 'expense'">
-      <button
-        @click="addProduct()"
-        class="absolute w-[83px] h-[26px] left-[calc(50%-83px/2+0.5px)] border-[3px] border-[#4CAF50] rounded-[20px] flex items-center justify-center transition-all duration-300"
-        :class="scrolled ? 'top-[690px]' : 'top-[276px]'"
-      >
-        <span
-          class="font-montserrat font-bold text-[16px] leading-[20px] text-[#4CAF50]"
-          >Add</span
+        <button
+          @click="addProduct()"
+          class="absolute w-[83px] h-[26px] left-[calc(50%-83px/2+0.5px)] border-[3px] border-[#4CAF50] rounded-[20px] flex items-center justify-center transition-all duration-300"
+          :class="scrolled ? 'top-[690px]' : 'top-[276px]'"
         >
-      </button>
+          <span
+            class="font-montserrat font-bold text-[16px] leading-[20px] text-[#4CAF50]"
+            >Add</span
+          >
+        </button>
       </div>
     </div>
 
