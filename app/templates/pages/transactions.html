@@ -762,30 +762,6 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 
   // ===== 검색 기능 =====
-  const searchIcon = document.querySelector('a[href="/search"]');
-  if (searchIcon) {
-    searchIcon.onclick = function(e) {
-      e.preventDefault();
-      const searchTerm = prompt('검색어를 입력하세요:');
-      if (searchTerm && searchTerm.trim()) {
-        filterTransactions(searchTerm.trim());
-      }
-    };
-  }
-
-  function filterTransactions(searchTerm) {
-    const filtered = receiptsData.filter(receipt => {
-      return receipt.merchant.toLowerCase().includes(searchTerm.toLowerCase()) ||
-             (receipt.category && receipt.category.toLowerCase().includes(searchTerm.toLowerCase()));
-    });
-
-    if (filtered.length > 0) {
-      const groupedReceipts = groupReceiptsByDate(filtered);
-      renderGroupedTransactions(groupedReceipts);
-    } else {
-      transactionsContainer.innerHTML = '<p class="text-center text-gray font-roboto text-[14px]">검색 결과가 없습니다</p>';
-    }
-  }
 });
 
 // ===== 모달 함수들 (전역) =====
