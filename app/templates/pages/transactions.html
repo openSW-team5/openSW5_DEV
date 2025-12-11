@@ -114,7 +114,7 @@
   </div>
 
   <!-- Calendar View -->
-  <div id="calendar-container" class="hidden">
+  <div id="calendar-container" class="hidden px-[20px]" style="max-width: 100%; overflow-x: hidden;">
     <!-- Calendar grid will be dynamically loaded here -->
   </div>
 
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   // View mode state
   let currentView = 'list'; // 'list' or 'calendar'
-  let currentDate = new Date();
+  let currentDate = new Date(); // Date 객체 유지 (기존 코드 호환)
 
   const transactionsContainer = document.getElementById('transactions-container');
   const calendarContainer = document.getElementById('calendar-container');
@@ -381,41 +381,47 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 
   function updateCalendarView() {
-    // Update month text
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                       'July', 'August', 'September', 'October', 'November', 'December'];
-    currentMonthText.textContent = monthNames[currentDate.getMonth()];
+    // Update month text (Day.js로 한글 월 표시)
+    dayjs.locale('ko');
+    currentMonthText.textContent = dayjs(currentDate).format('M월');
 
     // Render calendar grid
     renderCalendarGrid();
   }
 
   function renderCalendarGrid() {
-    // Calculate first day of the month and total days
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    // Day.js로 계산
+    const currentMonth = dayjs(currentDate);
+    const year = currentMonth.year();
+    const month = currentMonth.month();
+    const daysInMonth = currentMonth.daysInMonth();
+    const startingDayOfWeek = currentMonth.startOf('month').day(); // 0 = Sunday
 
     // Group receipts by date for this month
     const receiptsThisMonth = receiptsData.filter(receipt => {
-      const receiptDate = new Date(receipt.purchased_at);
-      return receiptDate.getFullYear() === year && receiptDate.getMonth() === month;
+      const receiptDate = dayjs(receipt.purchased_at);
+      return receiptDate.year() === year && receiptDate.month() === month;
     });
 
     // Create a map of date -> total amount
     const dateTotals = {};
     receiptsThisMonth.forEach(receipt => {
-      const day = new Date(receipt.purchased_at).getDate();
+      const day = dayjs(receipt.purchased_at).date();
       if (!dateTotals[day]) {
-        dateTotals[day] = { income: 0, expense: 0 };
+        dateTotals[day] = { income: 0, expense: 0, transfer: 0 };
       }
-      if (receipt.price >= 0) {
-        dateTotals[day].income += receipt.price;
+
+      // 거래 타입 구분 (merchant 이름으로 임시 구분)
+      const merchant = receipt.merchant || '';
+      const isIncome = merchant.includes('수입');
+      const isTransfer = merchant.includes('이체');
+
+      if (isIncome) {
+        dateTotals[day].income += receipt.total;
+      } else if (isTransfer) {
+        dateTotals[day].transfer += receipt.total;
       } else {
-        dateTotals[day].expense += Math.abs(receipt.price);
+        dateTotals[day].expense += receipt.total;
       }
     });
 
@@ -423,15 +429,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     let calendarHTML = '<div class="w-full">';
 
     // Day headers
-    calendarHTML += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 8px;">';
+    calendarHTML += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px;">';
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     dayNames.forEach(day => {
-      calendarHTML += `<div style="text-align: center; font-family: Montserrat; font-weight: 500; font-size: 12px;">${day}</div>`;
+      calendarHTML += `<div style="text-align: center; font-family: Montserrat; font-weight: 500; font-size: 10px;">${day}</div>`;
     });
     calendarHTML += '</div>';
 
     // Calendar grid
-    calendarHTML += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">';
+    calendarHTML += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;">';
 
     // Empty cells before first day
     for (let i = 0; i < startingDayOfWeek; i++) {
@@ -445,17 +451,20 @@ document.addEventListener('DOMContentLoaded', async function() {
 
       if (hasTransactions) {
         if (hasTransactions.income > 0) {
-          amountHTML += `<div style="font-size: 10px; color: #4CAF50; font-weight: 500;">+${hasTransactions.income.toLocaleString()}</div>`;
+          amountHTML += `<div style="font-size: 8px; color: #4CAF50; font-weight: 500;">+${hasTransactions.income.toLocaleString()}</div>`;
         }
         if (hasTransactions.expense > 0) {
-          amountHTML += `<div style="font-size: 10px; color: #F44336; font-weight: 500;">-${hasTransactions.expense.toLocaleString()}</div>`;
+          amountHTML += `<div style="font-size: 8px; color: #AF4C4E; font-weight: 500;">-${hasTransactions.expense.toLocaleString()}</div>`;
+        }
+        if (hasTransactions.transfer > 0) {
+          amountHTML += `<div style="font-size: 8px; color: #878787; font-weight: 500;">${hasTransactions.transfer.toLocaleString()}</div>`;
         }
       }
 
       const bgColor = hasTransactions ? '#F5F5F5' : 'transparent';
       calendarHTML += `
-        <div style="aspect-ratio: 1; border: 1px solid #E0E0E0; border-radius: 8px; padding: 4px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background-color: ${bgColor};">
-          <div style="font-family: Montserrat; font-size: 14px;">${day}</div>
+        <div style="aspect-ratio: 1; border: 1px solid #E0E0E0; border-radius: 6px; padding: 2px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background-color: ${bgColor};">
+          <div style="font-family: Montserrat; font-size: 11px; font-weight: 500;">${day}</div>
           ${amountHTML}
         </div>
       `;
