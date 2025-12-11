@@ -52,11 +52,15 @@ class ReceiptConfirmIn(BaseModel):
     @field_validator("purchased_at")
     @classmethod
     def _v_date(cls, v: str) -> str:
-        try:
-            datetime.strptime(v, "%Y-%m-%d")
-        except ValueError:
-            raise ValueError("purchased_at must be YYYY-MM-DD")
-        return v
+        # 날짜만 또는 날짜+시간 모두 허용
+        formats = ["%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"]
+        for fmt in formats:
+            try:
+                datetime.strptime(v, fmt)
+                return v
+            except ValueError:
+                continue
+        raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
 
 
 class ReceiptUpdateIn(BaseModel):
@@ -72,11 +76,15 @@ class ReceiptUpdateIn(BaseModel):
     @field_validator("purchased_at")
     @classmethod
     def _v_date(cls, v: str) -> str:
-        try:
-            datetime.strptime(v, "%Y-%m-%d")
-        except ValueError:
-            raise ValueError("purchased_at must be YYYY-MM-DD")
-        return v
+        # 날짜만 또는 날짜+시간 모두 허용
+        formats = ["%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"]
+        for fmt in formats:
+            try:
+                datetime.strptime(v, fmt)
+                return v
+            except ValueError:
+                continue
+        raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
 
 
 class ReceiptRow(BaseModel):

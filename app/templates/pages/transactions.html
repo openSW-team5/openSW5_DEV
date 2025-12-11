@@ -746,6 +746,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   }
 
+  // Make loadReceipts globally accessible
+  window.loadReceipts = loadReceipts;
+
   // Load receipts on page load
   await loadReceipts();
 
@@ -944,12 +947,40 @@ async function openReceiptModal(receiptId) {
 
     const receipt = result.data;
 
+    // DOM 요소를 초기 상태로 복원 (편집 모드에서 변경된 경우)
+    const modalMerchantElem = document.getElementById('modalMerchant');
+    if (modalMerchantElem && modalMerchantElem.tagName === 'INPUT') {
+      const newElem = document.createElement('p');
+      newElem.id = 'modalMerchant';
+      newElem.className = 'font-yidstreet font-bold text-[40px] leading-[52px] text-center text-black';
+      newElem.style = 'margin-bottom: 8px;';
+      modalMerchantElem.parentNode.replaceChild(newElem, modalMerchantElem);
+    }
+
+    const modalAddressElem = document.getElementById('modalAddress');
+    if (modalAddressElem && modalAddressElem.tagName === 'INPUT') {
+      const newElem = document.createElement('p');
+      newElem.id = 'modalAddress';
+      newElem.className = 'font-noto text-[16px] leading-[19px] text-center text-[#878787]';
+      newElem.style = 'margin-bottom: 24px;';
+      modalAddressElem.parentNode.replaceChild(newElem, modalAddressElem);
+    }
+
+    let modalDateElem = document.getElementById('modalDate');
+    if (modalDateElem && modalDateElem.tagName === 'DIV') {
+      const newElem = document.createElement('p');
+      newElem.id = 'modalDate';
+      newElem.className = 'font-montserrat text-[15px] leading-[18px] text-center';
+      newElem.style = 'margin-bottom: 16px; color: #1b1b1b;';
+      modalDateElem.parentNode.replaceChild(newElem, modalDateElem);
+      modalDateElem = newElem; // 새로운 요소를 변수에 할당
+    }
+
     // 모달 내용 채우기
     document.getElementById('modalMerchant').textContent = receipt.merchant || '상호명 없음';
     document.getElementById('modalAddress').textContent = receipt.address || '주소 없음';
 
     // 날짜/시간 표시
-    const modalDateElem = document.getElementById('modalDate');
     if (receipt.purchased_at) {
       const purchasedDate = dayjs(receipt.purchased_at);
       // 시간 정보가 있는지 확인 (HH:mm:ss가 00:00:00이 아닌 경우)
@@ -1028,6 +1059,19 @@ async function openReceiptModal(receiptId) {
       totalLabel.textContent = '금액';
     }
 
+    // 버튼을 초기 상태(취소/편집)로 초기화
+    const modalActions = document.getElementById('modalActionButtons');
+    if (modalActions) {
+      modalActions.innerHTML = `
+        <button onclick="closeReceiptModal()" class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#878787] hover:bg-gray-100 transition-colors" style="width: 125px; height: 38px;">
+          취소
+        </button>
+        <button onclick="editReceipt()" class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#1B1B1B] hover:bg-gray-100 transition-colors" style="width: 125px; height: 38px;">
+          편집
+        </button>
+      `;
+    }
+
     // 모달 표시
     const modal = document.getElementById('receiptModal');
     modal.classList.remove('hidden');
@@ -1043,6 +1087,7 @@ function closeReceiptModal(event) {
     modal.classList.add('hidden');
     modal.style.display = 'none';
     currentReceiptId = null;
+    isEditMode = false; // 편집 모드 리셋
   }
 }
 
@@ -1321,24 +1366,36 @@ async function saveReceipt() {
         // 총액 재계산
         total = items.reduce((sum, item) => sum + (item.qty * item.price), 0);
       }
+    } else {
+      // 수입/이체의 경우 더미 아이템 추가
+      items = [{
+        name: currentReceiptType === 'income' ? '수입' : '이체',
+        qty: 1,
+        price: total,
+        category: null
+      }];
     }
 
     // API 호출하여 업데이트
+    const payload = {
+      merchant: merchant,
+      purchased_at: purchasedAt,
+      total: total,
+      status: receipt.status || 'CONFIRMED',
+      type: currentReceiptType,
+      category: category,
+      items: items,
+      image_path: receipt.image_path
+    };
+
+    console.log('Update payload:', payload);
+
     const response = await fetch(`/receipts/${currentReceiptId}/update`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        merchant: merchant,
-        purchased_at: purchasedAt,
-        total: total,
-        status: receipt.status || 'CONFIRMED',
-        type: currentReceiptType,
-        category: category,
-        items: items.length > 0 ? items : receipt.items || [],
-        image_path: receipt.image_path
-      })
+      body: JSON.stringify(payload)
     });
 
     if (response.ok) {
@@ -1352,11 +1409,17 @@ async function saveReceipt() {
       isEditMode = false;
       closeReceiptModal();
     } else {
-      throw new Error('업데이트 실패');
+      const errorData = await response.json();
+      console.error('API Error:', errorData);
+      const errorMessage = typeof errorData.detail === 'string'
+        ? errorData.detail
+        : JSON.stringify(errorData.detail || errorData);
+      alert('수정에 실패했습니다: ' + errorMessage);
+      return;
     }
   } catch (error) {
     console.error('Error updating receipt:', error);
-    alert('수정에 실패했습니다.');
+    alert('수정에 실패했습니다: ' + error.message);
   }
 }
 
