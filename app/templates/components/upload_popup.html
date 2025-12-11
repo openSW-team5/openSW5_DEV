@@ -300,8 +300,8 @@
 
   function handleManualInput() {
     console.log('직접 입력 기능');
-    // TODO: 직접 입력 페이지로 이동
     closeUploadPopup();
+    window.location.href = '/receipts/confirm';
   }
 
   async function handleFileSelect(input, source) {

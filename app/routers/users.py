@@ -342,6 +342,12 @@ async def user_page(request: Request):
     )
 
 
+@router.get("/notifications", response_class=HTMLResponse)
+async def notifications_page(request: Request):
+    """알림 페이지"""
+    return templates.TemplateResponse("pages/notifications.html", {"request": request, "title": "알림"})
+
+
 # ==========================
 #   로그아웃
 # ==========================

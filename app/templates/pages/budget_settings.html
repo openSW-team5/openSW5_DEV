@@ -1,0 +1,123 @@
+{% set navbar_variant = 'back-notify' %} {% set back_url = '/users/user' %} {%
+set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
+
+<script src="/static/js/category-sync.js"></script>
+
+<div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
+  <div
+    class="relative"
+    style="min-height: 730px; padding-bottom: 100px"
+    x-data="{
+      categories: [],
+      init() {
+        this.categories = window.CategorySync.getCategories();
+        // storage 변경 감지 (다른 탭에서 변경시 동기화)
+        window.CategorySync.onStorageChange((updatedCategories) => {
+          this.categories = updatedCategories;
+        });
+      },
+      formatNumber(num) {
+        return num.toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',');
+      },
+      updateBudget(index, value) {
+        const numValue = parseInt(value.replace(/,/g, '')) || 0;
+        this.categories[index].budget = numValue;
+      },
+      saveBudgets() {
+        // 모든 카테고리의 예산을 localStorage에 저장
+        this.categories.forEach((cat, index) => {
+          window.CategorySync.updateBudget(index, cat.budget);
+        });
+        alert('예산이 저장되었습니다!');
+      }
+    }"
+  >
+    <!-- 예산 설정 Title -->
+    <h1
+      class="font-noto font-bold text-black text-center"
+      style="
+        font-size: 25px;
+        line-height: 30px;
+        padding-top: 30px;
+        margin-bottom: 40px;
+      "
+    >
+      예산 설정
+    </h1>
+
+    <!-- Budget Items Grid -->
+    <div class="relative" style="padding-top: 40px">
+      <template x-for="(category, index) in categories" :key="index">
+        <div
+          class="absolute"
+          :style="`width: 82px; height: 130px; left: ${39 + (index % 3) * 134}px; top: ${Math.floor(index / 3) * 180}px`"
+        >
+          <!-- Category Icon -->
+          <div
+            class="absolute bg-[#F2F2F2] rounded-lg flex items-center justify-center"
+            style="width: 70px; height: 70px; left: 6px; top: 0px"
+          >
+            <img
+              :src="'/static/assets/' + category.icon"
+              :alt="category.name"
+              class="w-[70%] h-[70%] object-contain"
+            />
+          </div>
+
+          <!-- Category Name -->
+          <p
+            class="absolute font-yidstreet font-bold text-[14px] leading-[18px] text-center"
+            style="
+              width: 82px;
+              height: 18px;
+              left: 0px;
+              top: 75px;
+              color: #000000;
+            "
+            x-text="category.name"
+          ></p>
+
+          <!-- Budget Input -->
+          <input
+            type="text"
+            :value="formatNumber(category.budget)"
+            @input="updateBudget(index, $event.target.value)"
+            class="absolute font-yidstreet font-bold text-[12px] text-center border border-[#878787] rounded px-1 py-1"
+            style="
+              width: 82px;
+              height: 28px;
+              left: 0px;
+              top: 98px;
+              color: #1b1b1b;
+            "
+            placeholder="예산"
+          />
+        </div>
+      </template>
+
+    </div>
+
+    <!-- Save Button -->
+    <button
+      @click="saveBudgets()"
+      class="absolute flex flex-row justify-center items-center transition-colors"
+      style="
+        width: 150px;
+        height: 54px;
+        left: calc(50% - 150px / 2);
+        top: 650px;
+        background: #4caf50;
+        border-radius: 70px;
+        padding: 16px 10px;
+        gap: 8px;
+      "
+    >
+      <span
+        class="font-satoshi font-medium text-[16px] leading-[22px] text-center text-white"
+        >저장</span
+      >
+    </button>
+  </div>
+</div>
+
+{% endblock %}
