@@ -86,6 +86,8 @@ class RegisterIn(BaseModel):
         if v is None:
             return v
         v = v.strip()
+        if not v:  # 빈 문자열이면 None으로 처리
+            return None
         if "@" not in v or "." not in v:
             raise ValueError("invalid email format")
         return v

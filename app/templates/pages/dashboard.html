@@ -8,12 +8,23 @@
   style="padding-top: 107px; padding-bottom: 107px"
   x-data="{
     categories: [],
+    isLoggedIn: {{ 'true' if user_id else 'false' }},
     init() {
-      this.categories = window.CategorySync.getCategories();
-      // storage 변경 감지 (다른 탭에서 변경시 동기화)
-      window.CategorySync.onStorageChange((updatedCategories) => {
-        this.categories = updatedCategories;
-      });
+      if (this.isLoggedIn) {
+        this.categories = window.CategorySync.getCategories();
+        // storage 변경 감지 (다른 탭에서 변경시 동기화)
+        window.CategorySync.onStorageChange((updatedCategories) => {
+          this.categories = updatedCategories;
+        });
+      } else {
+        // 로그인 안 했을 때 템플릿 카드 1개만 표시
+        this.categories = [{
+          name: '식비',
+          icon: 'food.svg',
+          budget: 300000,
+          spent: 0
+        }];
+      }
     },
     formatNumber(num) {
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -42,7 +53,7 @@
       class="absolute flex items-center font-montserrat font-semibold text-[20px] leading-[24px] text-black"
       style="left: 150px; top: 28px; width: 100px; height: 24px"
     >
-      250,000원
+      {% if user_id %}250,000원{% else %}0원{% endif %}
     </div>
 
     <!-- Monthly budget label -->
@@ -58,7 +69,7 @@
       class="absolute flex items-center font-montserrat font-semibold text-[20px] leading-[24px] text-black"
       style="left: 150px; top: 80px; width: 116px; height: 24px"
     >
-      1,000,000원
+      {% if user_id %}1,000,000원{% else %}0원{% endif %}
     </div>
   </div>
 
@@ -277,18 +288,19 @@
 
     // Total Spent Chart
     const ctx = document.getElementById('totalSpentChart');
-    const totalBudget = 1000000;
-    const totalSpent = 250000;
+    const isLoggedIn = {{ 'true' if user_id else 'false' }};
+    const totalBudget = isLoggedIn ? 1000000 : 0;
+    const totalSpent = isLoggedIn ? 250000 : 0;
     const remaining = totalBudget - totalSpent;
-    const percentage = ((totalSpent / totalBudget) * 100).toFixed(2);
+    const percentage = totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(2) : '0.00';
 
     new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels: ['사용', '남음'],
         datasets: [{
-          data: [totalSpent, remaining],
-          backgroundColor: ['#63A1FF', '#E5E5E5'],
+          data: totalBudget > 0 ? [totalSpent, remaining] : [1],
+          backgroundColor: totalBudget > 0 ? ['#63A1FF', '#E5E5E5'] : ['#E5E5E5'],
           borderWidth: 0,
           cutout: '82%',
           borderRadius: 10
