@@ -126,62 +126,94 @@
 </div>
 
 <!-- 영수증 상세 모달 -->
-<div id="receiptModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" onclick="closeReceiptModal(event)">
-  <div class="relative w-[334px] h-[515px] bg-[#F0F0F0] rounded-[20px] shadow-[0px_4px_10px_rgba(0,0,0,0.35)]" onclick="event.stopPropagation()">
+<div id="receiptModal" class="fixed inset-0 z-50 hidden" style="background: rgba(0, 0, 0, 0.7); display: none; align-items: flex-start; justify-content: center; padding-top: 80px;" onclick="closeReceiptModal(event)">
+  <div class="relative" style="width: 400px; height: 600px;" onclick="event.stopPropagation()">
     <!-- 영수증 SVG 배경 -->
-    <svg class="absolute inset-0 pointer-events-none" width="334" height="515" viewBox="0 0 334 515" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H334V515.001L324.722 521L315.444 515.001L306.167 521L296.889 515.001L287.611 521L278.333 515.001L269.056 521L259.778 515.001L250.5 521L241.222 515.001L231.944 521L222.667 515.001L213.389 521L204.111 515.001L194.833 521L185.556 515.001L176.278 521L167 515.001L157.722 521L148.444 515.001L139.167 521L129.889 515.001L120.611 521L111.333 515.001L102.056 521L92.7778 515.001L83.5 521L74.2222 515.001L64.9444 521L55.6667 515.001L46.3889 521L37.1111 515.001L27.8333 521L18.5556 515.001L9.27778 521L0 515.001V0Z" fill="#F0F0F0"/>
+    <svg class="absolute inset-0 pointer-events-none" width="100%" height="100%" viewBox="0 0 354 535" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="filter0_d_209_1553" x="0" y="0" width="354" height="535" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+          <feOffset dy="4"/>
+          <feGaussianBlur stdDeviation="5"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.35 0"/>
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_209_1553"/>
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_209_1553" result="shape"/>
+        </filter>
+      </defs>
+      <g filter="url(#filter0_d_209_1553)">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10 6H344V515.001L334.722 521L325.444 515.001L316.167 521L306.889 515.001L297.611 521L288.333 515.001L279.056 521L269.778 515.001L260.5 521L251.222 515.001L241.944 521L232.667 515.001L223.389 521L214.111 515.001L204.833 521L195.556 515.001L186.278 521L177 515.001L167.722 521L158.444 515.001L149.167 521L139.889 515.001L130.611 521L121.333 515.001L112.056 521L102.778 515.001L93.5 521L84.2222 515.001L74.9444 521L65.6667 515.001L56.3889 521L47.1111 515.001L37.8333 521L28.5556 515.001L19.2778 521L10 515.001V6Z" fill="#F0F0F0"/>
+      </g>
     </svg>
 
     <!-- 모달 내용 -->
-    <div class="relative p-6 overflow-y-auto h-full">
+    <div class="relative overflow-y-auto h-full" style="padding: 70px 30px 30px 30px;">
       <!-- 상호명 -->
-      <h2 id="modalMerchant" class="font-noto font-bold text-[36px] text-center text-black mb-2"></h2>
+      <h2 id="modalMerchant" class="font-yidstreet font-bold text-[40px] leading-[52px] text-center text-black" style="margin-bottom: 8px;"></h2>
 
       <!-- 주소 -->
-      <p id="modalAddress" class="font-noto text-[16px] text-center text-[#878787] mb-4"></p>
+      <p id="modalAddress" class="font-noto text-[16px] leading-[19px] text-center text-[#878787]" style="margin-bottom: 24px;"></p>
 
       <!-- 날짜 -->
-      <p id="modalDate" class="font-roboto text-[14px] text-center text-black mb-6"></p>
+      <p id="modalDate" class="font-montserrat text-[15px] leading-[18px] text-center text-black" style="margin-bottom: 16px;"></p>
 
-      <div class="border-t border-dashed border-[#979797] mb-4"></div>
+      <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
 
       <!-- 결제 타입 -->
-      <div class="flex justify-between mb-2">
-        <span class="font-noto text-[14px] text-[#6D7278]">Token Type</span>
-        <span id="modalType" class="font-noto text-[14px] text-black"></span>
+      <div class="flex justify-between items-center" style="margin-bottom: 32px;">
+        <span class="font-noto text-[16px] leading-[19px] text-[#878787]">Token Type</span>
+        <div class="flex gap-2">
+          <button onclick="selectType('expense')" id="typeExpense" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
+            지출
+          </button>
+          <button onclick="selectType('income')" id="typeIncome" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
+            수입
+          </button>
+          <button onclick="selectType('transfer')" id="typeTransfer" class="type-btn w-[45px] h-[30px] border-2 rounded-[20px] font-noto text-[15px] transition-all">
+            이체
+          </button>
+        </div>
       </div>
 
-      <div class="border-t border-dashed border-[#979797] mb-4"></div>
+      <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
 
       <!-- 상품 헤더 -->
-      <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
+      <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787]" style="margin-bottom: 8px;">
         <span class="flex-1">상품명</span>
         <span class="w-[26px] text-center">수량</span>
-        <span class="w-[40px] text-right">단가</span>
-        <span class="w-[40px] text-right">소계</span>
+        <span class="w-[60px] text-right">단가</span>
+        <span class="w-[60px] text-right">소계</span>
       </div>
 
       <!-- 상품 목록 -->
-      <div id="modalItems" class="mb-4"></div>
+      <div id="modalItems" style="margin-bottom: 16px;"></div>
 
-      <div class="border-t border-dashed border-[#979797] mb-4"></div>
+      <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
 
       <!-- 합계 -->
-      <div class="flex justify-between font-satoshi font-bold text-[14px] text-black mb-6">
+      <div class="flex justify-between font-satoshi font-bold text-[16px] text-black" style="margin-bottom: 32px;">
         <span>합계</span>
         <span id="modalTotal"></span>
       </div>
 
       <!-- 버튼들 -->
-      <div class="flex gap-4 justify-center">
-        <button onclick="closeReceiptModal()" class="w-[125px] h-[38px] border border-[#878787] rounded-[70px] font-satoshi font-medium text-[16px] text-[#111111] hover:bg-gray-100 transition-colors">
-          취소
-        </button>
-        <button onclick="editReceipt()" class="w-[125px] h-[38px] border border-[#878787] rounded-[70px] font-satoshi font-medium text-[16px] text-[#111111] hover:bg-gray-100 transition-colors">
-          수정하기
-        </button>
+      <div class="flex justify-center items-center" style="gap: 60px;">
+        <svg width="125" height="38" viewBox="0 0 125 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="cursor-pointer" onclick="closeReceiptModal()">
+          <rect x="0.5" y="0.5" width="124" height="37" rx="18.5" stroke="#878787" fill="white" class="btn-bg"/>
+          <path d="M52.5013 14.344H53.8613V14.536C53.8613 15.2507 53.7013 15.912 53.3813 16.52C53.0719 17.128 52.6133 17.6453 52.0052 18.072C51.4079 18.4987 50.6719 18.8133 49.7973 19.016L49.1093 17.704C49.8346 17.544 50.4479 17.3093 50.9493 17C51.4506 16.6907 51.8346 16.3227 52.1013 15.896C52.3679 15.4693 52.5013 15.016 52.5013 14.536V14.344ZM52.8213 14.344H54.1813V14.536C54.1813 14.984 54.3093 15.4053 54.5653 15.8C54.8319 16.1947 55.2159 16.5413 55.7173 16.84C56.2186 17.128 56.8266 17.3467 57.5413 17.496L56.8693 18.792C56.0053 18.6107 55.2693 18.3173 54.6613 17.912C54.0639 17.496 53.6053 17 53.2853 16.424C52.9759 15.848 52.8213 15.2187 52.8213 14.536V14.344ZM49.4453 13.256H57.2373V14.568H49.4453V13.256ZM52.5013 11.72H54.1813V14.168H52.5013V11.72ZM52.5013 20.04H54.1973V25.88H52.5013V20.04ZM58.9493 11.704H60.6133V26.328H58.9493V11.704ZM48.7253 21.24L48.5173 19.848C49.4239 19.848 50.4106 19.8427 51.4773 19.832C52.5546 19.8107 53.6479 19.768 54.7573 19.704C55.8773 19.64 56.9546 19.5387 57.9893 19.4L58.1013 20.616C57.0346 20.808 55.9466 20.9467 54.8373 21.032C53.7386 21.1173 52.6666 21.176 51.6213 21.208C50.5866 21.2293 49.6213 21.24 48.7253 21.24ZM63.236 23.128H76.484V24.504H63.236V23.128ZM68.964 19.704H70.628V23.528H68.964V19.704ZM68.9 12.6H70.372V13.704C70.372 14.3227 70.2707 14.92 70.068 15.496C69.876 16.0613 69.5933 16.5893 69.22 17.08C68.8573 17.5707 68.4253 18.0133 67.924 18.408C67.4227 18.8027 66.868 19.1387 66.26 19.416C65.6627 19.6933 65.0333 19.896 64.372 20.024L63.668 18.616C64.244 18.52 64.7933 18.36 65.316 18.136C65.8387 17.912 66.3187 17.64 66.756 17.32C67.1933 17 67.572 16.648 67.892 16.264C68.212 15.8693 68.4573 15.4587 68.628 15.032C68.8093 14.5947 68.9 14.152 68.9 13.704V12.6ZM69.22 12.6H70.676V13.704C70.676 14.152 70.7667 14.5947 70.948 15.032C71.1293 15.4693 71.38 15.88 71.7 16.264C72.02 16.648 72.3987 17.0053 72.836 17.336C73.2733 17.656 73.7533 17.928 74.276 18.152C74.7987 18.3653 75.3533 18.52 75.94 18.616L75.22 20.024C74.5587 19.896 73.924 19.6933 73.316 19.416C72.7187 19.1387 72.1693 18.808 71.668 18.424C71.1667 18.0293 70.7293 17.5867 70.356 17.096C69.9933 16.5947 69.7107 16.0613 69.508 15.496C69.316 14.92 69.22 14.3227 69.22 13.704V12.6Z" fill="#111111"/>
+        </svg>
+
+        <svg width="125" height="38" viewBox="0 0 125 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="cursor-pointer" onclick="editReceipt()">
+          <rect x="0.5" y="0.5" width="124" height="37" rx="18.5" stroke="#878787" fill="white" class="btn-bg"/>
+          <path d="M33.949 11.704H35.629V22.536H33.949V11.704ZM23.917 12.808H31.613V14.168H23.917V12.808ZM23.709 20.536L23.533 19.144C24.333 19.144 25.213 19.1387 26.173 19.128C27.133 19.1067 28.115 19.0693 29.117 19.016C30.12 18.9627 31.064 18.888 31.949 18.792L32.045 20.024C31.128 20.184 30.173 20.3013 29.181 20.376C28.2 20.44 27.24 20.4827 26.301 20.504C25.363 20.5253 24.499 20.536 23.709 20.536ZM25.229 13.992H26.861V19.336H25.229V13.992ZM28.685 13.992H30.301V19.336H28.685V13.992ZM31.821 14.376H34.861V15.736H31.821V14.376ZM31.821 17.224H34.861V18.584H31.821V17.224ZM26.141 24.664H35.997V26.024H26.141V24.664ZM26.141 21.672H27.821V25.624H26.141V21.672ZM41.98 12.952H43.356V13.976C43.356 14.84 43.191 15.656 42.86 16.424C42.529 17.1813 42.055 17.8427 41.436 18.408C40.817 18.9627 40.071 19.384 39.196 19.672L38.364 18.36C38.94 18.1787 39.447 17.9387 39.884 17.64C40.332 17.3413 40.711 17 41.02 16.616C41.329 16.2213 41.564 15.8 41.724 15.352C41.895 14.904 41.98 14.4453 41.98 13.976V12.952ZM42.316 12.952H43.692V13.976C43.692 14.424 43.767 14.8613 43.916 15.288C44.076 15.704 44.311 16.0987 44.62 16.472C44.94 16.8347 45.319 17.16 45.756 17.448C46.193 17.7253 46.695 17.9493 47.26 18.12L46.444 19.416C45.58 19.1493 44.839 18.7493 44.22 18.216C43.612 17.6827 43.143 17.0533 42.812 16.328C42.481 15.592 42.316 14.808 42.316 13.976V12.952ZM38.812 12.584H46.796V13.912H38.812V12.584ZM48.604 11.704H50.284V19.624H48.604V11.704ZM40.748 20.296H42.396V21.848H48.636V20.296H50.284V26.136H40.748V20.296ZM42.396 23.176V24.792H48.636V23.176H42.396Z" fill="#111111"/>
+        </svg>
       </div>
+
+      <style>
+        svg:hover .btn-bg {
+          fill: #f3f4f6;
+        }
+      </style>
     </div>
   </div>
 </div>
@@ -739,6 +771,34 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 // ===== 모달 함수들 (전역) =====
 let currentReceiptId = null;
+let currentReceiptType = 'expense'; // 현재 선택된 타입
+
+function selectType(type) {
+  currentReceiptType = type;
+
+  // 모든 버튼 초기화
+  document.querySelectorAll('.type-btn').forEach(btn => {
+    btn.style.borderColor = '#878787';
+    btn.style.backgroundColor = 'white';
+    btn.style.color = '#111111';
+  });
+
+  // 선택된 버튼 스타일 변경
+  const selectedBtn = document.getElementById('type' + type.charAt(0).toUpperCase() + type.slice(1));
+  if (type === 'expense') {
+    selectedBtn.style.borderColor = '#FF6B6B';
+    selectedBtn.style.backgroundColor = '#FFE5E5';
+    selectedBtn.style.color = '#FF6B6B';
+  } else if (type === 'income') {
+    selectedBtn.style.borderColor = '#4CAF50';
+    selectedBtn.style.backgroundColor = '#E8F5E9';
+    selectedBtn.style.color = '#4CAF50';
+  } else if (type === 'transfer') {
+    selectedBtn.style.borderColor = '#2196F3';
+    selectedBtn.style.backgroundColor = '#E3F2FD';
+    selectedBtn.style.color = '#2196F3';
+  }
+}
 
 function openReceiptModal(receiptId) {
   // 스와이프 중이었으면 모달 열지 않음
@@ -755,7 +815,11 @@ function openReceiptModal(receiptId) {
   document.getElementById('modalMerchant').textContent = receipt.merchant || '상호명 없음';
   document.getElementById('modalAddress').textContent = receipt.address || '주소 없음';
   document.getElementById('modalDate').textContent = dayjs(receipt.purchased_at).format('YYYY년 MM월 DD일');
-  document.getElementById('modalType').textContent = receipt.type === 'expense' ? '지출' : receipt.type === 'income' ? '수입' : '이체';
+
+  // 타입 버튼 선택
+  currentReceiptType = receipt.type || 'expense';
+  selectType(currentReceiptType);
+
   document.getElementById('modalTotal').textContent = receipt.total.toLocaleString() + '원';
 
   // 상품 목록 (임시로 빈 값)
@@ -769,12 +833,16 @@ function openReceiptModal(receiptId) {
   `;
 
   // 모달 표시
-  document.getElementById('receiptModal').classList.remove('hidden');
+  const modal = document.getElementById('receiptModal');
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
 }
 
 function closeReceiptModal(event) {
   if (!event || event.target.id === 'receiptModal') {
-    document.getElementById('receiptModal').classList.add('hidden');
+    const modal = document.getElementById('receiptModal');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
     currentReceiptId = null;
   }
 }
