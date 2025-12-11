@@ -1,6 +1,8 @@
 {% set navbar_variant = 'default' %} {% set footer_active = 'home' %} {% extends
 "base.html" %} {% block content %}
-<div class="px-[35px]" style="padding-top: 107px; padding-bottom: 107px;"
+<div
+  class="px-[35px]"
+  style="padding-top: 107px; padding-bottom: 107px"
   x-data="{
     categories: [
       { name: '식비', spent: 250000, budget: 500000, icon: 'food.svg' },
@@ -23,14 +25,24 @@
       const progress = (category.spent / category.budget) * 100;
       return circumference - (circumference * progress / 100);
     }
-  }">
+  }"
+>
   <!-- Total Spent & Monthly Budget Card -->
-  <div class="relative w-[358px] h-[110px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[31px]">
+  <div
+    class="relative w-[358px] h-[110px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[31px]"
+  >
     <!-- Circular Progress -->
-    <div class="absolute" style="left: 33px; top: 13px;">
+    <div class="absolute" style="left: 33px; top: 13px">
       <svg width="84" height="84" viewBox="0 0 84 84">
         <!-- Background circle (gray) -->
-        <circle cx="42" cy="42" r="37.5" fill="none" stroke="#E5E5E5" stroke-width="9"/>
+        <circle
+          cx="42"
+          cy="42"
+          r="37.5"
+          fill="none"
+          stroke="#E5E5E5"
+          stroke-width="9"
+        />
 
         <!-- Progress circle (blue) - 25% -->
         <circle
@@ -48,28 +60,42 @@
       </svg>
 
       <!-- Percentage text centered -->
-      <div class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[15px] text-black">
+      <div
+        class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[15px] text-black"
+      >
         25.00%
       </div>
     </div>
 
     <!-- Total spent label -->
-    <div class="absolute flex items-center font-montserrat font-normal text-[15px] leading-[18px] text-black" style="left: 150px; top: 7px; width: 83px; height: 18px;">
+    <div
+      class="absolute flex items-center font-montserrat font-normal text-[15px] leading-[18px] text-black"
+      style="left: 150px; top: 7px; width: 83px; height: 18px"
+    >
       Total spent
     </div>
 
     <!-- Total spent amount - 250,000원 -->
-    <div class="absolute flex items-center font-montserrat font-semibold text-[20px] leading-[24px] text-black" style="left: 150px; top: 28px; width: 100px; height: 24px;">
+    <div
+      class="absolute flex items-center font-montserrat font-semibold text-[20px] leading-[24px] text-black"
+      style="left: 150px; top: 28px; width: 100px; height: 24px"
+    >
       250,000원
     </div>
 
     <!-- Monthly budget label -->
-    <div class="absolute flex items-center font-montserrat font-normal text-[15px] leading-[18px] text-black" style="left: 150px; top: 59px; width: 123px; height: 18px;">
+    <div
+      class="absolute flex items-center font-montserrat font-normal text-[15px] leading-[18px] text-black"
+      style="left: 150px; top: 59px; width: 123px; height: 18px"
+    >
       Monthly budget
     </div>
 
     <!-- Monthly budget amount - 1,000,000원 -->
-    <div class="absolute flex items-center font-montserrat font-semibold text-[20px] leading-[24px] text-black" style="left: 150px; top: 80px; width: 116px; height: 24px;">
+    <div
+      class="absolute flex items-center font-montserrat font-semibold text-[20px] leading-[24px] text-black"
+      style="left: 150px; top: 80px; width: 116px; height: 24px"
+    >
       1,000,000원
     </div>
   </div>
@@ -84,17 +110,48 @@
   <!-- Month Navigation -->
   <div class="mb-[18px]">
     <div class="flex items-center justify-between">
-      <button id="prevMonthBtn" class="w-[35px] h-[35px] flex items-center justify-center">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);">
-          <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
+      <button
+        id="prevMonthBtn"
+        class="w-[35px] h-[35px] flex items-center justify-center"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style="transform: rotate(90deg)"
+        >
+          <path
+            d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z"
+            fill="black"
+          />
         </svg>
       </button>
       <div class="flex items-center gap-[8px]">
-        <h3 id="currentMonth" class="font-montserrat font-medium text-[20px] text-black">October</h3>
+        <h3
+          id="currentMonth"
+          class="font-montserrat font-medium text-[20px] text-black"
+        >
+          October
+        </h3>
       </div>
-      <button id="nextMonthBtn" class="w-[35px] h-[35px] flex items-center justify-center">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg);">
-          <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
+      <button
+        id="nextMonthBtn"
+        class="w-[35px] h-[35px] flex items-center justify-center"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style="transform: rotate(-90deg)"
+        >
+          <path
+            d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z"
+            fill="black"
+          />
         </svg>
       </button>
     </div>
@@ -105,75 +162,143 @@
     <div class="flex justify-center mb-[31px]">
       <div class="relative w-[358px] h-[86px]">
         <!-- Card Background -->
-        <div class="absolute inset-0 bg-white shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] rounded-[20px]"></div>
+        <div
+          class="absolute inset-0 bg-white shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] rounded-[20px]"
+        ></div>
 
         <!-- Progress circle -->
-        <svg class="absolute" style="left: 4.75%; top: 12.79%; width: 17.88%; height: 74.42%;" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M64 32C64 49.6731 49.6731 64 32 64C14.3269 64 0 49.6731 0 32C0 14.3269 14.3269 0 32 0C49.6731 0 64 14.3269 64 32ZM7.0496 32C7.0496 45.7797 18.2203 56.9504 32 56.9504C45.7797 56.9504 56.9504 45.7797 56.9504 32C56.9504 18.2203 45.7797 7.0496 32 7.0496C18.2203 7.0496 7.0496 18.2203 7.0496 32Z" fill="#E5E5E5"/>
-          <circle cx="32" cy="32" r="28.45" fill="none" stroke="#63A1FF" stroke-width="7.1"
+        <svg
+          class="absolute"
+          style="left: 4.75%; top: 12.79%; width: 17.88%; height: 74.42%"
+          viewBox="0 0 64 64"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M64 32C64 49.6731 49.6731 64 32 64C14.3269 64 0 49.6731 0 32C0 14.3269 14.3269 0 32 0C49.6731 0 64 14.3269 64 32ZM7.0496 32C7.0496 45.7797 18.2203 56.9504 32 56.9504C45.7797 56.9504 56.9504 45.7797 56.9504 32C56.9504 18.2203 45.7797 7.0496 32 7.0496C18.2203 7.0496 7.0496 18.2203 7.0496 32Z"
+            fill="#E5E5E5"
+          />
+          <circle
+            cx="32"
+            cy="32"
+            r="28.45"
+            fill="none"
+            stroke="#63A1FF"
+            stroke-width="7.1"
             :stroke-dasharray="235.5"
             :stroke-dashoffset="getStrokeDashoffset(category)"
-            transform="rotate(-90 32 32)" stroke-linecap="round"/>
-          <text x="32" y="38" text-anchor="middle" font-size="11" font-weight="600"
-            fill="black" font-family="Montserrat" x-text="getProgress(category) + '%'"></text>
+            transform="rotate(-90 32 32)"
+            stroke-linecap="round"
+          />
+          <text
+            x="32"
+            y="38"
+            text-anchor="middle"
+            font-size="11"
+            font-weight="600"
+            fill="black"
+            font-family="Montserrat"
+            x-text="getProgress(category) + '%'"
+          ></text>
         </svg>
 
         <!-- Category Icon -->
-        <div class="absolute bg-[#F2F2F2] rounded-lg flex items-center justify-center"
-          style="left: 24.3%; top: 19.77%; width: 15.64%; height: 60.47%;">
-          <img :src="'/static/assets/' + category.icon" :alt="category.name"
-            class="w-[70%] h-[70%] object-contain" />
+        <div
+          class="absolute bg-[#F2F2F2] rounded-lg flex items-center justify-center"
+          style="left: 24.3%; top: 19.77%; width: 15.64%; height: 60.47%"
+        >
+          <img
+            :src="'/static/assets/' + category.icon"
+            :alt="category.name"
+            class="w-[70%] h-[70%] object-contain"
+          />
         </div>
 
         <!-- Category Name -->
-        <div class="absolute font-yidstreet font-bold text-[18px] leading-[23px]"
-          style="left: 43.3%; right: 19.83%; top: 10.47%; bottom: 62.79%; color: #878787;"
-          x-text="category.name"></div>
+        <div
+          class="absolute font-yidstreet font-bold text-[15px] leading-[20px]"
+          style="left: 43.3%; right: 19.83%; top: 12%; color: #1b1b1b"
+          x-text="category.name"
+        ></div>
 
         <!-- Amount Labels and Values -->
-        <div class="absolute"
-          style="left: 43.3%; top: 43.02%; width: 52.21%; height: 38.37%;">
-          <div class="flex justify-between items-start font-yidstreet font-bold text-[11px] leading-[14px]" style="color: #878787; margin-bottom: 3px;">
-            <span>당월 사용</span>
-            <span x-text="formatNumber(category.spent) + '원'"></span>
+        <div
+          class="absolute flex flex-col justify-center"
+          style="left: 43.3%; top: 42%; right: 5%; bottom: 12%"
+        >
+          <div
+            class="flex justify-between items-baseline font-yidstreet"
+            style="margin-bottom: 3px"
+          >
+            <span class="font-bold text-[14px]" style="color: #878787"
+              >사용금액</span
+            >
+            <span
+              class="font-bold text-[12px]"
+              style="color: #1b1b1b"
+              x-text="formatNumber(category.spent) + '원'"
+            ></span>
           </div>
-          <div class="flex justify-between items-start font-yidstreet font-bold text-[11px] leading-[14px]" style="color: #878787;">
-            <span>예산</span>
-            <span x-text="formatNumber(category.budget) + '원'"></span>
+          <div class="flex justify-between items-baseline font-yidstreet">
+            <span class="font-bold text-[14px]" style="color: #878787"
+              >예산</span
+            >
+            <span
+              class="font-bold text-[12px]"
+              style="color: #1b1b1b"
+              x-text="formatNumber(category.budget) + '원'"
+            ></span>
           </div>
         </div>
       </div>
     </div>
   </template>
 
+  <script>
+    // Month navigation
+    let currentDate = new Date();
+    const currentMonthText = document.getElementById("currentMonth");
+    const prevMonthBtn = document.getElementById("prevMonthBtn");
+    const nextMonthBtn = document.getElementById("nextMonthBtn");
 
-<script>
-  // Month navigation
-  let currentDate = new Date();
-  const currentMonthText = document.getElementById('currentMonth');
-  const prevMonthBtn = document.getElementById('prevMonthBtn');
-  const nextMonthBtn = document.getElementById('nextMonthBtn');
+    function updateMonthDisplay() {
+      const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      currentMonthText.textContent = monthNames[currentDate.getMonth()];
 
-  function updateMonthDisplay() {
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                       'July', 'August', 'September', 'October', 'November', 'December'];
-    currentMonthText.textContent = monthNames[currentDate.getMonth()];
+      // Here you can add logic to fetch and update data based on selected month
+      console.log(
+        "Selected month:",
+        currentDate.getMonth() + 1,
+        "Year:",
+        currentDate.getFullYear()
+      );
+    }
 
-    // Here you can add logic to fetch and update data based on selected month
-    console.log("Selected month:", currentDate.getMonth() + 1, "Year:", currentDate.getFullYear());
-  }
+    prevMonthBtn.addEventListener("click", function () {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      updateMonthDisplay();
+    });
 
-  prevMonthBtn.addEventListener('click', function() {
-    currentDate.setMonth(currentDate.getMonth() - 1);
+    nextMonthBtn.addEventListener("click", function () {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      updateMonthDisplay();
+    });
+
+    // Initialize month display
     updateMonthDisplay();
-  });
-
-  nextMonthBtn.addEventListener('click', function() {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    updateMonthDisplay();
-  });
-
-  // Initialize month display
-  updateMonthDisplay();
-</script>
-{% endblock %}
+  </script>
+  {% endblock %}
+</div>
