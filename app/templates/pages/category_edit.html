@@ -1,35 +1,33 @@
 {% set navbar_variant = 'back-notify' %} {% set back_url = '/users/user' %} {%
 set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
 
+<script src="/static/js/category-sync.js"></script>
+
 <div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
   <div
     class="relative"
     style="min-height: 730px; padding-bottom: 50px"
     x-data="{
       editMode: false,
-      categories: [
-        { name: '식비', icon: 'food.svg' },
-        { name: '교통', icon: 'Transportation.svg' },
-        { name: '쇼핑', icon: 'shop.svg' },
-        { name: '여가', icon: 'Leisure.svg' },
-        { name: '의료', icon: 'Healthcare.svg' },
-        { name: '주거', icon: 'Housing.svg' },
-        { name: '통신', icon: 'Communications.svg' },
-        { name: '기타', icon: 'Other.svg' }
-      ],
+      categories: [],
       showAddModal: false,
       showRenameModal: false,
       newCategoryName: '',
       renamingIndex: null,
       renamingName: '',
+      init() {
+        this.categories = window.CategorySync.getCategories();
+      },
       deleteCategory(index) {
         if (confirm(this.categories[index].name + ' 카테고리를 삭제하시겠습니까?')) {
-          this.categories.splice(index, 1);
+          window.CategorySync.deleteCategory(index);
+          this.categories = window.CategorySync.getCategories();
         }
       },
       addCategory() {
         if (this.newCategoryName.trim()) {
-          this.categories.push({ name: this.newCategoryName.trim(), icon: 'folder-simple-duotone.svg' });
+          window.CategorySync.addCategory(this.newCategoryName.trim(), 'folder-simple-duotone.svg', 0);
+          this.categories = window.CategorySync.getCategories();
           this.newCategoryName = '';
           this.showAddModal = false;
         }
@@ -41,7 +39,8 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
       },
       renameCategory() {
         if (this.renamingName.trim() && this.renamingIndex !== null) {
-          this.categories[this.renamingIndex].name = this.renamingName.trim();
+          window.CategorySync.renameCategory(this.renamingIndex, this.renamingName.trim());
+          this.categories = window.CategorySync.getCategories();
           this.showRenameModal = false;
           this.renamingIndex = null;
           this.renamingName = '';

@@ -1,19 +1,20 @@
 {% set navbar_variant = 'default' %} {% set footer_active = 'home' %} {% extends
 "base.html" %} {% block content %}
+
+<script src="/static/js/category-sync.js"></script>
+
 <div
   class="px-[35px]"
   style="padding-top: 107px; padding-bottom: 107px"
   x-data="{
-    categories: [
-      { name: '식비', spent: 250000, budget: 500000, icon: 'food.svg' },
-      { name: '교통', spent: 80000, budget: 150000, icon: 'Transportation.svg' },
-      { name: '쇼핑', spent: 120000, budget: 200000, icon: 'shop.svg' },
-      { name: '여가', spent: 50000, budget: 100000, icon: 'Leisure.svg' },
-      { name: '의료', spent: 30000, budget: 100000, icon: 'Healthcare.svg' },
-      { name: '주거', spent: 400000, budget: 500000, icon: 'Housing.svg' },
-      { name: '통신', spent: 60000, budget: 80000, icon: 'Communications.svg' },
-      { name: '기타', spent: 10000, budget: 50000, icon: 'Other.svg' }
-    ],
+    categories: [],
+    init() {
+      this.categories = window.CategorySync.getCategories();
+      // storage 변경 감지 (다른 탭에서 변경시 동기화)
+      window.CategorySync.onStorageChange((updatedCategories) => {
+        this.categories = updatedCategories;
+      });
+    },
     formatNumber(num) {
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     },
