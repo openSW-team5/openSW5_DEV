@@ -22,60 +22,8 @@
 
   <!-- Chart Card -->
   <div class="bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-6 mb-8">
-    <!-- Chart with grid lines -->
-    <div class="relative h-[183px]">
-      <!-- Y-axis labels -->
-      <div class="absolute left-0 top-0 bottom-0 w-[30px] flex flex-col justify-between text-right pr-3">
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦40K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦30K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-text">￦20K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦10K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦5K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦1K</span>
-        <span class="font-montserrat font-semibold text-[10px] text-gray-light">￦0.5K</span>
-      </div>
-
-      <!-- Chart area -->
-      <div class="absolute left-[50px] right-0 top-0 bottom-0">
-        <!-- Grid lines -->
-        <div class="absolute inset-0 flex flex-col justify-between">
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-          <div class="border-t border-dashed border-[#F4F4F4]"></div>
-        </div>
-
-        <!-- Chart line (simplified) -->
-        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 272 152" preserveAspectRatio="none">
-          <!-- Gradient fill -->
-          <defs>
-            <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" style="stop-color:rgba(180, 222, 0, 0.47);stop-opacity:1" />
-              <stop offset="100%" style="stop-color:rgba(196, 196, 196, 0);stop-opacity:0" />
-            </linearGradient>
-          </defs>
-          <path d="M0 100 L68 80 L136 60 L204 40 L272 30 L272 152 L0 152 Z" fill="url(#chartGradient)"/>
-          <path d="M0 100 L68 80 L136 60 L204 40 L272 30" stroke="#B4DE00" stroke-width="2" fill="none"/>
-          <circle cx="272" cy="30" r="4" fill="white" stroke="#B4DE00" stroke-width="2"/>
-        </svg>
-
-        <!-- X-axis labels -->
-        <div class="absolute bottom-[-20px] left-0 right-0 flex justify-between px-2">
-          <span class="font-montserrat font-semibold text-[10px] text-gray-light">Jan</span>
-          <span class="font-montserrat font-semibold text-[10px] text-gray-light">Feb</span>
-          <span class="font-montserrat font-semibold text-[10px] text-gray-light">Mar</span>
-          <span class="font-montserrat font-semibold text-[10px] text-text">Apr</span>
-          <span class="font-montserrat font-semibold text-[10px] text-gray-light">May</span>
-        </div>
-
-        <!-- Tooltip -->
-        <div class="absolute top-[20px] right-[10px] bg-white px-3 py-1 rounded shadow-sm">
-          <span class="font-montserrat font-semibold text-[15px] text-text">￦ 20,000</span>
-        </div>
-      </div>
+    <div class="relative" style="height: 220px;">
+      <canvas id="transactionsChart"></canvas>
     </div>
   </div>
 
@@ -179,6 +127,96 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
+  // Initialize Transactions Chart
+  const ctx = document.getElementById('transactionsChart');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+      datasets: [{
+        label: '지출',
+        data: [10000, 15000, 20000, 25000, 30000],
+        borderColor: '#B4DE00',
+        backgroundColor: (context) => {
+          const ctx = context.chart.ctx;
+          const gradient = ctx.createLinearGradient(0, 0, 0, 220);
+          gradient.addColorStop(0, 'rgba(180, 222, 0, 0.47)');
+          gradient.addColorStop(1, 'rgba(196, 196, 196, 0)');
+          return gradient;
+        },
+        fill: true,
+        tension: 0.4,
+        borderWidth: 3,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: 'white',
+        pointHoverBorderColor: '#B4DE00',
+        pointHoverBorderWidth: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          enabled: true,
+          backgroundColor: 'white',
+          titleColor: '#1B1B1B',
+          bodyColor: '#1B1B1B',
+          borderColor: '#E5E5E5',
+          borderWidth: 1,
+          padding: 10,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              return '￦ ' + context.parsed.y.toLocaleString();
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: '#F4F4F4',
+            borderDash: [5, 5]
+          },
+          ticks: {
+            font: {
+              family: 'Montserrat',
+              size: 10,
+              weight: 600
+            },
+            color: '#ABABAB',
+            callback: function(value) {
+              return '￦' + (value / 1000) + 'K';
+            }
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              family: 'Montserrat',
+              size: 10,
+              weight: 600
+            },
+            color: '#ABABAB'
+          }
+        }
+      }
+    }
+  });
+
   // Year selector arrow click handler
   const yearArrow = document.getElementById('yearArrow');
   const yearSelect = document.getElementById('yearSelect');
