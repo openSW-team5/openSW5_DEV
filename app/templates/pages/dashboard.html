@@ -11,7 +11,6 @@
     isLoggedIn: {{ 'true' if user_id else 'false' }},
     totalSpent: 0,
     totalBudget: 0,
-    categoryCharts: [],
     async init() {
       if (this.isLoggedIn) {
         this.categories = window.CategorySync.getCategories();
@@ -85,8 +84,10 @@
       }
     },
     updateCategoryCharts() {
-      // 각 카테고리 차트 업데이트
-      this.categoryCharts.forEach((chartInfo, index) => {
+      // 전역 배열에서 차트 가져오기
+      if (!window.categoryChartInstances) return;
+
+      window.categoryChartInstances.forEach((chartInfo, index) => {
         if (chartInfo && this.categories[index]) {
           const category = this.categories[index];
           const percentage = ((category.spent / category.budget) * 100).toFixed(2);
@@ -232,9 +233,7 @@
     <div
       class="flex justify-center"
       style="margin-bottom: 15px"
-      x-init="
-        const alpineContext = $el.closest('[x-data]').__x.$data;
-        $nextTick(() => {
+      x-init="$nextTick(() => {
            const ctx = document.getElementById('categoryChart' + index);
            const percentage = ((category.spent / category.budget) * 100).toFixed(2);
            const remaining = category.budget - category.spent;
@@ -293,10 +292,12 @@
            // 차트 인스턴스 추가
            chartInfo.chart = chartInstance;
 
-           // 차트 인스턴스를 배열에 저장 (Alpine 컨텍스트 사용)
-           alpineContext.categoryCharts[index] = chartInfo;
-         })
-      "
+           // 전역 배열에 저장 (window.categoryChartInstances 사용)
+           if (!window.categoryChartInstances) {
+             window.categoryChartInstances = [];
+           }
+           window.categoryChartInstances[index] = chartInfo;
+         })"
     >
       <div class="relative w-[358px] h-[86px]">
         <!-- Card Background -->
