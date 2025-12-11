@@ -567,7 +567,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     return `
       <div class="relative" style="overflow: hidden;">
-        <div class="transaction-item bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-[20px] cursor-pointer hover:shadow-lg transition-transform duration-200"
+        <div class="transaction-item bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-[20px] cursor-pointer transition-transform duration-200"
              style="position: relative; z-index: 2;"
              data-receipt-id="${receipt.id}"
              onclick="openReceiptModal(${receipt.id})">
@@ -639,6 +639,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   let swipeCurrentX = 0;
   let swipeItem = null;
   let isDragging = false;
+  window.wasSwiped = false; // 스와이프 여부 플래그 (전역)
 
   document.addEventListener('touchstart', handleSwipeStart, { passive: true });
   document.addEventListener('mousedown', handleSwipeStart);
@@ -653,7 +654,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     swipeItem = target.parentElement;
     swipeStartX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    swipeCurrentX = swipeStartX;
     isDragging = true;
+    window.wasSwiped = false;
     swipeItem.style.transition = 'none';
   }
 
@@ -662,6 +665,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     swipeCurrentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
     const diffX = swipeCurrentX - swipeStartX;
+
+    // 스와이프 거리가 10px 이상이면 스와이프로 간주
+    if (Math.abs(diffX) > 10) {
+      window.wasSwiped = true;
+    }
 
     // 왼쪽으로만 스와이프 가능
     if (diffX < 0) {
@@ -693,6 +701,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     swipeItem = null;
     swipeStartX = 0;
     swipeCurrentX = 0;
+
+    // 스와이프였으면 잠시 후 플래그 리셋 (클릭 이벤트 전파 방지)
+    if (window.wasSwiped) {
+      setTimeout(() => {
+        window.wasSwiped = false;
+      }, 100);
+    }
   }
 
   // ===== 검색 기능 =====
@@ -726,6 +741,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 let currentReceiptId = null;
 
 function openReceiptModal(receiptId) {
+  // 스와이프 중이었으면 모달 열지 않음
+  if (window.wasSwiped) {
+    window.wasSwiped = false;
+    return;
+  }
+
   currentReceiptId = receiptId;
   const receipt = receiptsData.find(r => r.id === receiptId);
   if (!receipt) return;
