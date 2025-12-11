@@ -11,6 +11,7 @@
     isLoggedIn: {{ 'true' if user_id else 'false' }},
     totalSpent: 0,
     totalBudget: 0,
+    categoryCharts: [],
     async init() {
       if (this.isLoggedIn) {
         this.categories = window.CategorySync.getCategories();
@@ -69,6 +70,9 @@
 
           // 전역 차트 업데이트
           this.updateTotalChart();
+
+          // 카테고리 차트들 업데이트
+          this.updateCategoryCharts();
         }
       } catch (error) {
         console.error('지출 데이터 로딩 실패:', error);
@@ -79,6 +83,29 @@
       if (window.updateDashboardChart) {
         window.updateDashboardChart(this.totalSpent, this.totalBudget);
       }
+    },
+    updateCategoryCharts() {
+      // 각 카테고리 차트 업데이트
+      this.categoryCharts.forEach((chartInfo, index) => {
+        if (chartInfo && this.categories[index]) {
+          const category = this.categories[index];
+          const percentage = ((category.spent / category.budget) * 100).toFixed(2);
+          const remaining = category.budget - category.spent;
+
+          // 사용량에 따른 색상 결정
+          let chartColor = '#63A1FF';
+          if (percentage > 80) {
+            chartColor = '#AF4C4E';
+          } else if (percentage > 50) {
+            chartColor = '#FF9E63';
+          }
+
+          // 차트 데이터 업데이트
+          chartInfo.chart.data.datasets[0].data = [category.spent, remaining > 0 ? remaining : 0];
+          chartInfo.chart.data.datasets[0].backgroundColor = [chartColor, '#E5E5E5'];
+          chartInfo.chart.update();
+        }
+      });
     },
     formatNumber(num) {
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -215,7 +242,7 @@
              chartColor = '#FF9E63'; // 주황
            }
 
-           new Chart(ctx, {
+           const chartInstance = new Chart(ctx, {
              type: 'doughnut',
              data: {
                datasets: [{
@@ -253,6 +280,9 @@
                }
              }]
            });
+
+           // 차트 인스턴스를 배열에 저장
+           categoryCharts[index] = { chart: chartInstance };
          })"
     >
       <div class="relative w-[358px] h-[86px]">
