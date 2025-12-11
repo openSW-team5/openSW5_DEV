@@ -43,6 +43,7 @@ CREATE TABLE receipts (
   total         INTEGER NOT NULL CHECK(total >= 0),
   purchased_at  TEXT NOT NULL,                 -- YYYY-MM-DD
   status        TEXT NOT NULL CHECK(status IN ('PENDING','CONFIRMED')),
+  type          TEXT NOT NULL DEFAULT 'expense' CHECK(type IN ('expense','income','transfer')),
   image_path    TEXT,                          -- OCR 원본 파일 경로 (선택)
   note          TEXT,
   created_at    TEXT DEFAULT (datetime('now')),

@@ -177,22 +177,22 @@
 
       <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
 
-      <!-- 상품 헤더 -->
-      <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787]" style="margin-bottom: 8px;">
+      <!-- 상품 헤더 (지출일 때만 표시) -->
+      <div id="itemsHeader" class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787]" style="margin-bottom: 8px;">
         <span class="flex-1">상품명</span>
         <span class="w-[26px] text-center">수량</span>
         <span class="w-[60px] text-right">단가</span>
         <span class="w-[60px] text-right">소계</span>
       </div>
 
-      <!-- 상품 목록 -->
+      <!-- 상품 목록 (지출일 때만 표시) -->
       <div id="modalItems" style="margin-bottom: 16px;"></div>
 
-      <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
+      <div id="itemsDivider" class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
 
-      <!-- 합계 -->
+      <!-- 합계/금액 -->
       <div class="flex justify-between font-satoshi font-bold text-[16px] text-black" style="margin-bottom: 32px;">
-        <span>합계</span>
+        <span id="totalLabel">합계</span>
         <span id="modalTotal"></span>
       </div>
 
@@ -821,15 +821,35 @@ function openReceiptModal(receiptId) {
 
   document.getElementById('modalTotal').textContent = receipt.total.toLocaleString() + '원';
 
-  // 상품 목록 (임시로 빈 값)
-  document.getElementById('modalItems').innerHTML = `
-    <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
-      <span class="flex-1">상품 정보 없음</span>
-      <span class="w-[6px]">-</span>
-      <span class="w-[40px] text-right">-</span>
-      <span class="w-[40px] text-right">-</span>
-    </div>
-  `;
+  // 타입에 따라 UI 변경
+  const itemsHeader = document.getElementById('itemsHeader');
+  const modalItems = document.getElementById('modalItems');
+  const itemsDivider = document.getElementById('itemsDivider');
+  const totalLabel = document.getElementById('totalLabel');
+
+  if (currentReceiptType === 'expense') {
+    // 지출: 상품 목록 표시
+    itemsHeader.style.display = 'flex';
+    itemsDivider.style.display = 'block';
+    totalLabel.textContent = '합계';
+
+    // 상품 목록 (임시로 빈 값)
+    modalItems.innerHTML = `
+      <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
+        <span class="flex-1">상품 정보 없음</span>
+        <span class="w-[26px] text-center">-</span>
+        <span class="w-[60px] text-right">-</span>
+        <span class="w-[60px] text-right">-</span>
+      </div>
+    `;
+    modalItems.style.display = 'block';
+  } else {
+    // 수입/이체: 상품 목록 숨김
+    itemsHeader.style.display = 'none';
+    itemsDivider.style.display = 'none';
+    modalItems.style.display = 'none';
+    totalLabel.textContent = '금액';
+  }
 
   // 모달 표시
   const modal = document.getElementById('receiptModal');
