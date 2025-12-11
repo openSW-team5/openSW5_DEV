@@ -1125,20 +1125,84 @@ function makeItemsEditable() {
   });
 }
 
-async function cancelEdit() {
+function cancelEdit() {
   isEditMode = false;
 
-  // 모달을 닫고 다시 열어서 원래 상태로 복구
-  if (currentReceiptId) {
-    const receiptId = currentReceiptId;
-    closeReceiptModal();
+  // input 필드들을 원래 텍스트로 복구
+  const modalMerchant = document.getElementById('modalMerchant');
+  const modalAddress = document.getElementById('modalAddress');
+  const modalDate = document.getElementById('modalDate');
 
-    // 잠시 대기 후 다시 열기
-    setTimeout(async () => {
-      await openReceiptModal(receiptId);
-    }, 100);
-  } else {
-    closeReceiptModal();
+  if (modalMerchant && modalMerchant.tagName === 'INPUT') {
+    modalMerchant.outerHTML = `<h2 id="modalMerchant" class="font-yidstreet font-bold text-[40px] leading-[52px] text-center text-black" style="margin-bottom: 8px;">${originalReceiptData.merchant}</h2>`;
+  }
+
+  if (modalAddress && modalAddress.tagName === 'INPUT') {
+    modalAddress.outerHTML = `<p id="modalAddress" class="font-noto text-[16px] leading-[19px] text-center text-[#878787]" style="margin-bottom: 24px;">${originalReceiptData.address}</p>`;
+  }
+
+  if (modalDate && modalDate.classList.contains('flex')) {
+    // 날짜 input들을 원래 텍스트로 복구
+    const dateText = originalReceiptData.date;
+    let color = '#1b1b1b';
+    if (dateText === '날짜 미입력') {
+      color = '#878787';
+    }
+    modalDate.outerHTML = `<p id="modalDate" class="font-montserrat text-[15px] leading-[18px] text-center" style="margin-bottom: 16px; color: ${color};">${dateText}</p>`;
+  }
+
+  // 타입 버튼 비활성화
+  updateTypeButtons(currentReceiptType, false);
+
+  // 카테고리 드롭다운 비활성화
+  const categorySelect = document.getElementById('categorySelect');
+  if (categorySelect) {
+    categorySelect.setAttribute('disabled', 'disabled');
+  }
+
+  // 상품 목록을 원래 상태로 복구 (편집 모드였다면)
+  if (currentReceiptType === 'expense' && currentReceiptId) {
+    // API에서 다시 가져와서 복구
+    fetch(`/receipts/${currentReceiptId}`)
+      .then(res => res.json())
+      .then(result => {
+        if (result.status === 'ok' && result.data) {
+          const receipt = result.data;
+          const modalItems = document.getElementById('modalItems');
+          if (modalItems && receipt.items && receipt.items.length > 0) {
+            const itemsHtml = receipt.items.map(item => `
+              <div class="flex justify-between text-[14px] font-satoshi font-bold text-[#878787] mb-2">
+                <span class="flex-1">${item.name}</span>
+                <span class="w-[26px] text-center">${item.qty}</span>
+                <span class="w-[60px] text-right">${item.price.toLocaleString()}</span>
+                <span class="w-[60px] text-right">${item.subtotal.toLocaleString()}</span>
+              </div>
+            `).join('');
+            modalItems.innerHTML = itemsHtml;
+          }
+        }
+      });
+  }
+
+  // 버튼 복구: 취소/완료 → 취소/편집
+  const modalActions = document.getElementById('modalActionButtons');
+  if (modalActions) {
+    modalActions.innerHTML = `
+      <button
+        onclick="closeReceiptModal()"
+        class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#111111] hover:bg-gray-100 transition-colors"
+        style="width: 125px; height: 38px;"
+      >
+        취소
+      </button>
+      <button
+        onclick="editReceipt()"
+        class="border border-[#878787] rounded-full bg-transparent font-satoshi font-medium text-[16px] text-[#111111] hover:bg-gray-100 transition-colors"
+        style="width: 125px; height: 38px;"
+      >
+        편집
+      </button>
+    `;
   }
 }
 
