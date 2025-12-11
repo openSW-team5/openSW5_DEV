@@ -178,18 +178,19 @@
       <div class="border-t border-dashed border-[#979797]" style="margin-bottom: 16px;"></div>
 
       <!-- 카테고리 (지출일 때만 표시) -->
-      <div id="categorySection" style="margin-bottom: 24px;">
-        <span class="font-noto text-[16px] leading-[19px] text-[#878787] block mb-3">카테고리</span>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="selectCategory('식비')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">식비</button>
-          <button onclick="selectCategory('교통비')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">교통비</button>
-          <button onclick="selectCategory('카페/간식')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">카페/간식</button>
-          <button onclick="selectCategory('쇼핑')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">쇼핑</button>
-          <button onclick="selectCategory('문화/여가')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">문화/여가</button>
-          <button onclick="selectCategory('의료/건강')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">의료/건강</button>
-          <button onclick="selectCategory('생활용품')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">생활용품</button>
-          <button onclick="selectCategory('기타')" class="category-btn px-4 h-[32px] border-2 rounded-[20px] font-noto text-[14px] transition-all">기타</button>
-        </div>
+      <div id="categorySection" class="flex justify-between items-center" style="margin-bottom: 24px;">
+        <span class="font-noto text-[16px] leading-[19px] text-[#878787]">카테고리</span>
+        <select id="categorySelect" class="w-[200px] h-[38px] border-2 border-[#878787] rounded-[20px] px-4 font-noto text-[14px] focus:outline-none focus:border-primary transition-colors">
+          <option value="">선택하세요</option>
+          <option value="식비">식비</option>
+          <option value="교통비">교통비</option>
+          <option value="카페/간식">카페/간식</option>
+          <option value="쇼핑">쇼핑</option>
+          <option value="문화/여가">문화/여가</option>
+          <option value="의료/건강">의료/건강</option>
+          <option value="생활용품">생활용품</option>
+          <option value="기타">기타</option>
+        </select>
       </div>
 
       <!-- 상품 헤더 (지출일 때만 표시) -->
@@ -815,26 +816,15 @@ function selectType(type) {
   }
 }
 
-function selectCategory(category) {
-  currentReceiptCategory = category;
-
-  // 모든 카테고리 버튼 초기화
-  document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.style.borderColor = '#878787';
-    btn.style.backgroundColor = 'white';
-    btn.style.color = '#111111';
-  });
-
-  // 선택된 버튼 스타일 변경
-  const buttons = document.querySelectorAll('.category-btn');
-  buttons.forEach(btn => {
-    if (btn.textContent.trim() === category) {
-      btn.style.borderColor = '#B4DE00';
-      btn.style.backgroundColor = '#F0F8D0';
-      btn.style.color = '#111111';
-    }
-  });
-}
+// 카테고리 select 이벤트 리스너
+document.addEventListener('DOMContentLoaded', function() {
+  const categorySelect = document.getElementById('categorySelect');
+  if (categorySelect) {
+    categorySelect.addEventListener('change', function() {
+      currentReceiptCategory = this.value;
+    });
+  }
+});
 
 function openReceiptModal(receiptId) {
   // 스와이프 중이었으면 모달 열지 않음
@@ -873,9 +863,10 @@ function openReceiptModal(receiptId) {
     totalLabel.textContent = '합계';
 
     // 카테고리 초기화 (기본값이나 기존 값 설정)
-    currentReceiptCategory = receipt.category || null;
-    if (currentReceiptCategory) {
-      selectCategory(currentReceiptCategory);
+    currentReceiptCategory = receipt.category || '';
+    const categorySelect = document.getElementById('categorySelect');
+    if (categorySelect) {
+      categorySelect.value = currentReceiptCategory;
     }
 
     // 상품 목록 (임시로 빈 값)
