@@ -100,6 +100,9 @@
             chartColor = '#FF9E63';
           }
 
+          // 차트의 percentage 저장 (centerText 플러그인에서 사용)
+          chartInfo.percentage = percentage;
+
           // 차트 데이터 업데이트
           chartInfo.chart.data.datasets[0].data = [category.spent, remaining > 0 ? remaining : 0];
           chartInfo.chart.data.datasets[0].backgroundColor = [chartColor, '#E5E5E5'];
@@ -229,7 +232,9 @@
     <div
       class="flex justify-center"
       style="margin-bottom: 15px"
-      x-init="$nextTick(() => {
+      x-init="
+        const alpineContext = $el.closest('[x-data]').__x.$data;
+        $nextTick(() => {
            const ctx = document.getElementById('categoryChart' + index);
            const percentage = ((category.spent / category.budget) * 100).toFixed(2);
            const remaining = category.budget - category.spent;
@@ -241,6 +246,9 @@
            } else if (percentage > 50) {
              chartColor = '#FF9E63'; // 주황
            }
+
+           // chartInfo 객체 먼저 생성
+           const chartInfo = { percentage: percentage };
 
            const chartInstance = new Chart(ctx, {
              type: 'doughnut',
@@ -272,7 +280,8 @@
                  ctx.font = `600 ${fontSize}px Montserrat`;
                  ctx.fillStyle = '#000000';
                  ctx.textBaseline = 'middle';
-                 const text = percentage + '%';
+                 // chartInfo의 percentage 사용 (동적 업데이트 가능)
+                 const text = chartInfo.percentage + '%';
                  const textX = Math.round((width - ctx.measureText(text).width) / 2);
                  const textY = height / 2;
                  ctx.fillText(text, textX, textY);
@@ -281,9 +290,13 @@
              }]
            });
 
-           // 차트 인스턴스를 배열에 저장
-           categoryCharts[index] = { chart: chartInstance };
-         })"
+           // 차트 인스턴스 추가
+           chartInfo.chart = chartInstance;
+
+           // 차트 인스턴스를 배열에 저장 (Alpine 컨텍스트 사용)
+           alpineContext.categoryCharts[index] = chartInfo;
+         })
+      "
     >
       <div class="relative w-[358px] h-[86px]">
         <!-- Card Background -->
