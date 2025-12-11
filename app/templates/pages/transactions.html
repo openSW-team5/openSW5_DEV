@@ -787,34 +787,61 @@ let currentReceiptId = null;
 let currentReceiptType = 'expense'; // 현재 선택된 타입
 let currentReceiptCategory = null; // 현재 선택된 카테고리
 
-function selectType(type) {
-  currentReceiptType = type;
-
+function updateTypeButtons(type, enabled) {
   // 모든 버튼 초기화
   document.querySelectorAll('.type-btn').forEach(btn => {
     btn.style.borderColor = '#878787';
     btn.style.backgroundColor = 'white';
     btn.style.color = '#111111';
+
+    // 비활성화 상태 설정
+    if (!enabled) {
+      btn.style.cursor = 'not-allowed';
+    } else {
+      btn.style.cursor = 'pointer';
+    }
   });
 
   // 선택된 버튼 스타일 변경
   const selectedBtn = document.getElementById('type' + type.charAt(0).toUpperCase() + type.slice(1));
-  if (type === 'expense') {
-    selectedBtn.style.borderColor = '#FF6B6B';
-    selectedBtn.style.backgroundColor = '#FFE5E5';
-    selectedBtn.style.color = '#FF6B6B';
-  } else if (type === 'income') {
-    selectedBtn.style.borderColor = '#4CAF50';
-    selectedBtn.style.backgroundColor = '#E8F5E9';
-    selectedBtn.style.color = '#4CAF50';
-  } else if (type === 'transfer') {
-    selectedBtn.style.borderColor = '#2196F3';
-    selectedBtn.style.backgroundColor = '#E3F2FD';
-    selectedBtn.style.color = '#2196F3';
+  if (selectedBtn) {
+    if (type === 'expense') {
+      selectedBtn.style.borderColor = '#FF6B6B';
+      selectedBtn.style.backgroundColor = '#FFE5E5';
+      selectedBtn.style.color = '#FF6B6B';
+    } else if (type === 'income') {
+      selectedBtn.style.borderColor = '#4CAF50';
+      selectedBtn.style.backgroundColor = '#E8F5E9';
+      selectedBtn.style.color = '#4CAF50';
+    } else if (type === 'transfer') {
+      selectedBtn.style.borderColor = '#2196F3';
+      selectedBtn.style.backgroundColor = '#E3F2FD';
+      selectedBtn.style.color = '#2196F3';
+    }
+
+    // 비활성화 상태에서도 색은 유지하되 약간 흐리게
+    if (!enabled) {
+      selectedBtn.style.opacity = '0.7';
+    } else {
+      selectedBtn.style.opacity = '1';
+    }
   }
+}
+
+function selectType(type) {
+  // 편집 모드가 아니면 타입 변경 불가
+  if (!isEditMode) {
+    return;
+  }
+
+  currentReceiptType = type;
+
+  // 버튼 업데이트 (활성화 상태)
+  updateTypeButtons(type, true);
 
   // UI 업데이트
   const categorySection = document.getElementById('categorySection');
+  const categorySelect = document.getElementById('categorySelect');
   const itemsHeader = document.getElementById('itemsHeader');
   const modalItems = document.getElementById('modalItems');
   const itemsDivider = document.getElementById('itemsDivider');
@@ -823,6 +850,7 @@ function selectType(type) {
   if (type === 'expense') {
     // 지출: 카테고리 및 상품 목록 표시
     if (categorySection) categorySection.style.display = 'block';
+    if (categorySelect) categorySelect.removeAttribute('disabled');
     if (itemsHeader) itemsHeader.style.display = 'flex';
     if (itemsDivider) itemsDivider.style.display = 'block';
     if (modalItems) modalItems.style.display = 'block';
@@ -830,6 +858,7 @@ function selectType(type) {
   } else {
     // 수입/이체: 카테고리 및 상품 목록 숨김
     if (categorySection) categorySection.style.display = 'none';
+    if (categorySelect) categorySelect.setAttribute('disabled', 'disabled');
     if (itemsHeader) itemsHeader.style.display = 'none';
     if (itemsDivider) itemsDivider.style.display = 'none';
     if (modalItems) modalItems.style.display = 'none';
@@ -874,9 +903,11 @@ async function openReceiptModal(receiptId) {
     document.getElementById('modalAddress').textContent = receipt.address || '주소 없음';
     document.getElementById('modalDate').textContent = dayjs(receipt.purchased_at).format('YYYY년 MM월 DD일');
 
-    // 타입 버튼 선택
+    // 타입 버튼 선택 및 초기화
     currentReceiptType = receipt.type || 'expense';
-    selectType(currentReceiptType);
+
+    // 타입 버튼 시각적 업데이트 (비활성화 상태)
+    updateTypeButtons(currentReceiptType, false);
 
     document.getElementById('modalTotal').textContent = receipt.total.toLocaleString() + '원';
 
@@ -979,6 +1010,9 @@ function editReceipt() {
     const addressValue = modalAddress.textContent;
     modalAddress.outerHTML = `<input type="text" id="modalAddress" class="font-noto text-[16px] leading-[19px] text-center text-[#878787] border-2 border-[#B4DE00] rounded-[10px] px-2 w-full" style="margin-bottom: 24px;" value="${addressValue}">`;
   }
+
+  // 타입 버튼 활성화
+  updateTypeButtons(currentReceiptType, true);
 
   // 카테고리 드롭다운 활성화 (지출인 경우에만)
   if (currentReceiptType === 'expense') {
