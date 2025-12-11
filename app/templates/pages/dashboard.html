@@ -32,40 +32,9 @@
   <div
     class="relative w-[358px] h-[110px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[31px]"
   >
-    <!-- Circular Progress -->
-    <div class="absolute" style="left: 33px; top: 13px">
-      <svg width="84" height="84" viewBox="0 0 84 84">
-        <!-- Background circle (gray) -->
-        <circle
-          cx="42"
-          cy="42"
-          r="37.5"
-          fill="none"
-          stroke="#E5E5E5"
-          stroke-width="9"
-        />
-
-        <!-- Progress circle (blue) - 25% -->
-        <circle
-          cx="42"
-          cy="42"
-          r="37.5"
-          fill="none"
-          stroke="#63A1FF"
-          stroke-width="9"
-          stroke-dasharray="235.5"
-          stroke-dashoffset="176.625"
-          transform="rotate(-90 42 42)"
-          stroke-linecap="round"
-        />
-      </svg>
-
-      <!-- Percentage text centered -->
-      <div
-        class="absolute inset-0 flex items-center justify-center font-montserrat font-semibold text-[15px] text-black"
-      >
-        25.00%
-      </div>
+    <!-- Circular Progress Chart -->
+    <div class="absolute" style="left: 33px; top: 13px; width: 84px; height: 84px">
+      <canvas id="totalSpentChart"></canvas>
     </div>
 
     <!-- Total spent label -->
@@ -300,6 +269,56 @@
 
     // Initialize month display
     updateMonthDisplay();
+
+    // Total Spent Chart
+    const ctx = document.getElementById('totalSpentChart');
+    const totalBudget = 1000000;
+    const totalSpent = 250000;
+    const remaining = totalBudget - totalSpent;
+    const percentage = ((totalSpent / totalBudget) * 100).toFixed(2);
+
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['사용', '남음'],
+        datasets: [{
+          data: [totalSpent, remaining],
+          backgroundColor: ['#63A1FF', '#E5E5E5'],
+          borderWidth: 0,
+          cutout: '75%'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            enabled: false
+          }
+        }
+      },
+      plugins: [{
+        id: 'centerText',
+        beforeDraw: function(chart) {
+          const width = chart.width;
+          const height = chart.height;
+          const ctx = chart.ctx;
+          ctx.restore();
+          const fontSize = 15;
+          ctx.font = `600 ${fontSize}px Montserrat`;
+          ctx.fillStyle = '#000000';
+          ctx.textBaseline = 'middle';
+          const text = percentage + '%';
+          const textX = Math.round((width - ctx.measureText(text).width) / 2);
+          const textY = height / 2;
+          ctx.fillText(text, textX, textY);
+          ctx.save();
+        }
+      }]
+    });
   </script>
   {% endblock %}
 </div>
