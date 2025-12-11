@@ -599,17 +599,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     const amount = receipt.total.toLocaleString();
     // 타입별 색상: 지출(expense), 수입(income), 이체(transfer)
     const type = receipt.type || 'expense'; // 기본값 지출
-    let amountColor, amountSign;
+    let amountColor;
 
     if (type === 'expense') {
       amountColor = '#AF4C4E';
-      amountSign = '-';
     } else if (type === 'income') {
       amountColor = '#4CAF50';
-      amountSign = '+';
     } else { // transfer
       amountColor = '#878787';
-      amountSign = '';
     }
 
     return `
@@ -632,7 +629,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>
             <div class="flex items-center">
               <p class="font-montserrat font-semibold text-[20px]" style="color: ${amountColor}">
-                ${amountSign}${amount}원
+                ${amount}원
               </p>
             </div>
           </div>
