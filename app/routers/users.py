@@ -351,50 +351,28 @@ async def user_page(request: Request):
 
 @router.get("/notifications", response_class=HTMLResponse)
 async def notifications_page(request: Request):
-    """알림 페이지"""
-    return templates.TemplateResponse("pages/notifications.html", {"request": request, "title": "알림"})
-
-
-    # 세션에서 user_id 가져오기
     user_id = getattr(request.state, "user_id", None)
 
-    # 로그인 안 되어 있으면 로그인 페이지로 보내기
     if not user_id:
-        return RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse("/users/login", status_code=303)
 
-    # 로그인 된 경우 → DB에서 현재 유저 정보 가져오기
     with get_conn() as conn:
-        cur = conn.cursor()
-        row = cur.execute(
+        alerts = conn.execute(
             """
-            SELECT id, username, name, email, phone, birthdate, created_at
-            FROM users
-            WHERE id = ?
+            SELECT type, message, created_at
+            FROM alerts
+            WHERE user_id = ?
+            ORDER BY created_at DESC
             """,
             (user_id,),
-        ).fetchone()
-
-    if not row:
-        # 이례적 상황(세션은 있는데 유저가 없음) → 강제 로그아웃 후 다시 로그인 유도
-        resp = RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
-        resp.delete_cookie(COOKIE_NAME)
-        return resp
-
-    user = {
-        "id": row["id"],
-        "username": row["username"],
-        "name": row["name"],
-        "email": row["email"],
-        "phone": row["phone"],
-        "birthdate": row["birthdate"],
-        "created_at": row["created_at"],
-    }
+        ).fetchall()
 
     return templates.TemplateResponse(
-        "pages/user.html",
+        "pages/notifications.html",
         {
             "request": request,
-            "user": user,
+            "title": "알림",
+            "alerts": alerts,
         },
     )
 

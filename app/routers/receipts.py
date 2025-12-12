@@ -9,6 +9,7 @@ import sqlite3
 
 from app.services.parse_ocr import parse_receipt_bytes
 from app.services.auth import require_user_id  # ✅ 세션 기반 user_id 가져오기
+from app.services.alert_service import check_overspend_alert, check_daily_overspend_alert, check_fixed_cost_alert # ✅ 추가된 함수
 
 try:
     from dotenv import load_dotenv
@@ -322,6 +323,9 @@ def confirm_receipt(
                         it.category.strip() if it.category else None,
                     ),
                 )
+            check_overspend_alert(conn, user_id, receipt_id)
+            check_daily_overspend_alert(conn, user_id, receipt_id)
+            check_fixed_cost_alert(conn, user_id, receipt_id)
 
             return {
                 "status": "ok",
@@ -407,6 +411,12 @@ def update_receipt(
                     it.category.strip() if it.category else None,
                 ),
             )
+
+        # ✅ 3️⃣ update 후에도 이상지출 검사
+        check_overspend_alert(conn, user_id, receipt_id)
+        check_daily_overspend_alert(conn, user_id, receipt_id)
+        check_fixed_cost_alert(conn, user_id, receipt_id)
+
 
         return {
             "status": "ok",

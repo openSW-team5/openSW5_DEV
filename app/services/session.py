@@ -7,7 +7,7 @@ import hashlib
 import time
 from typing import Optional, Dict, Any
 
-SESSION_SECRET = os.getenv("SESSION_SECRET")
+SESSION_SECRET = os.getenv("SESSION_SECRET") or "OOYyGx1yXg6JdlZoYCpoIV6xCY91mOP4Nt3zMslx9UF1q3jGAi3y-Mw3b_RQ6KMPk2U4kEG6QG_P1Z-2iF5FIQ"
 DEBUG = os.getenv("DEBUG", "false").lower() == "true"
 
 # 세션 유지 시간 (기본 7일)
