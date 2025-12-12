@@ -2,7 +2,50 @@
 set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
 
 <div class="absolute top-[95px] bottom-[95px] left-0 right-0 overflow-y-auto">
-  <div class="relative" style="min-height: 500px; padding-bottom: 50px">
+  <div
+    class="relative"
+    style="min-height: 500px; padding-bottom: 50px"
+    x-data="{
+      editMode: false,
+      categories: ['내계좌이체', '이체', '카드대금', '저축'],
+      showAddModal: false,
+      showRenameModal: false,
+      newCategoryName: '',
+      renamingIndex: null,
+      renamingName: '',
+      deleteCategory(index) {
+        if (confirm(this.categories[index] + ' 카테고리를 삭제하시겠습니까?')) {
+          this.categories.splice(index, 1);
+        }
+      },
+      addCategory() {
+        if (this.newCategoryName.trim()) {
+          this.categories.push(this.newCategoryName.trim());
+          this.newCategoryName = '';
+          this.showAddModal = false;
+        }
+      },
+      startRename(index) {
+        this.renamingIndex = index;
+        this.renamingName = this.categories[index];
+        this.showRenameModal = true;
+      },
+      renameCategory() {
+        if (this.renamingName.trim() && this.renamingIndex !== null) {
+          this.categories[this.renamingIndex] = this.renamingName.trim();
+          this.showRenameModal = false;
+          this.renamingIndex = null;
+          this.renamingName = '';
+        }
+      },
+      cancelEdit() {
+        this.editMode = false;
+      },
+      saveEdit() {
+        this.editMode = false;
+      }
+    }"
+  >
     <!-- 카테고리 편집 Title -->
     <h1
       class="absolute font-noto font-bold text-black"
@@ -26,7 +69,7 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
         height: 45px;
         left: calc(50% - 228px / 2);
         top: 76px;
-        background: #FFFFFF;
+        background: #ffffff;
         border-radius: 51px;
         padding: 3px 6px;
         gap: 3px;
@@ -44,7 +87,7 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
           font-weight: 500;
           font-size: 16px;
           line-height: 19px;
-          color: #026A00;
+          color: #026a00;
           text-decoration: none;
         "
       >
@@ -62,7 +105,7 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
           font-weight: 500;
           font-size: 16px;
           line-height: 19px;
-          color: #026A00;
+          color: #026a00;
           text-decoration: none;
         "
       >
@@ -74,7 +117,7 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
         style="
           width: 70px;
           height: 39px;
-          background: #B4DE00;
+          background: #b4de00;
           box-shadow: 0px 4px 19px rgba(180, 222, 0, 0.49);
           border-radius: 52px;
           padding: 10px 20px;
@@ -82,7 +125,7 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
           font-weight: 500;
           font-size: 16px;
           line-height: 19px;
-          color: #FFFFFF;
+          color: #ffffff;
           text-decoration: none;
         "
       >
@@ -95,165 +138,65 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
       class="absolute flex flex-col items-start"
       style="width: 391px; left: 19px; top: 180px; gap: 6px"
     >
-      <!-- 내계좌이체 -->
-      <div class="relative" style="width: 391px; height: 32px">
-        <p
-          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
-          style="
-            width: 391px;
-            height: 26px;
-            left: 0px;
-            top: 0px;
-            color: #000000;
-          "
-        >
-          내계좌이체
-        </p>
-        <div
-          class="absolute"
-          style="
-            width: 391px;
-            height: 0px;
-            left: 0px;
-            top: 32px;
-            border-top: 1.5px solid #878787;
-          "
-        ></div>
-      </div>
+      <template x-for="(category, index) in categories" :key="index">
+        <div class="relative" style="width: 391px; height: 32px">
+          <!-- Category Name -->
+          <p
+            class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center cursor-pointer"
+            style="
+              width: 340px;
+              height: 26px;
+              left: 0px;
+              top: 0px;
+              color: #000000;
+            "
+            x-text="category"
+            @click="editMode && startRename(index)"
+          ></p>
 
-      <!-- 이체 -->
-      <div class="relative" style="width: 391px; height: 32px">
-        <p
-          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
-          style="
-            width: 391px;
-            height: 26px;
-            left: 0px;
-            top: 0px;
-            color: #000000;
-          "
-        >
-          이체
-        </p>
-        <div
-          class="absolute"
-          style="
-            width: 391px;
-            height: 0px;
-            left: 0px;
-            top: 32px;
-            border-top: 1.5px solid #878787;
-          "
-        ></div>
-      </div>
+          <!-- X Delete Button (only in edit mode) -->
+          <button
+            x-show="editMode"
+            @click="deleteCategory(index)"
+            class="absolute cursor-pointer z-10"
+            style="width: 24px; height: 24px; right: 0px; top: 1px"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="12" cy="12" r="12" fill="#FF0000" />
+              <path
+                d="M8 8L16 16M16 8L8 16"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
 
-      <!-- 카드대금 -->
-      <div class="relative" style="width: 391px; height: 32px">
-        <p
-          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
-          style="
-            width: 391px;
-            height: 26px;
-            left: 0px;
-            top: 0px;
-            color: #000000;
-          "
-        >
-          카드대금
-        </p>
-        <div
-          class="absolute"
-          style="
-            width: 391px;
-            height: 0px;
-            left: 0px;
-            top: 32px;
-            border-top: 1.5px solid #878787;
-          "
-        ></div>
-      </div>
-
-      <!-- 저축 -->
-      <div class="relative" style="width: 391px; height: 32px">
-        <p
-          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
-          style="
-            width: 391px;
-            height: 26px;
-            left: 0px;
-            top: 0px;
-            color: #1b1b1b;
-          "
-        >
-          저축
-        </p>
-        <div
-          class="absolute"
-          style="
-            width: 391px;
-            height: 0px;
-            left: 0px;
-            top: 32px;
-            border-top: 1.5px solid #878787;
-          "
-        ></div>
-      </div>
-
-      <!-- 항목 (비활성) -->
-      <div class="relative" style="width: 391px; height: 32px">
-        <p
-          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
-          style="
-            width: 391px;
-            height: 26px;
-            left: 0px;
-            top: 0px;
-            color: #878787;
-          "
-        >
-          항목
-        </p>
-        <div
-          class="absolute"
-          style="
-            width: 391px;
-            height: 0px;
-            left: 0px;
-            top: 32px;
-            border-top: 1.5px solid #878787;
-          "
-        ></div>
-      </div>
-
-      <!-- 항목 (비활성) -->
-      <div class="relative" style="width: 391px; height: 32px">
-        <p
-          class="absolute font-yidstreet font-bold text-[20px] leading-[26px] flex items-center"
-          style="
-            width: 391px;
-            height: 26px;
-            left: 0px;
-            top: 0px;
-            color: #878787;
-          "
-        >
-          항목
-        </p>
-        <div
-          class="absolute"
-          style="
-            width: 391px;
-            height: 0px;
-            left: 0px;
-            top: 32px;
-            border-top: 1.5px solid #878787;
-          "
-        ></div>
-      </div>
+          <!-- Border Line -->
+          <div
+            class="absolute"
+            style="
+              width: 391px;
+              height: 0px;
+              left: 0px;
+              top: 32px;
+              border-top: 1.5px solid #878787;
+            "
+          ></div>
+        </div>
+      </template>
     </div>
 
-    <!-- 카테고리 추가 Button -->
+    <!-- Edit Mode Button -->
     <button
+      x-show="!editMode"
+      @click="editMode = true"
       class="absolute flex flex-row justify-center items-center hover:bg-gray-50 transition-colors"
       style="
         width: 150px;
@@ -271,6 +214,152 @@ set footer_active = 'default' %} {% extends "base.html" %} {% block content %}
         >편집</span
       >
     </button>
+
+    <!-- Cancel / Save Buttons (Edit Mode) -->
+    <div
+      x-show="editMode"
+      class="absolute"
+      style="left: 0; right: 0; top: 410px"
+    >
+      <!-- Cancel Button -->
+      <button
+        @click="cancelEdit()"
+        class="absolute flex flex-row justify-center items-center hover:bg-gray-50 transition-colors"
+        style="
+          width: 150px;
+          height: 54px;
+          left: calc(50% - 165px);
+          border: 1px solid #878787;
+          border-radius: 70px;
+          padding: 16px 10px;
+        "
+      >
+        <span
+          class="font-satoshi font-medium text-[16px] leading-[22px] text-center text-[#111111]"
+          >취소</span
+        >
+      </button>
+
+      <!-- Save Button -->
+      <button
+        @click="saveEdit()"
+        class="absolute flex flex-row justify-center items-center transition-colors"
+        style="
+          width: 150px;
+          height: 54px;
+          left: calc(50% + 15px);
+          background: #4caf50;
+          border-radius: 70px;
+          padding: 16px 10px;
+        "
+      >
+        <span
+          class="font-satoshi font-medium text-[16px] leading-[22px] text-center text-white"
+          >완료</span
+        >
+      </button>
+    </div>
+
+    <!-- Add Category Button (only in edit mode, floating) -->
+    <button
+      x-show="editMode"
+      @click="showAddModal = true"
+      class="absolute flex items-center justify-center"
+      style="
+        width: 50px;
+        height: 50px;
+        right: 20px;
+        bottom: 120px;
+        background: #b4de00;
+        border-radius: 50%;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      "
+    >
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 5V19M5 12H19"
+          stroke="white"
+          stroke-width="3"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+
+    <!-- Add Category Modal -->
+    <div
+      x-show="showAddModal"
+      class="fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.5)"
+      @click.self="showAddModal = false"
+    >
+      <div class="bg-white rounded-lg p-6" style="width: 300px">
+        <h3 class="font-noto font-bold text-[20px] mb-4 text-center">
+          이체 추가
+        </h3>
+        <input
+          type="text"
+          x-model="newCategoryName"
+          @keyup.enter="addCategory()"
+          placeholder="카테고리 이름"
+          class="w-full border border-gray-300 rounded px-4 py-2 mb-4 font-yidstreet"
+        />
+        <div class="flex gap-2">
+          <button
+            @click="showAddModal = false"
+            class="flex-1 border border-gray-300 rounded py-2 font-satoshi"
+          >
+            취소
+          </button>
+          <button
+            @click="addCategory()"
+            class="flex-1 bg-[#B4DE00] text-white rounded py-2 font-satoshi"
+          >
+            추가
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rename Category Modal -->
+    <div
+      x-show="showRenameModal"
+      class="fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.5)"
+      @click.self="showRenameModal = false"
+    >
+      <div class="bg-white rounded-lg p-6" style="width: 300px">
+        <h3 class="font-noto font-bold text-[20px] mb-4 text-center">
+          카테고리 이름 변경
+        </h3>
+        <input
+          type="text"
+          x-model="renamingName"
+          @keyup.enter="renameCategory()"
+          placeholder="새 이름"
+          class="w-full border border-gray-300 rounded px-4 py-2 mb-4 font-yidstreet"
+        />
+        <div class="flex gap-2">
+          <button
+            @click="showRenameModal = false; renamingIndex = null"
+            class="flex-1 border border-gray-300 rounded py-2 font-satoshi"
+          >
+            취소
+          </button>
+          <button
+            @click="renameCategory()"
+            class="flex-1 bg-[#B4DE00] text-white rounded py-2 font-satoshi"
+          >
+            변경
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

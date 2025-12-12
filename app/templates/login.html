@@ -95,7 +95,7 @@
       }
     } catch (error) {
       console.error('Login error:', error);
-      alert('로그인 중 오류가 발생했습니다.');
+      window.ToastHelper.error('로그인 중 오류가 발생했습니다.');
     }
   });
 </script>

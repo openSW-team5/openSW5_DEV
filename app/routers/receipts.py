@@ -45,16 +45,23 @@ class ReceiptConfirmIn(BaseModel):
     items: List[ReceiptItemIn]
     total: int = Field(ge=0)
     status: Literal["PENDING", "CONFIRMED"] = "CONFIRMED"
+    type: Literal["expense", "income", "transfer"] = "expense"
+    category: Optional[str] = None
     image_path: Optional[str] = None
 
     @field_validator("purchased_at")
     @classmethod
     def _v_date(cls, v: str) -> str:
-        try:
-            datetime.strptime(v, "%Y-%m-%d")
-        except ValueError:
-            raise ValueError("purchased_at must be YYYY-MM-DD")
-        return v
+        # 날짜만 또는 날짜+시간 모두 허용
+        formats = ["%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"]
+        for fmt in formats:
+            try:
+                datetime.strptime(v, fmt)
+                return v
+            except ValueError:
+                continue
+        raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
+
 
 
 class ReceiptUpdateIn(BaseModel):
@@ -63,16 +70,23 @@ class ReceiptUpdateIn(BaseModel):
     items: List[ReceiptItemIn]
     total: int = Field(ge=0)
     status: Literal["PENDING", "CONFIRMED"] = "CONFIRMED"
+    type: Literal["expense", "income", "transfer"] = "expense"
+    category: Optional[str] = None
     image_path: Optional[str] = None
 
     @field_validator("purchased_at")
     @classmethod
     def _v_date(cls, v: str) -> str:
-        try:
-            datetime.strptime(v, "%Y-%m-%d")
-        except ValueError:
-            raise ValueError("purchased_at must be YYYY-MM-DD")
-        return v
+        # 날짜만 또는 날짜+시간 모두 허용
+        formats = ["%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"]
+        for fmt in formats:
+            try:
+                datetime.strptime(v, fmt)
+                return v
+            except ValueError:
+                continue
+        raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
+
 
 
 class ReceiptRow(BaseModel):
@@ -82,6 +96,8 @@ class ReceiptRow(BaseModel):
     total: int
     purchased_at: str
     status: Literal["PENDING", "CONFIRMED"]
+    type: Literal["expense", "income", "transfer"] = "expense"
+    category: Optional[str] = None
     image_path: Optional[str] = None
     created_at: Optional[str] = None
 
@@ -102,6 +118,8 @@ class ReceiptDetail(BaseModel):
     total: int
     purchased_at: str
     status: Literal["PENDING", "CONFIRMED"]
+    type: Literal["expense", "income", "transfer"] = "expense"
+    category: Optional[str] = None
     image_path: Optional[str] = None
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
@@ -125,7 +143,7 @@ def list_receipts(
     with get_conn() as conn:
         rows = conn.execute(
             """
-            SELECT id, user_id, merchant, total, purchased_at, status, image_path, created_at
+            SELECT id, user_id, merchant, total, purchased_at, status, type, category, image_path, created_at
             FROM receipts
             WHERE is_deleted = 0
               AND user_id = ?
@@ -143,6 +161,8 @@ def list_receipts(
                 total=r["total"],
                 purchased_at=r["purchased_at"],
                 status=r["status"],
+                type=r["type"],
+                category=r["category"],
                 image_path=r["image_path"],
                 created_at=r["created_at"],
             ).model_dump()
@@ -165,6 +185,7 @@ def get_receipt_detail(
     with get_conn() as conn:
         r = conn.execute(
             """
+
             SELECT id, user_id, merchant, total, purchased_at, status,
                    image_path, created_at, updated_at, is_deleted
             FROM receipts
@@ -198,6 +219,8 @@ def get_receipt_detail(
             total=r["total"],
             purchased_at=r["purchased_at"],
             status=r["status"],
+            type=r["type"],
+            category=r["category"],
             image_path=r["image_path"],
             created_at=r["created_at"],
             updated_at=r["updated_at"],
@@ -269,8 +292,8 @@ def confirm_receipt(
             cur = conn.cursor()
             cur.execute(
                 """
-                INSERT INTO receipts (user_id, merchant, total, purchased_at, status, image_path)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO receipts (user_id, merchant, total, purchased_at, status, type, category, image_path)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     user_id,
@@ -278,6 +301,8 @@ def confirm_receipt(
                     calc_total,
                     payload.purchased_at.strip(),
                     payload.status,
+                    payload.type,
+                    payload.category.strip() if payload.category else None,
                     payload.image_path.strip() if payload.image_path else None,
                 ),
             )
@@ -351,7 +376,7 @@ def update_receipt(
         cur.execute(
             """
             UPDATE receipts
-               SET merchant = ?, total = ?, purchased_at = ?, status = ?, image_path = ?, updated_at = datetime('now')
+               SET merchant = ?, total = ?, purchased_at = ?, status = ?, type = ?, category = ?, image_path = ?, updated_at = datetime('now')
              WHERE id = ? AND is_deleted = 0
             """,
             (
@@ -359,6 +384,8 @@ def update_receipt(
                 calc_total,
                 payload.purchased_at.strip(),
                 payload.status,
+                payload.type,
+                payload.category.strip() if payload.category else None,
                 payload.image_path.strip() if payload.image_path else None,
                 receipt_id,
             ),
