@@ -1,116 +1,50 @@
-{% set navbar_variant = 'default' %}
-{% set footer_active = 'chart' %}
-{% extends "base.html" %}
-
-{% block content %}
-<div class="px-5" style="padding-top: 107px; padding-bottom: 107px;">
+{% set navbar_variant = 'default' %} {% set footer_active = 'chart' %} {% extends "base.html" %} {% block content %}
+<div class="px-5" style="padding-top: 107px; padding-bottom: 107px">
     <!-- Header with Year Selector -->
     <div class="flex items-center justify-center mb-6 relative">
-      <!-- Year selector: left 55px -->
-      <div class="absolute left-[35px] flex items-center gap-[3px]">
-        <select id="yearSelect" class="font-montserrat font-semibold text-[15px] text-text bg-transparent border-none outline-none appearance-none cursor-pointer">
-          <option>2025</option>
-          <option>2024</option>
-          <option>2023</option>
-        </select>
-        <svg id="yearArrow" class="cursor-pointer" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
-        </svg>
-      </div>
-      <h1 class="font-montserrat font-bold text-[25px] text-text">통계</h1>
+        <!-- Year selector: left 55px -->
+        <div class="absolute left-[35px] flex items-center gap-[3px]">
+            <select
+                id="yearSelect"
+                class="font-montserrat font-semibold text-[15px] text-text bg-transparent border-none outline-none appearance-none cursor-pointer">
+                <option>2025</option>
+                <option>2024</option>
+                <option>2023</option>
+            </select>
+            <svg
+                id="yearArrow"
+                class="cursor-pointer"
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z"
+                    fill="black" />
+            </svg>
+        </div>
+        <h1 class="font-montserrat font-bold text-[25px] text-text">통계</h1>
     </div>
+
 
   <!-- Chart Card -->
   <div class="bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] p-6 mb-8">
     <div class="relative" style="height: 220px;">
       <canvas id="transactionsChart"></canvas>
+
     </div>
-  </div>
 
-  <!-- History Header with View Toggle -->
-  <div class="relative mb-5 h-[35px]">
-    <!-- Search Icon: left: 44px - 20px(padding) = 24px -->
-    <a href="/search" class="absolute left-[24px] top-0 w-[35px] h-[35px] flex items-center justify-center cursor-pointer">
-      <svg width="35" height="35" viewBox="0 0 35 35" fill="none">
-        <g clip-path="url(#clip0_207_1318)">
-          <path d="M15.3125 26.25C21.3531 26.25 26.25 21.3531 26.25 15.3125C26.25 9.27189 21.3531 4.375 15.3125 4.375C9.27189 4.375 4.375 9.27189 4.375 15.3125C4.375 21.3531 9.27189 26.25 15.3125 26.25Z" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M23.0467 23.0466L30.625 30.625" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_207_1318">
-            <rect width="35" height="35" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>
-    </a>
-
-    <!-- History Title: left: 167px - 20px(padding) = 147px -->
-    <h2 class="absolute left-[147px] top-[2.5px] w-[94px] h-[30px] font-montserrat font-bold text-[25px] leading-[30px] text-text flex items-center justify-center">History</h2>
-
-    <!-- Month/List Toggle: left: 321px - 20px(padding) = 301px -->
-    <div class="absolute left-[301px] top-[3px] w-[71px] h-[29px] flex relative">
-      <svg width="71" height="29" viewBox="0 0 71 29" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute inset-0">
-        <rect width="71" height="29" rx="10" fill="#F0F0F0"/>
-      </svg>
-      <button id="calendarViewBtn" class="relative w-[30px] h-[25px] m-[2px] rounded-[10px] flex items-center justify-center z-0 transition-colors">
-        <svg width="23" height="23" viewBox="0 0 23 23" fill="none">
-          <g clip-path="url(#clip_calendar)">
-            <path opacity="0.2" d="M3.59375 7.90625H19.4062V4.3125C19.4062 4.12188 19.3305 3.93906 19.1957 3.80427C19.0609 3.66948 18.8781 3.59375 18.6875 3.59375H4.3125C4.12188 3.59375 3.93906 3.66948 3.80427 3.80427C3.66948 3.93906 3.59375 4.12188 3.59375 4.3125V7.90625Z" fill="black"/>
-            <path d="M18.6875 3.59375H4.3125C3.91555 3.59375 3.59375 3.91555 3.59375 4.3125V18.6875C3.59375 19.0845 3.91555 19.4062 4.3125 19.4062H18.6875C19.0845 19.4062 19.4062 19.0845 19.4062 18.6875V4.3125C19.4062 3.91555 19.0845 3.59375 18.6875 3.59375Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M15.8125 2.15625V5.03125" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7.1875 2.15625V5.03125" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M3.59375 7.90625H19.4062" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M11.5 12.9375C12.0954 12.9375 12.5781 12.4548 12.5781 11.8594C12.5781 11.2639 12.0954 10.7812 11.5 10.7812C10.9046 10.7812 10.4219 11.2639 10.4219 11.8594C10.4219 12.4548 10.9046 12.9375 11.5 12.9375Z" fill="black"/>
-            <path d="M15.4531 12.9375C16.0486 12.9375 16.5312 12.4548 16.5312 11.8594C16.5312 11.2639 16.0486 10.7812 15.4531 10.7812C14.8577 10.7812 14.375 11.2639 14.375 11.8594C14.375 12.4548 14.8577 12.9375 15.4531 12.9375Z" fill="black"/>
-            <path d="M7.54688 16.5312C8.14231 16.5312 8.625 16.0486 8.625 15.4531C8.625 14.8577 8.14231 14.375 7.54688 14.375C6.95144 14.375 6.46875 14.8577 6.46875 15.4531C6.46875 16.0486 6.95144 16.5312 7.54688 16.5312Z" fill="black"/>
-            <path d="M11.5 16.5312C12.0954 16.5312 12.5781 16.0486 12.5781 15.4531C12.5781 14.8577 12.0954 14.375 11.5 14.375C10.9046 14.375 10.4219 14.8577 10.4219 15.4531C10.4219 16.0486 10.9046 16.5312 11.5 16.5312Z" fill="black"/>
-            <path d="M15.4531 16.5312C16.0486 16.5312 16.5312 16.0486 16.5312 15.4531C16.5312 14.8577 16.0486 14.375 15.4531 14.375C14.8577 14.375 14.375 14.8577 14.375 15.4531C14.375 16.0486 14.8577 16.5312 15.4531 16.5312Z" fill="black"/>
-          </g>
-          <defs>
-            <clipPath id="clip_calendar">
-              <rect width="23" height="23" fill="white"/>
-            </clipPath>
-          </defs>
-        </svg>
-      </button>
-      <button id="listViewBtn" class="relative w-[30px] h-[25px] m-[2px] rounded-[10px] bg-black bg-opacity-[0.39] flex items-center justify-center z-0 transition-colors">
-        <svg width="23" height="23" viewBox="0 0 23 23" fill="none">
-          <g clip-path="url(#clip_list)">
-            <path opacity="0.2" d="M19.4062 5.75H7.90625V17.25H19.4062V5.75Z" fill="white"/>
-            <path d="M7.90625 5.75H19.4062" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7.90714 11.5H19.4062" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7.90714 17.25H19.4062" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M3.95312 6.82812C4.54856 6.82812 5.03125 6.34543 5.03125 5.75C5.03125 5.15457 4.54856 4.67188 3.95312 4.67188C3.35769 4.67188 2.875 5.15457 2.875 5.75C2.875 6.34543 3.35769 6.82812 3.95312 6.82812Z" fill="white"/>
-            <path d="M3.95312 12.5781C4.54856 12.5781 5.03125 12.0954 5.03125 11.5C5.03125 10.9046 4.54856 10.4219 3.95312 10.4219C3.35769 10.4219 2.875 10.9046 2.875 11.5C2.875 12.0954 3.35769 12.5781 3.95312 12.5781Z" fill="white"/>
-            <path d="M3.95312 18.3281C4.54856 18.3281 5.03125 17.8454 5.03125 17.25C5.03125 16.6546 4.54856 16.1719 3.95312 16.1719C3.35769 16.1719 2.875 16.6546 2.875 17.25C2.875 17.8454 3.35769 18.3281 3.95312 18.3281Z" fill="white"/>
-          </g>
-          <defs>
-            <clipPath id="clip_list">
-              <rect width="23" height="23" fill="white"/>
-            </clipPath>
-          </defs>
-        </svg>
-      </button>
+    <!-- Calendar View -->
+    <div id="calendar-container" class="hidden">
+        <!-- Calendar grid will be dynamically loaded here -->
     </div>
-  </div>
 
-  <!-- Month Navigation (for calendar view) -->
-  <div id="month-navigation" class="hidden mb-5">
-    <div class="flex items-center justify-between">
-      <button id="prevMonthBtn" class="w-[35px] h-[35px] flex items-center justify-center">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);">
-          <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
-        </svg>
-      </button>
-      <div class="flex items-center gap-[8px]">
-        <h3 id="currentMonth" class="font-montserrat font-medium text-[20px] text-text">October</h3>
-      </div>
-      <button id="nextMonthBtn" class="w-[35px] h-[35px] flex items-center justify-center">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg);">
-          <path d="M11.4899 4.10156H2.51017C2.24083 4.10156 2.09044 4.38594 2.25724 4.58008L6.74708 9.78633C6.8756 9.93535 7.12306 9.93535 7.25294 9.78633L11.7428 4.58008C11.9096 4.38594 11.7592 4.10156 11.4899 4.10156Z" fill="black"/>
-        </svg>
-      </button>
+    <!-- List View -->
+    <div id="transactions-container">
+        <!-- Transaction sections will be dynamically loaded here -->
     </div>
+
   </div>
 
   <!-- Calendar View -->
@@ -240,6 +174,7 @@
 </div>
 
 <script>
+
 // 전역 변수
 let receiptsData = [];
 let allReceiptsData = []; // 전체 데이터 보관용
@@ -510,8 +445,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         if (hasTransactions.transfer > 0) {
           amountHTML += `<div style="font-size: 8px; color: #878787; font-weight: 500;">${hasTransactions.transfer.toLocaleString()}</div>`;
+
         }
-      }
+
 
       const bgColor = hasTransactions ? '#F5F5F5' : 'transparent';
       calendarHTML += `
@@ -520,74 +456,76 @@ document.addEventListener('DOMContentLoaded', async function() {
           ${amountHTML}
         </div>
       `;
-    }
+            }
 
-    calendarHTML += '</div></div>';
+            calendarHTML += '</div></div>';
 
-    calendarContainer.innerHTML = calendarHTML;
-  }
+            calendarContainer.innerHTML = calendarHTML;
+        }
 
-  function groupReceiptsByDate(receipts) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+        function groupReceiptsByDate(receipts) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
 
-    const groups = {};
+            const groups = {};
 
-    receipts.forEach(receipt => {
-      const receiptDate = new Date(receipt.purchased_at);
-      receiptDate.setHours(0, 0, 0, 0);
-      const timestamp = receiptDate.getTime();
+            receipts.forEach((receipt) => {
+                const receiptDate = new Date(receipt.purchased_at);
+                receiptDate.setHours(0, 0, 0, 0);
+                const timestamp = receiptDate.getTime();
 
-      if (!groups[timestamp]) {
-        groups[timestamp] = {
-          date: receiptDate,
-          receipts: []
-        };
-      }
-      groups[timestamp].receipts.push(receipt);
-    });
+                if (!groups[timestamp]) {
+                    groups[timestamp] = {
+                        date: receiptDate,
+                        receipts: [],
+                    };
+                }
+                groups[timestamp].receipts.push(receipt);
+            });
 
-    // Sort by date (newest first)
-    return Object.values(groups).sort((a, b) => b.date.getTime() - a.date.getTime());
-  }
+            // Sort by date (newest first)
+            return Object.values(groups).sort((a, b) => b.date.getTime() - a.date.getTime());
+        }
 
-  function getDateLabel(date) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+        function getDateLabel(date) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
 
-    const dateTime = date.getTime();
-    const todayTime = today.getTime();
-    const yesterdayTime = yesterday.getTime();
+            const dateTime = date.getTime();
+            const todayTime = today.getTime();
+            const yesterdayTime = yesterday.getTime();
 
-    if (dateTime === todayTime) {
-      return 'Today';
-    } else if (dateTime === yesterdayTime) {
-      return 'Yesterday';
-    } else {
-      const day = date.getDate();
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const month = months[date.getMonth()];
-      return `${day} ${month}`;
-    }
-  }
+            if (dateTime === todayTime) {
+                return 'Today';
+            } else if (dateTime === yesterdayTime) {
+                return 'Yesterday';
+            } else {
+                const day = date.getDate();
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const month = months[date.getMonth()];
+                return `${day} ${month}`;
+            }
+        }
 
-  function renderGroupedTransactions(groups) {
-    if (groups.length === 0) {
-      transactionsContainer.innerHTML = '<p class="text-center text-gray font-roboto text-[14px]">거래내역이 없습니다</p>';
-      return;
-    }
+        function renderGroupedTransactions(groups) {
+            if (groups.length === 0) {
+                transactionsContainer.innerHTML =
+                    '<p class="text-center text-gray font-roboto text-[14px]">거래내역이 없습니다</p>';
+                return;
+            }
 
-    const html = groups.map(group => {
-      const dateLabel = getDateLabel(group.date);
-      const cardsHtml = group.receipts.map(receipt => renderTransactionCard(receipt)).join('');
+            const html = groups
+                .map((group) => {
+                    const dateLabel = getDateLabel(group.date);
+                    const cardsHtml = group.receipts.map((receipt) => renderTransactionCard(receipt)).join('');
 
-      return `
+                    return `
         <div class="mb-5">
           <h3 class="font-montserrat font-medium text-[20px] text-text text-center mb-4">${dateLabel}</h3>
           <div class="space-y-4">
@@ -595,10 +533,12 @@ document.addEventListener('DOMContentLoaded', async function() {
           </div>
         </div>
       `;
-    }).join('');
+                })
+                .join('');
 
-    transactionsContainer.innerHTML = html;
-  }
+            transactionsContainer.innerHTML = html;
+        }
+
 
   function renderTransactionCard(receipt) {
     const amount = receipt.total.toLocaleString();
@@ -653,6 +593,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         </div>
       </div>
     `;
+
   }
 
   // Update chart with receipt data
