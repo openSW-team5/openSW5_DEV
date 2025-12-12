@@ -8,24 +8,148 @@
   style="padding-top: 107px; padding-bottom: 107px"
   x-data="{
     categories: [],
-    init() {
-      this.categories = window.CategorySync.getCategories();
-      // storage 변경 감지 (다른 탭에서 변경시 동기화)
-      window.CategorySync.onStorageChange((updatedCategories) => {
-        this.categories = updatedCategories;
+    isLoggedIn: {{ 'true' if user_id else 'false' }},
+    totalSpent: 0,
+    totalBudget: 0,
+    async init() {
+      if (this.isLoggedIn) {
+        this.categories = window.CategorySync.getCategories();
+
+        // 실제 영수증 데이터 불러오기
+        await this.loadSpentData();
+
+        // storage 변경 감지 (다른 탭에서 변경시 동기화)
+        window.CategorySync.onStorageChange((updatedCategories) => {
+          this.categories = updatedCategories;
+          this.loadSpentData();
+        });
+
+        // 월 변경 이벤트 감지
+        window.addEventListener('monthChanged', () => {
+          this.loadSpentData();
+        });
+      } else {
+        // 로그인 안 했을 때 템플릿 카드 1개만 표시
+        this.categories = [{
+          name: '식비',
+          icon: 'food.svg',
+          budget: 300000,
+          spent: 0
+        }];
+      }
+    },
+    async loadSpentData() {
+      try {
+        const response = await fetch('/receipts');
+        const result = await response.json();
+
+        if (result.status === 'ok' && result.data) {
+          // 현재 선택된 월의 시작/끝 날짜 (전역 currentDate 사용)
+          const startOfMonth = window.currentDate ? window.currentDate.startOf('month').format('YYYY-MM-DD') : null;
+          const endOfMonth = window.currentDate ? window.currentDate.endOf('month').format('YYYY-MM-DD') : null;
+
+          // 카테고리별 지출 합산 (지출 항목만)
+          const categorySpent = {};
+          let totalExpense = 0;
+
+          result.data.forEach(receipt => {
+            // 월별 필터링
+            if (startOfMonth && endOfMonth) {
+              const purchasedDate = receipt.purchased_at;
+              if (purchasedDate < startOfMonth || purchasedDate > endOfMonth) {
+                return; // 해당 월이 아니면 skip
+              }
+            }
+
+            // type 필드로 수입/이체 제외
+            const type = receipt.type || 'expense';
+
+            if (type === 'expense' && receipt.total > 0) {
+              totalExpense += receipt.total;
+
+              // 실제 카테고리 사용
+              const categoryName = receipt.category || '기타';
+              categorySpent[categoryName] = (categorySpent[categoryName] || 0) + receipt.total;
+            }
+          });
+
+          // 카테고리별 spent 업데이트
+          this.categories = this.categories.map(cat => ({
+            ...cat,
+            spent: categorySpent[cat.name] || 0
+          }));
+
+          this.totalSpent = totalExpense;
+          this.totalBudget = this.categories.reduce((sum, cat) => sum + cat.budget, 0);
+
+          // 전역 차트 업데이트
+          this.updateTotalChart();
+
+          // 카테고리 차트들 업데이트
+          this.updateCategoryCharts();
+        }
+      } catch (error) {
+        console.error('지출 데이터 로딩 실패:', error);
+      }
+    },
+    updateTotalChart() {
+      // 전역 차트 업데이트 함수는 스크립트에서 호출
+      if (window.updateDashboardChart) {
+        window.updateDashboardChart(this.totalSpent, this.totalBudget);
+      }
+    },
+    updateCategoryCharts() {
+      // 전역 배열에서 차트 가져오기
+      if (!window.categoryChartInstances) return;
+
+      window.categoryChartInstances.forEach((chartInfo, index) => {
+        if (chartInfo && this.categories[index]) {
+          const category = this.categories[index];
+          const percentage = ((category.spent / category.budget) * 100).toFixed(2);
+          const remaining = category.budget - category.spent;
+
+          // 사용량에 따른 색상 결정
+          let chartColor = '#63A1FF';
+          if (percentage > 80) {
+            chartColor = '#AF4C4E';
+          } else if (percentage > 50) {
+            chartColor = '#FF9E63';
+          }
+
+          // 차트의 percentage 저장 (centerText 플러그인에서 사용)
+          chartInfo.percentage = percentage;
+
+          // 차트 데이터 업데이트
+          chartInfo.chart.data.datasets[0].data = [category.spent, remaining > 0 ? remaining : 0];
+          chartInfo.chart.data.datasets[0].backgroundColor = [chartColor, '#E5E5E5'];
+          chartInfo.chart.update();
+        }
       });
     },
     formatNumber(num) {
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+    getChartColor(percentage) {
+      // 사용량에 따라 파랑(#63A1FF)에서 빨강(#AF4C4E)으로 그라데이션
+      if (percentage <= 50) {
+        return '#63A1FF';
+      } else if (percentage <= 80) {
+        return '#FF9E63';
+      } else {
+        return '#AF4C4E';
+      }
     }
   }"
 >
   <!-- Total Spent & Monthly Budget Card -->
   <div
-    class="relative w-[358px] h-[110px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[31px]"
+    class="relative w-[358px] h-[110px] bg-white rounded-[20px] shadow-[0px_8px_33px_-9px_rgba(0,0,0,0.15)] mb-[25px]"
   >
     <!-- Circular Progress Chart -->
-    <div class="absolute" style="left: 33px; top: 13px; width: 84px; height: 84px">
+    <div
+      class="absolute"
+      style="left: 33px; top: 13px; width: 84px; height: 84px"
+    >
       <canvas id="totalSpentChart"></canvas>
     </div>
 
@@ -37,13 +161,12 @@
       Total spent
     </div>
 
-    <!-- Total spent amount - 250,000원 -->
+    <!-- Total spent amount -->
     <div
       class="absolute flex items-center font-montserrat font-semibold text-[20px] leading-[24px] text-black"
-      style="left: 150px; top: 28px; width: 100px; height: 24px"
-    >
-      250,000원
-    </div>
+      style="left: 150px; top: 28px; width: 120px; height: 24px"
+      x-text="formatNumber(totalSpent) + '원'"
+    ></div>
 
     <!-- Monthly budget label -->
     <div
@@ -53,17 +176,19 @@
       Monthly budget
     </div>
 
-    <!-- Monthly budget amount - 1,000,000원 -->
+    <!-- Monthly budget amount -->
     <div
       class="absolute flex items-center font-montserrat font-semibold text-[20px] leading-[24px] text-black"
-      style="left: 150px; top: 80px; width: 116px; height: 24px"
-    >
-      1,000,000원
-    </div>
+      style="left: 150px; top: 80px; width: 120px; height: 24px"
+      x-text="formatNumber(totalBudget) + '원'"
+    ></div>
   </div>
 
   <!-- Spendings Title -->
-  <div class="flex justify-center items-center mb-[13px]">
+  <div
+    class="flex justify-center items-center mb-[13px]"
+    style="margin-top: 25px"
+  >
     <h2 class="font-montserrat font-bold text-[25px] leading-[30px] text-black">
       Spendings
     </h2>
@@ -121,18 +246,31 @@
 
   <!-- Category Cards (Dynamic) -->
   <template x-for="(category, index) in categories" :key="index">
-    <div class="flex justify-center mb-[31px]"
-         x-init="$nextTick(() => {
+    <div
+      class="flex justify-center"
+      style="margin-bottom: 15px"
+      x-init="$nextTick(() => {
            const ctx = document.getElementById('categoryChart' + index);
            const percentage = ((category.spent / category.budget) * 100).toFixed(2);
            const remaining = category.budget - category.spent;
 
-           new Chart(ctx, {
+           // 사용량에 따른 색상 결정
+           let chartColor = '#63A1FF'; // 기본 파랑
+           if (percentage > 80) {
+             chartColor = '#AF4C4E'; // 빨강
+           } else if (percentage > 50) {
+             chartColor = '#FF9E63'; // 주황
+           }
+
+           // chartInfo 객체 먼저 생성
+           const chartInfo = { percentage: percentage };
+
+           const chartInstance = new Chart(ctx, {
              type: 'doughnut',
              data: {
                datasets: [{
                  data: [category.spent, remaining > 0 ? remaining : 0],
-                 backgroundColor: ['#63A1FF', '#E5E5E5'],
+                 backgroundColor: [chartColor, '#E5E5E5'],
                  borderWidth: 0,
                  cutout: '78%',
                  borderRadius: 8
@@ -157,7 +295,8 @@
                  ctx.font = `600 ${fontSize}px Montserrat`;
                  ctx.fillStyle = '#000000';
                  ctx.textBaseline = 'middle';
-                 const text = percentage + '%';
+                 // chartInfo의 percentage 사용 (동적 업데이트 가능)
+                 const text = chartInfo.percentage + '%';
                  const textX = Math.round((width - ctx.measureText(text).width) / 2);
                  const textY = height / 2;
                  ctx.fillText(text, textX, textY);
@@ -165,7 +304,17 @@
                }
              }]
            });
-         })">
+
+           // 차트 인스턴스 추가
+           chartInfo.chart = chartInstance;
+
+           // 전역 배열에 저장 (window.categoryChartInstances 사용)
+           if (!window.categoryChartInstances) {
+             window.categoryChartInstances = [];
+           }
+           window.categoryChartInstances[index] = chartInfo;
+         })"
+    >
       <div class="relative w-[358px] h-[86px]">
         <!-- Card Background -->
         <div
@@ -173,7 +322,10 @@
         ></div>
 
         <!-- Progress circle -->
-        <div class="absolute" style="left: 4.75%; top: 12.79%; width: 17.88%; height: 74.42%">
+        <div
+          class="absolute"
+          style="left: 4.75%; top: 12.79%; width: 17.88%; height: 74.42%"
+        >
           <canvas :id="'categoryChart' + index"></canvas>
         </div>
 
@@ -230,45 +382,35 @@
   </template>
 
   <script>
-    // Month navigation
-    let currentDate = new Date();
+    // Month navigation with Day.js
+    dayjs.locale('ko');
+    window.currentDate = dayjs(); // 전역으로 설정
     const currentMonthText = document.getElementById("currentMonth");
     const prevMonthBtn = document.getElementById("prevMonthBtn");
     const nextMonthBtn = document.getElementById("nextMonthBtn");
 
     function updateMonthDisplay() {
-      const monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ];
-      currentMonthText.textContent = monthNames[currentDate.getMonth()];
+      // 한글 월 이름 표시 (예: "12월")
+      currentMonthText.textContent = window.currentDate.format('M월');
 
-      // Here you can add logic to fetch and update data based on selected month
-      console.log(
-        "Selected month:",
-        currentDate.getMonth() + 1,
-        "Year:",
-        currentDate.getFullYear()
-      );
+      // 해당 월의 시작/끝 날짜 계산
+      const startOfMonth = window.currentDate.startOf('month').format('YYYY-MM-DD');
+      const endOfMonth = window.currentDate.endOf('month').format('YYYY-MM-DD');
+
+      console.log("조회 기간:", startOfMonth, "~", endOfMonth);
+      console.log("선택된 월:", window.currentDate.format('YYYY년 M월'));
+
+      // 월 변경 이벤트 발생
+      window.dispatchEvent(new CustomEvent('monthChanged'));
     }
 
     prevMonthBtn.addEventListener("click", function () {
-      currentDate.setMonth(currentDate.getMonth() - 1);
+      window.currentDate = window.currentDate.subtract(1, 'month');
       updateMonthDisplay();
     });
 
     nextMonthBtn.addEventListener("click", function () {
-      currentDate.setMonth(currentDate.getMonth() + 1);
+      window.currentDate = window.currentDate.add(1, 'month');
       updateMonthDisplay();
     });
 
@@ -277,18 +419,24 @@
 
     // Total Spent Chart
     const ctx = document.getElementById('totalSpentChart');
-    const totalBudget = 1000000;
-    const totalSpent = 250000;
-    const remaining = totalBudget - totalSpent;
-    const percentage = ((totalSpent / totalBudget) * 100).toFixed(2);
 
-    new Chart(ctx, {
+    // 사용량에 따른 색상 결정 함수
+    function getTotalChartColor(percentage) {
+      if (percentage > 80) return '#AF4C4E';
+      else if (percentage > 50) return '#FF9E63';
+      else return '#63A1FF';
+    }
+
+    // 초기값 0으로 차트 생성
+    let currentPercentage = '0.00';
+
+    const totalSpentChartInstance = new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels: ['사용', '남음'],
         datasets: [{
-          data: [totalSpent, remaining],
-          backgroundColor: ['#63A1FF', '#E5E5E5'],
+          data: [1],
+          backgroundColor: ['#E5E5E5'],
           borderWidth: 0,
           cutout: '82%',
           borderRadius: 10
@@ -317,7 +465,7 @@
           ctx.font = `600 ${fontSize}px Montserrat`;
           ctx.fillStyle = '#000000';
           ctx.textBaseline = 'middle';
-          const text = percentage + '%';
+          const text = currentPercentage + '%';
           const textX = Math.round((width - ctx.measureText(text).width) / 2);
           const textY = height / 2;
           ctx.fillText(text, textX, textY);
@@ -325,6 +473,24 @@
         }
       }]
     });
+
+    // 전역 차트 업데이트 함수
+    window.updateDashboardChart = function(spent, budget) {
+      const newRemaining = budget - spent;
+      const newPercentage = budget > 0 ? ((spent / budget) * 100).toFixed(2) : 0;
+
+      // 현재 퍼센트 업데이트 (차트 중앙 텍스트용)
+      currentPercentage = newPercentage;
+
+      // 데이터 업데이트
+      totalSpentChartInstance.data.datasets[0].data = budget > 0 ? [spent, newRemaining] : [1];
+      totalSpentChartInstance.data.datasets[0].backgroundColor = budget > 0
+        ? [getTotalChartColor(newPercentage), '#E5E5E5']
+        : ['#E5E5E5'];
+
+      // 차트 다시 그리기
+      totalSpentChartInstance.update();
+    };
   </script>
   {% endblock %}
 </div>
