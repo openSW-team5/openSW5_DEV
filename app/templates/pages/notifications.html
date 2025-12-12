@@ -1,6 +1,33 @@
-{% extends "base.html" %} {% set navbar_variant = 'default' %} {% set back_url =
-'/' %} {% set footer_active = 'notification' %} {% block content %}
-<div class="flex items-center justify-center h-screen pb-[95px]">
-  <h1 class="text-2xl font-bold text-center">알림 페이지</h1>
+{% extends "base.html" %}
+{% set navbar_variant = 'default' %}
+{% set back_url = '/' %}
+{% set footer_active = 'notification' %}
+
+{% block content %}
+<div class="pt-[120px] pb-[95px] px-4">
+
+  {% if not alerts %}
+    <div class="flex items-center justify-center pt-10">
+      <h1 class="text-2xl font-bold text-center">
+        알림 페이지
+      </h1>
+    </div>
+  {% else %}
+    <h1 class="text-xl font-bold mb-4">알림</h1>
+
+    <ul class="space-y-3">
+      {% for alert in alerts %}
+        <li class="p-4 border rounded-lg bg-white shadow-sm">
+          <div class="text-xs text-gray-500 mb-1">
+            {{ alert.created_at }}
+          </div>
+          <div class="font-medium">
+            {{ alert.message }}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
 </div>
 {% endblock %}

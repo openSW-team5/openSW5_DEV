@@ -303,19 +303,28 @@ async def user_page(request: Request):
 @router.get("/notifications", response_class=HTMLResponse)
 async def notifications_page(request: Request):
     user_id = getattr(request.state, "user_id", None)
+
     if not user_id:
-        return RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse("/users/login", status_code=303)
 
     with get_conn() as conn:
-        row = conn.execute(
-            "SELECT id, username, name FROM users WHERE id = ?",
+        alerts = conn.execute(
+            """
+            SELECT type, message, created_at
+            FROM alerts
+            WHERE user_id = ?
+            ORDER BY created_at DESC
+            """,
             (user_id,),
-        ).fetchone()
+        ).fetchall()
 
-    user = dict(row) if row else None
     return templates.TemplateResponse(
         "pages/notifications.html",
-        {"request": request, "title": "알림", "user": user},
+        {
+            "request": request,
+            "title": "알림",
+            "alerts": alerts,
+        },
     )
 
 
