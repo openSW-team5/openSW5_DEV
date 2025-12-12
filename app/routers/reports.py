@@ -1,13 +1,16 @@
 # app/routers/reports.py
 from fastapi import APIRouter, Query, Request
+
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from typing import Optional
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 
 from app.db.util import get_conn
 from app.services.auth import require_user_id  # ✅ 세션 기반 user_id
+
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 templates = Jinja2Templates(directory="app/templates")

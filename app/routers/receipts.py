@@ -63,6 +63,7 @@ class ReceiptConfirmIn(BaseModel):
         raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
 
 
+
 class ReceiptUpdateIn(BaseModel):
     merchant: str
     purchased_at: str
@@ -85,6 +86,7 @@ class ReceiptUpdateIn(BaseModel):
             except ValueError:
                 continue
         raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
+
 
 
 class ReceiptRow(BaseModel):
@@ -183,7 +185,8 @@ def get_receipt_detail(
     with get_conn() as conn:
         r = conn.execute(
             """
-            SELECT id, user_id, merchant, total, purchased_at, status, type, category,
+
+            SELECT id, user_id, merchant, total, purchased_at, status,
                    image_path, created_at, updated_at, is_deleted
             FROM receipts
             WHERE id = ?
