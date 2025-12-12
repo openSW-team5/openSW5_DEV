@@ -116,6 +116,7 @@ CREATE TABLE alerts (
   user_id             INTEGER NOT NULL,
   type                TEXT NOT NULL CHECK(type IN ('overspend','anomaly','fixed_detected')),
   message             TEXT NOT NULL,
+  is_read             INTEGER DEFAULT 0,
   created_at          TEXT DEFAULT (datetime('now')),
   related_receipt_id  INTEGER,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
