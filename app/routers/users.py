@@ -13,6 +13,7 @@ import hmac
 
 from app.db.util import get_conn
 from app.services.session import create_session_token, COOKIE_NAME, DEBUG
+from app.services.auth import require_user_id
 
 router = APIRouter(prefix="/users", tags=["users"])
 templates = Jinja2Templates(directory="app/templates")
@@ -310,10 +311,10 @@ async def notifications_page(request: Request):
     with get_conn() as conn:
         alerts = conn.execute(
             """
-            SELECT type, message, created_at
+           SELECT id, message, created_at, is_read
             FROM alerts
             WHERE user_id = ?
-            ORDER BY created_at DESC
+            ORDER BY created_at DESC;
             """,
             (user_id,),
         ).fetchall()
@@ -326,6 +327,7 @@ async def notifications_page(request: Request):
             "alerts": alerts,
         },
     )
+
 
 
 # ==========================

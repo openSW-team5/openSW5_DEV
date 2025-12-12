@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from app.routers import health, receipts, users, reports, exports
+from app.routers import health, receipts, users, reports, exports, alerts
 from app.services.session import verify_session_token, COOKIE_NAME
 
 app = FastAPI(title="OpenSW5")
@@ -218,3 +218,4 @@ app.include_router(receipts.router)
 app.include_router(users.router)
 app.include_router(reports.router)   # ✅ /reports 는 미들웨어에서 자동 차단
 app.include_router(exports.router)
+app.include_router(alerts.router)
