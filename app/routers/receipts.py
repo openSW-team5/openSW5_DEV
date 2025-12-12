@@ -41,18 +41,20 @@ class ReceiptConfirmIn(BaseModel):
     user_id: Optional[int] = None
 
     merchant: str
-    purchased_at: str  # YYYY-MM-DD
+    purchased_at: str  # YYYY-MM-DD or YYYY-MM-DD HH:MM(:SS)
     items: List[ReceiptItemIn]
     total: int = Field(ge=0)
     status: Literal["PENDING", "CONFIRMED"] = "CONFIRMED"
+
+    # ✅ A안: DB에 type 컬럼이 없으므로, 입력은 받아도 "저장/조회 쿼리에서 사용하지 않음"
     type: Literal["expense", "income", "transfer"] = "expense"
+
     category: Optional[str] = None
     image_path: Optional[str] = None
 
     @field_validator("purchased_at")
     @classmethod
     def _v_date(cls, v: str) -> str:
-        # 날짜만 또는 날짜+시간 모두 허용
         formats = ["%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"]
         for fmt in formats:
             try:
@@ -61,7 +63,6 @@ class ReceiptConfirmIn(BaseModel):
             except ValueError:
                 continue
         raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
-
 
 
 class ReceiptUpdateIn(BaseModel):
@@ -70,14 +71,16 @@ class ReceiptUpdateIn(BaseModel):
     items: List[ReceiptItemIn]
     total: int = Field(ge=0)
     status: Literal["PENDING", "CONFIRMED"] = "CONFIRMED"
+
+    # ✅ A안: DB 저장/조회에 쓰지 않음(프론트 호환용으로만 유지)
     type: Literal["expense", "income", "transfer"] = "expense"
+
     category: Optional[str] = None
     image_path: Optional[str] = None
 
     @field_validator("purchased_at")
     @classmethod
     def _v_date(cls, v: str) -> str:
-        # 날짜만 또는 날짜+시간 모두 허용
         formats = ["%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"]
         for fmt in formats:
             try:
@@ -86,7 +89,6 @@ class ReceiptUpdateIn(BaseModel):
             except ValueError:
                 continue
         raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
-
 
 
 class ReceiptRow(BaseModel):
@@ -96,7 +98,10 @@ class ReceiptRow(BaseModel):
     total: int
     purchased_at: str
     status: Literal["PENDING", "CONFIRMED"]
+
+    # ✅ A안: 항상 expense로 내려줌
     type: Literal["expense", "income", "transfer"] = "expense"
+
     category: Optional[str] = None
     image_path: Optional[str] = None
     created_at: Optional[str] = None
@@ -118,7 +123,10 @@ class ReceiptDetail(BaseModel):
     total: int
     purchased_at: str
     status: Literal["PENDING", "CONFIRMED"]
+
+    # ✅ A안: 항상 expense로 내려줌
     type: Literal["expense", "income", "transfer"] = "expense"
+
     category: Optional[str] = None
     image_path: Optional[str] = None
     created_at: Optional[str] = None
@@ -143,7 +151,7 @@ def list_receipts(
     with get_conn() as conn:
         rows = conn.execute(
             """
-            SELECT id, user_id, merchant, total, purchased_at, status, type, category, image_path, created_at
+            SELECT id, user_id, merchant, total, purchased_at, status, category, image_path, created_at
             FROM receipts
             WHERE is_deleted = 0
               AND user_id = ?
@@ -161,7 +169,7 @@ def list_receipts(
                 total=r["total"],
                 purchased_at=r["purchased_at"],
                 status=r["status"],
-                type=r["type"],
+                type="expense",  # ✅ A안
                 category=r["category"],
                 image_path=r["image_path"],
                 created_at=r["created_at"],
@@ -185,9 +193,8 @@ def get_receipt_detail(
     with get_conn() as conn:
         r = conn.execute(
             """
-
             SELECT id, user_id, merchant, total, purchased_at, status,
-                   image_path, created_at, updated_at, is_deleted
+                   category, image_path, created_at, updated_at, is_deleted
             FROM receipts
             WHERE id = ?
             """,
@@ -195,11 +202,7 @@ def get_receipt_detail(
         ).fetchone()
 
         # 삭제되었거나, 남의 영수증이면 404
-        if (
-            not r
-            or r["is_deleted"] == 1
-            or r["user_id"] != user_id
-        ):
+        if (not r) or (r["is_deleted"] == 1) or (r["user_id"] != user_id):
             raise HTTPException(status_code=404, detail="receipt not found")
 
         items = conn.execute(
@@ -219,7 +222,7 @@ def get_receipt_detail(
             total=r["total"],
             purchased_at=r["purchased_at"],
             status=r["status"],
-            type=r["type"],
+            type="expense",  # ✅ A안
             category=r["category"],
             image_path=r["image_path"],
             created_at=r["created_at"],
@@ -277,6 +280,8 @@ def confirm_receipt(
     """
     OCR 결과 + 사용자 수정을 반영해 영수증을 확정 저장
     user_id는 세션에서 가져옴 (payload.user_id는 무시)
+
+    ✅ A안: receipts 테이블에 type 컬럼이 없으므로 저장하지 않음.
     """
     user_id = require_user_id(request)
 
@@ -292,8 +297,8 @@ def confirm_receipt(
             cur = conn.cursor()
             cur.execute(
                 """
-                INSERT INTO receipts (user_id, merchant, total, purchased_at, status, type, category, image_path)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO receipts (user_id, merchant, total, purchased_at, status, category, image_path)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     user_id,
@@ -301,7 +306,6 @@ def confirm_receipt(
                     calc_total,
                     payload.purchased_at.strip(),
                     payload.status,
-                    payload.type,
                     payload.category.strip() if payload.category else None,
                     payload.image_path.strip() if payload.image_path else None,
                 ),
@@ -348,6 +352,8 @@ def update_receipt(
 ):
     """
     로그인한 사용자의 영수증만 수정 가능
+
+    ✅ A안: receipts 테이블에 type 컬럼이 없으므로 업데이트하지 않음.
     """
     user_id = require_user_id(request)
 
@@ -365,18 +371,20 @@ def update_receipt(
             "SELECT id, user_id, is_deleted FROM receipts WHERE id = ?",
             (receipt_id,),
         ).fetchone()
-        if (
-            not row
-            or row["is_deleted"] == 1
-            or row["user_id"] != user_id
-        ):
+        if (not row) or (row["is_deleted"] == 1) or (row["user_id"] != user_id):
             raise HTTPException(status_code=404, detail="receipt not found")
 
         # 본문 업데이트
         cur.execute(
             """
             UPDATE receipts
-               SET merchant = ?, total = ?, purchased_at = ?, status = ?, type = ?, category = ?, image_path = ?, updated_at = datetime('now')
+               SET merchant = ?,
+                   total = ?,
+                   purchased_at = ?,
+                   status = ?,
+                   category = ?,
+                   image_path = ?,
+                   updated_at = datetime('now')
              WHERE id = ? AND is_deleted = 0
             """,
             (
@@ -384,7 +392,6 @@ def update_receipt(
                 calc_total,
                 payload.purchased_at.strip(),
                 payload.status,
-                payload.type,
                 payload.category.strip() if payload.category else None,
                 payload.image_path.strip() if payload.image_path else None,
                 receipt_id,

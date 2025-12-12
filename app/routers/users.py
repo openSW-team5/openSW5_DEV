@@ -12,16 +12,13 @@ import hashlib
 import hmac
 
 from app.db.util import get_conn
-from app.services.session import create_session_token, COOKIE_NAME, DEBUG  # ✅ 세션 유틸
+from app.services.session import create_session_token, COOKIE_NAME, DEBUG
 
 router = APIRouter(prefix="/users", tags=["users"])
 templates = Jinja2Templates(directory="app/templates")
 
-# ==========================
-#   비밀번호 해시 유틸
-# ==========================
 PBKDF2_ALG = "pbkdf2_sha256"
-PBKDF2_ITER = int(os.getenv("PWD_ITERATIONS", "240000"))  # 배포 시 더 크게 잡아도 됨
+PBKDF2_ITER = int(os.getenv("PWD_ITERATIONS", "240000"))
 PBKDF2_SALT_BYTES = 16
 PBKDF2_HASH_BYTES = 32
 
@@ -30,7 +27,6 @@ def _hash_password(plain: str) -> str:
     if not isinstance(plain, str) or len(plain) < 8:
         raise ValueError("password too short")
     salt = secrets.token_bytes(PBKDF2_SALT_BYTES)
-    # ✅ 오타 수정: pbkdfdf2_hmac → pbkdf2_hmac
     dk = hashlib.pbkdf2_hmac(
         "sha256",
         plain.encode("utf-8"),
@@ -61,16 +57,13 @@ def _verify_password(plain: str, stored: str) -> bool:
         return False
 
 
-# ==========================
-#   내부 검증용 모델
-# ==========================
 class RegisterIn(BaseModel):
     username: str = Field(min_length=3, max_length=32)
     password: str = Field(min_length=8, max_length=128)
     name: str = Field(min_length=1, max_length=50)
     email: Optional[str] = Field(default=None, max_length=100)
     phone: Optional[str] = Field(default=None, max_length=30)
-    birthdate: Optional[str] = None  # 'YYYY-MM-DD'
+    birthdate: Optional[str] = None
 
     @field_validator("username")
     @classmethod
@@ -86,8 +79,7 @@ class RegisterIn(BaseModel):
         if v is None:
             return v
         v = v.strip()
-
-        if not v:  # 빈 문자열이면 None으로 처리
+        if not v:
             return None
         if "@" not in v or "." not in v:
             raise ValueError("invalid email format")
@@ -103,7 +95,7 @@ class RegisterIn(BaseModel):
     def _v_birthdate(cls, v: Optional[str]) -> Optional[str]:
         if not v:
             return v
-        datetime.strptime(v, "%Y-%m-%d")  # 형식 오류 시 ValueError
+        datetime.strptime(v, "%Y-%m-%d")
         return v
 
 
@@ -123,9 +115,6 @@ class LoginOut(BaseModel):
     name: str
 
 
-# ==========================
-#   DB 헬퍼
-# ==========================
 def _exists_username(cur: sqlite3.Cursor, username: str) -> bool:
     return bool(cur.execute("SELECT 1 FROM users WHERE username = ?", (username,)).fetchone())
 
@@ -136,30 +125,37 @@ def _exists_email(cur: sqlite3.Cursor, email: str) -> bool:
     return bool(cur.execute("SELECT 1 FROM users WHERE email = ?", (email,)).fetchone())
 
 
+def _redirect_if_logged_in(request: Request) -> Optional[RedirectResponse]:
+    """로그인 상태면 login/register 접근을 막고 무조건 /dashboard로 보냄"""
+    if getattr(request.state, "user_id", None):
+        return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+    return None
+
+
 # ==========================
 #   페이지 렌더 (GET)
 # ==========================
-
 @router.get("/register", response_class=HTMLResponse)
 def register_page(request: Request):
-    return templates.TemplateResponse(
-        "register.html",
-        {"request": request, "error": None},
-    )
+    r = _redirect_if_logged_in(request)
+    if r:
+        return r
+
+    return templates.TemplateResponse("register.html", {"request": request, "error": None})
 
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-    return templates.TemplateResponse(
-        "login.html",
-        {"request": request, "error": None},
-    )
+    r = _redirect_if_logged_in(request)
+    if r:
+        return r
+
+    return templates.TemplateResponse("login.html", {"request": request, "error": None})
 
 
 # ==========================
 #   회원가입 처리 (POST)
 # ==========================
-
 @router.post("/register", response_class=HTMLResponse)
 def register_user_form(
     request: Request,
@@ -170,7 +166,10 @@ def register_user_form(
     phone: Optional[str] = Form(None),
     birthdate: Optional[str] = Form(None),
 ):
-    # 1) Pydantic으로 1차 검증
+    r = _redirect_if_logged_in(request)
+    if r:
+        return r
+
     try:
         reg = RegisterIn(
             username=username,
@@ -181,14 +180,12 @@ def register_user_form(
             birthdate=birthdate,
         )
     except Exception as e:
-        # 입력값 유효성 에러 → 같은 페이지에 에러 표시
         return templates.TemplateResponse(
             "register.html",
             {"request": request, "error": f"입력값 오류: {e}"},
             status_code=400,
         )
 
-    # 2) 비밀번호 해시
     try:
         pw_hash = _hash_password(reg.password)
     except ValueError as e:
@@ -198,7 +195,6 @@ def register_user_form(
             status_code=400,
         )
 
-    # 3) DB 저장
     with get_conn() as conn:
         cur = conn.cursor()
 
@@ -229,68 +225,50 @@ def register_user_form(
                 reg.birthdate,
             ),
         )
-        user_id = cur.lastrowid
-        row = cur.execute(
-            "SELECT id, username, name, email, phone, birthdate, created_at FROM users WHERE id = ?",
-            (user_id,),
-        ).fetchone()
 
-    # 필요하면 여기서 RegisterOut 써서 로그 남길 수 있음
-    _ = RegisterOut(
-        id=row["id"],
-        username=row["username"],
-        name=row["name"],
-        email=row["email"],
-        phone=row["phone"],
-        birthdate=row["birthdate"],
-        created_at=row["created_at"],
-    )
-
-    # 가입 성공 → 로그인 페이지로 리다이렉트
     return RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
 
 
 # ==========================
 #   로그인 처리 (POST) + 세션
 # ==========================
-
 @router.post("/login")
 async def login_submit(
     request: Request,
     username: str = Form(...),
     password: str = Form(...),
 ):
+    r = _redirect_if_logged_in(request)
+    if r:
+        return r
+
     u = username.strip()
 
     with get_conn() as conn:
-        cur = conn.cursor()
-        row = cur.execute(
+        row = conn.execute(
             "SELECT id, username, name, password_hash FROM users WHERE username = ?",
             (u,),
         ).fetchone()
 
     if not row or not _verify_password(password, row["password_hash"]):
-        # 인증 실패 → 다시 로그인 페이지 렌더 + 에러 메시지
         return templates.TemplateResponse(
             "login.html",
             {"request": request, "error": "아이디 또는 비밀번호가 올바르지 않습니다."},
             status_code=401,
         )
 
-    # 로그인 성공 → 세션 토큰 발급
     _ = LoginOut(user_id=row["id"], username=row["username"], name=row["name"])
     token = create_session_token(row["id"])
 
-    # 대시보드로 이동 (원하면 "/"로 바꿔도 됨)
     response = RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
     response.set_cookie(
         key=COOKIE_NAME,
         value=token,
         httponly=True,
-        secure=not DEBUG,          # DEBUG=true면 secure=False → 로컬에서 쿠키 저장됨
+        secure=not DEBUG,
         samesite="lax",
-        max_age=7 * 24 * 60 * 60,  # 7일
-        path="/",                  # 모든 경로에서 쿠키 전송    
+        max_age=7 * 24 * 60 * 60,
+        path="/",
     )
     return response
 
@@ -298,23 +276,14 @@ async def login_submit(
 # ==========================
 #   마이페이지
 # ==========================
-
 @router.get("/user", response_class=HTMLResponse)
 async def user_page(request: Request):
-
-    return templates.TemplateResponse("pages/user.html", {"request": request})
-
-    # 세션에서 user_id 가져오기
     user_id = getattr(request.state, "user_id", None)
-
-    # 로그인 안 되어 있으면 로그인 페이지로 보내기
     if not user_id:
         return RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
 
-    # 로그인 된 경우 → DB에서 현재 유저 정보 가져오기
     with get_conn() as conn:
-        cur = conn.cursor()
-        row = cur.execute(
+        row = conn.execute(
             """
             SELECT id, username, name, email, phone, birthdate, created_at
             FROM users
@@ -324,96 +293,42 @@ async def user_page(request: Request):
         ).fetchone()
 
     if not row:
-        # 이례적 상황(세션은 있는데 유저가 없음) → 강제 로그아웃 후 다시 로그인 유도
         resp = RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
-        resp.delete_cookie(COOKIE_NAME)
+        resp.delete_cookie(key=COOKIE_NAME, path="/")
         return resp
 
-    user = {
-        "id": row["id"],
-        "username": row["username"],
-        "name": row["name"],
-        "email": row["email"],
-        "phone": row["phone"],
-        "birthdate": row["birthdate"],
-        "created_at": row["created_at"],
-    }
-
-    return templates.TemplateResponse(
-        "pages/user.html",
-        {
-            "request": request,
-            "user": user,
-        },
-    )
-
+    return templates.TemplateResponse("pages/user.html", {"request": request, "user": dict(row)})
 
 
 @router.get("/notifications", response_class=HTMLResponse)
 async def notifications_page(request: Request):
-    """알림 페이지"""
-    return templates.TemplateResponse("pages/notifications.html", {"request": request, "title": "알림"})
-
-
-    # 세션에서 user_id 가져오기
     user_id = getattr(request.state, "user_id", None)
-
-    # 로그인 안 되어 있으면 로그인 페이지로 보내기
     if not user_id:
         return RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
 
-    # 로그인 된 경우 → DB에서 현재 유저 정보 가져오기
     with get_conn() as conn:
-        cur = conn.cursor()
-        row = cur.execute(
-            """
-            SELECT id, username, name, email, phone, birthdate, created_at
-            FROM users
-            WHERE id = ?
-            """,
+        row = conn.execute(
+            "SELECT id, username, name FROM users WHERE id = ?",
             (user_id,),
         ).fetchone()
 
-    if not row:
-        # 이례적 상황(세션은 있는데 유저가 없음) → 강제 로그아웃 후 다시 로그인 유도
-        resp = RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
-        resp.delete_cookie(COOKIE_NAME)
-        return resp
-
-    user = {
-        "id": row["id"],
-        "username": row["username"],
-        "name": row["name"],
-        "email": row["email"],
-        "phone": row["phone"],
-        "birthdate": row["birthdate"],
-        "created_at": row["created_at"],
-    }
-
+    user = dict(row) if row else None
     return templates.TemplateResponse(
-        "pages/user.html",
-        {
-            "request": request,
-            "user": user,
-        },
+        "pages/notifications.html",
+        {"request": request, "title": "알림", "user": user},
     )
 
 
 # ==========================
 #   로그아웃
 # ==========================
-
 @router.get("/logout")
 async def logout():
     response = RedirectResponse(url="/users/login", status_code=status.HTTP_303_SEE_OTHER)
-    response.delete_cookie(
-        key=COOKIE_NAME,
-        path="/",     # ✅ 로그인 때와 동일하게 명시
-    )
+    response.delete_cookie(key=COOKIE_NAME, path="/")
     return response
+
 
 @router.get("/me-test")
 def me_test(request: Request):
     return {"user_id": getattr(request.state, "user_id", None)}
-
-
