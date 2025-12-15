@@ -1,70 +1,51 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ title or "SmartLedger" }}</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ title or "SmartLedger" }}</title>
 
-    <!-- Pretendard 폰트 -->
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+        <link
+            rel="stylesheet"
+            as="style"
+            crossorigin
+            href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+        <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500;700&family=Sarina&display=swap"
+            rel="stylesheet" />
 
-    <!-- Satoshi Variable 폰트 (Fontshare) -->
-    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" />
+        <link rel="stylesheet" href="{{ url_for('static', path='css/output.css') }}" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
 
-    <!-- Google Fonts: Montserrat, Roboto, Sarina -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500;700&family=Sarina&display=swap" rel="stylesheet">
+        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-    <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', path='css/output.css') }}">
+        <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/locale/ko.js"></script>
 
-    <!-- Toastify CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+    </head>
 
-    <!-- Toastify JS -->
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <body class="min-h-screen bg-gray-100">
+        <div class="max-w-[428px] mx-auto bg-white min-h-screen shadow-xl relative">
+            {% if navbar_variant is defined %} {% set variant = navbar_variant %} {% include 'components/navbar.html' %}
+            {% endif %}
 
-    <!-- Day.js -->
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/locale/ko.js"></script>
+            <!-- ✅ main 태그 추가 (app.js가 여기 찾음) -->
+            <main>{% block content %}{% endblock %}</main>
 
-    <!-- SheetJS -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+            {% if footer_active is defined %} {% set active = footer_active %} {% include 'components/footer.html' %} {%
+            endif %} {% include 'components/upload_popup.html' %}
+        </div>
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
-  </head>
-  <body class="min-h-screen bg-gray-100">
-    <!-- 웹앱 컨테이너: 모바일은 전체화면, PC는 중앙 고정폭 -->
-    <div class="max-w-[428px] mx-auto bg-white min-h-screen shadow-xl relative">
-      <!-- Navbar -->
-      {% if navbar_variant is defined %}
-        {% set variant = navbar_variant %}
-        {% include 'components/navbar.html' %}
-      {% endif %}
-
-      <!-- Content Area -->
-      {% block content %}{% endblock %}
-
-      <!-- Footer -->
-      {% if footer_active is defined %}
-        {% set active = footer_active %}
-        {% include 'components/footer.html' %}
-      {% endif %}
-
-      <!-- Upload Popup -->
-      {% include 'components/upload_popup.html' %}
-    </div>
-
-    <script src="{{ url_for('static', path='js/toast-helper.js') }}"></script>
-    <script src="{{ url_for('static', path='js/excel-export.js') }}"></script>
-    <script src="{{ url_for('static', path='js/app.js') }}"></script>
-  </body>
+        <script src="{{ url_for('static', path='js/toast-helper.js') }}"></script>
+        <script src="{{ url_for('static', path='js/excel-export.js') }}"></script>
+        <script src="{{ url_for('static', path='js/app.js') }}"></script>
+    </body>
 </html>
