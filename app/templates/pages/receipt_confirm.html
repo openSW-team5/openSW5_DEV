@@ -19,81 +19,73 @@
       { id: 3, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 }
     ],
     nextId: 4,
+
     init() {
-      this.$refs.container.addEventListener('scroll', () => {
-        this.scrolled = this.$refs.container.scrollTop > 100;
-      });
-
-      // OCR 결과 자동 채우기
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('from') === 'ocr') {
-        const ocrData = sessionStorage.getItem('ocrResult');
-        if (ocrData) {
-          try {
-            const ocr = JSON.parse(ocrData);
-            console.log('OCR 데이터 로드:', ocr);
+      if (urlParams.get('from') !== 'ocr') return;
 
-            // 상호명
-            if (ocr.storeInfo?.name?.text) {
-              this.store = ocr.storeInfo.name.text;
-            }
+      const raw = sessionStorage.getItem('ocrResult');
+      if (!raw) {
+        console.warn('❌ ocrResult 없음');
+        return;
+      }
 
-            // 날짜
-            if (ocr.paymentInfo?.date?.text) {
-              const dateText = ocr.paymentInfo.date.text;
-              // YYYY-MM-DD 형식으로 변환
-              const dateMatch = dateText.match(/(\d{4})[.-]?(\d{2})[.-]?(\d{2})/);
-              if (dateMatch) {
-                this.receiptDate = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
-              }
-            }
+      try {
+        const ocr = JSON.parse(raw);
+        console.log('📦 OCR RAW:', ocr);
 
-            // 시간
-            if (ocr.paymentInfo?.time?.text) {
-              const timeText = ocr.paymentInfo.time.text;
-              // HH:MM 형식으로 변환
-              const timeMatch = timeText.match(/(\d{2}):?(\d{2})/);
-              if (timeMatch) {
-                this.receiptTime = `${timeMatch[1]}:${timeMatch[2]}`;
-              }
-            }
+        const result = ocr.images?.[0]?.receipt?.result;
+        console.log('🧾 receipt.result:', result);
 
-            // 상품 목록
-            if (ocr.subResults && ocr.subResults.length > 0) {
-              this.products = [];
-              this.nextId = 1;
+        if (!result) return;
 
-              ocr.subResults.forEach(item => {
-                const product = {
-                  id: this.nextId++,
-                  name: item.name?.text || '',
-                  quantity: item.count?.text || '1',
-                  unitPrice: item.price?.price?.text || '0',
-                  swipedLeft: false,
-                  touchStartX: 0
-                };
-                this.products.push(product);
-              });
+        if (result.storeInfo?.name?.text) {
+          this.store = result.storeInfo.name.text;
+        }
 
-              // 최소 3개 행 유지
-              while (this.products.length < 3) {
-                this.products.push({
-                  id: this.nextId++,
-                  name: '',
-                  quantity: '',
-                  unitPrice: '',
-                  swipedLeft: false,
-                  touchStartX: 0
-                });
-              }
-            }
+        if (result.paymentInfo?.date?.text) {
+          const m = result.paymentInfo.date.text.match(/(\d{4})-(\d{2})-(\d{2})/);
+          if (m) this.receiptDate = `${m[1]}-${m[2]}-${m[3]}`;
+        }
 
-            // OCR 데이터 사용 후 삭제
-            sessionStorage.removeItem('ocrResult');
-          } catch (error) {
-            console.error('OCR 데이터 파싱 오류:', error);
+        if (result.paymentInfo?.time?.text) {
+          const m = result.paymentInfo.time.text.match(/(\d{2}):\s?(\d{2})/);
+          if (m) this.receiptTime = `${m[1]}:${m[2]}`;
+        }
+
+        const items = result.subResults?.[0]?.items;
+        if (Array.isArray(items)) {
+          this.products = [];
+          this.nextId = 1;
+
+          items.forEach(item => {
+            this.products.push({
+              id: this.nextId++,
+              name: item.name?.text || '',
+              quantity: Number(item.count?.text || 1),
+              unitPrice: Number(item.price?.price?.formatted?.value || 0),
+              swipedLeft: false,
+              touchStartX: 0
+            });
+          });
+
+          while (this.products.length < 3) {
+            this.products.push({
+              id: this.nextId++,
+              name: '',
+              quantity: '',
+              unitPrice: '',
+              swipedLeft: false,
+              touchStartX: 0
+            });
           }
         }
+
+        sessionStorage.removeItem('ocrResult');
+        console.log('✅ OCR 자동 입력 완료');
+
+      } catch (e) {
+        console.error('❌ OCR 파싱 오류:', e);
       }
     },
     formatNumber(num) {
