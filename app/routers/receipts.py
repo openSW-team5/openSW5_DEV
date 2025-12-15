@@ -1,15 +1,23 @@
 # app/routers/receipts.py
-from fastapi import APIRouter, UploadFile, File, HTTPException, Path, Request
+from fastapi import APIRouter, UploadFile, File, HTTPException, Path, Request, Query
 from fastapi.responses import JSONResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field, field_validator
-from typing import List, Optional, Literal
+from typing import List, Optional, Literal, Any
 from datetime import datetime
 import os
 import sqlite3
+import logging
+import json
+from uuid import uuid4
 
 from app.services.parse_ocr import parse_receipt_bytes
-from app.services.auth import require_user_id  # ✅ 세션 기반 user_id 가져오기
-from app.services.alert_service import check_overspend_alert, check_daily_overspend_alert, check_fixed_cost_alert # ✅ 추가된 함수
+from app.services.auth import require_user_id
+from app.services.alert_service import (
+    check_overspend_alert,
+    check_daily_overspend_alert,
+    check_fixed_cost_alert,
+)
 
 try:
     from dotenv import load_dotenv
@@ -18,15 +26,107 @@ except Exception:
     pass
 
 router = APIRouter(prefix="/receipts", tags=["receipts"])
+templates = Jinja2Templates(directory="app/templates")
 
 MAX_UPLOAD_MB = int(os.getenv("MAX_UPLOAD_MB", "5"))
+
 ALLOWED_MIMES = {
     "image/jpeg",
+    "image/jpg",
     "image/png",
     "image/heic",
     "image/heif",
     "application/octet-stream",
 }
+
+logger = logging.getLogger(__name__)
+
+
+# ---------------------------
+# Draft storage (SQLite)
+# ---------------------------
+def _ensure_receipt_drafts_table(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS receipt_drafts (
+            draft_id   TEXT PRIMARY KEY,
+            user_id    INTEGER NOT NULL,
+            ocr_raw    TEXT NOT NULL,
+            created_at TEXT DEFAULT (datetime('now'))
+        )
+        """
+    )
+
+
+def _commit_if_possible(conn: sqlite3.Connection) -> None:
+    # get_conn()이 autocommit일 수도 있지만, 안전하게 커밋 시도
+    try:
+        conn.commit()
+    except Exception:
+        pass
+
+
+def _row_get(row: Any, key: str, default=None):
+    # sqlite3.Row / dict / tuple 모두 대비
+    if row is None:
+        return default
+    try:
+        return row[key]
+    except Exception:
+        if isinstance(row, dict):
+            return row.get(key, default)
+        return default
+
+
+def _save_draft(conn: sqlite3.Connection, user_id: int, ocr_json: dict) -> str:
+    draft_id = str(uuid4())
+    _ensure_receipt_drafts_table(conn)
+
+    conn.execute(
+        """
+        INSERT INTO receipt_drafts (draft_id, user_id, ocr_raw)
+        VALUES (?, ?, ?)
+        """,
+        (draft_id, user_id, json.dumps(ocr_json, ensure_ascii=False)),
+    )
+    _commit_if_possible(conn)
+    return draft_id
+
+
+def _load_draft(conn: sqlite3.Connection, user_id: int, draft_id: str) -> dict:
+    _ensure_receipt_drafts_table(conn)
+
+    row = conn.execute(
+        """
+        SELECT draft_id, user_id, ocr_raw, created_at
+        FROM receipt_drafts
+        WHERE draft_id = ?
+        """,
+        (draft_id,),
+    ).fetchone()
+
+    if not row:
+        raise HTTPException(status_code=404, detail="draft not found")
+
+    db_user_id = _row_get(row, "user_id")
+    if db_user_id != user_id:
+        raise HTTPException(status_code=403, detail="forbidden")
+
+    raw_text = _row_get(row, "ocr_raw")
+    try:
+        return json.loads(raw_text)
+    except Exception:
+        raise HTTPException(status_code=500, detail="draft corrupted")
+
+
+def _delete_draft(conn: sqlite3.Connection, user_id: int, draft_id: str) -> None:
+    _ensure_receipt_drafts_table(conn)
+
+    conn.execute(
+        "DELETE FROM receipt_drafts WHERE draft_id = ? AND user_id = ?",
+        (draft_id, user_id),
+    )
+    _commit_if_possible(conn)
 
 
 # ---------- Schemas ----------
@@ -38,32 +138,36 @@ class ReceiptItemIn(BaseModel):
 
 
 class ReceiptConfirmIn(BaseModel):
-    # ⚠️ 클라이언트에서 보내더라도 무시하고, 서버에서 세션 기준으로 user_id 사용
     user_id: Optional[int] = None
-
     merchant: str
-    purchased_at: str  # YYYY-MM-DD or YYYY-MM-DD HH:MM(:SS)
+    purchased_at: str
     items: List[ReceiptItemIn]
     total: int = Field(ge=0)
     status: Literal["PENDING", "CONFIRMED"] = "CONFIRMED"
 
-    # ✅ A안: DB에 type 컬럼이 없으므로, 입력은 받아도 "저장/조회 쿼리에서 사용하지 않음"
     type: Literal["expense", "income", "transfer"] = "expense"
-
     category: Optional[str] = None
     image_path: Optional[str] = None
+
+    draft_id: Optional[str] = None
 
     @field_validator("purchased_at")
     @classmethod
     def _v_date(cls, v: str) -> str:
-        formats = ["%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"]
+        formats = [
+            "%Y-%m-%d",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y-%m-%d %H:%M",
+            "%Y-%m-%dT%H:%M:%S",
+            "%Y-%m-%dT%H:%M",
+        ]
         for fmt in formats:
             try:
                 datetime.strptime(v, fmt)
                 return v
             except ValueError:
                 continue
-        raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
+        raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM(:SS) or ISO8601")
 
 
 class ReceiptUpdateIn(BaseModel):
@@ -73,23 +177,27 @@ class ReceiptUpdateIn(BaseModel):
     total: int = Field(ge=0)
     status: Literal["PENDING", "CONFIRMED"] = "CONFIRMED"
 
-    # ✅ A안: DB 저장/조회에 쓰지 않음(프론트 호환용으로만 유지)
     type: Literal["expense", "income", "transfer"] = "expense"
-
     category: Optional[str] = None
     image_path: Optional[str] = None
 
     @field_validator("purchased_at")
     @classmethod
     def _v_date(cls, v: str) -> str:
-        formats = ["%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"]
+        formats = [
+            "%Y-%m-%d",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y-%m-%d %H:%M",
+            "%Y-%m-%dT%H:%M:%S",
+            "%Y-%m-%dT%H:%M",
+        ]
         for fmt in formats:
             try:
                 datetime.strptime(v, fmt)
                 return v
             except ValueError:
                 continue
-        raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM:SS")
+        raise ValueError("purchased_at must be YYYY-MM-DD or YYYY-MM-DD HH:MM(:SS) or ISO8601")
 
 
 class ReceiptRow(BaseModel):
@@ -99,10 +207,7 @@ class ReceiptRow(BaseModel):
     total: int
     purchased_at: str
     status: Literal["PENDING", "CONFIRMED"]
-
-    # ✅ A안: 항상 expense로 내려줌
     type: Literal["expense", "income", "transfer"] = "expense"
-
     category: Optional[str] = None
     image_path: Optional[str] = None
     created_at: Optional[str] = None
@@ -124,10 +229,7 @@ class ReceiptDetail(BaseModel):
     total: int
     purchased_at: str
     status: Literal["PENDING", "CONFIRMED"]
-
-    # ✅ A안: 항상 expense로 내려줌
     type: Literal["expense", "income", "transfer"] = "expense"
-
     category: Optional[str] = None
     image_path: Optional[str] = None
     created_at: Optional[str] = None
@@ -136,19 +238,16 @@ class ReceiptDetail(BaseModel):
 
 
 # ---------- Endpoints ----------
-
 @router.get("", response_model=dict)
 def list_receipts(
     request: Request,
     limit: int = 50,
     offset: int = 0,
 ):
-    """
-    로그인한 사용자의 영수증 목록 (Soft Delete 제외)
-    """
     user_id = require_user_id(request)
 
     from app.db.util import get_conn
+
     with get_conn() as conn:
         rows = conn.execute(
             """
@@ -170,7 +269,7 @@ def list_receipts(
                 total=r["total"],
                 purchased_at=r["purchased_at"],
                 status=r["status"],
-                type="expense",  # ✅ A안
+                type="expense",
                 category=r["category"],
                 image_path=r["image_path"],
                 created_at=r["created_at"],
@@ -185,12 +284,10 @@ def get_receipt_detail(
     request: Request,
     receipt_id: int = Path(..., ge=1),
 ):
-    """
-    로그인한 사용자의 단일 영수증 상세
-    """
     user_id = require_user_id(request)
 
     from app.db.util import get_conn
+
     with get_conn() as conn:
         r = conn.execute(
             """
@@ -202,7 +299,6 @@ def get_receipt_detail(
             (receipt_id,),
         ).fetchone()
 
-        # 삭제되었거나, 남의 영수증이면 404
         if (not r) or (r["is_deleted"] == 1) or (r["user_id"] != user_id):
             raise HTTPException(status_code=404, detail="receipt not found")
 
@@ -223,7 +319,7 @@ def get_receipt_detail(
             total=r["total"],
             purchased_at=r["purchased_at"],
             status=r["status"],
-            type="expense",  # ✅ A안
+            type="expense",
             category=r["category"],
             image_path=r["image_path"],
             created_at=r["created_at"],
@@ -243,34 +339,126 @@ def get_receipt_detail(
         return {"status": "ok", "data": detail.model_dump()}
 
 
+# ✅ 핵심: 기존 경로 /receipts/confirm 에서 draft_id 쿼리로 주입
+@router.get("/confirm")
+def confirm_page(
+    request: Request,
+    draft_id: Optional[str] = Query(default=None),
+):
+    """
+    /receipts/confirm?draft_id=... 로 들어오면
+    DB에서 draft를 읽어서 템플릿에 window.__OCR_RAW__ 형태로 주입할 수 있게 내려준다.
+    """
+    user_id = require_user_id(request)
+
+    ocr_raw = {}
+    ocr_raw_json = "{}"
+    did = draft_id
+
+    if draft_id:
+        from app.db.util import get_conn
+        with get_conn() as conn:
+            ocr_raw = _load_draft(conn, user_id, draft_id)
+        ocr_raw_json = json.dumps(ocr_raw, ensure_ascii=False)
+    else:
+        logger.warning("[receipt_confirm] draft_id not provided -> empty OCR")
+
+    return templates.TemplateResponse(
+        "pages/receipt_confirm.html",
+        {
+            "request": request,
+            "title": "영수증 확인",
+            "draft_id": did,
+            "ocr_raw": ocr_raw,
+            "ocr_raw_json": ocr_raw_json,
+        },
+    )
+
+
+# (옵션) /confirm-draft/{draft_id}도 유지
+@router.get("/confirm-draft/{draft_id}")
+def confirm_draft_page(request: Request, draft_id: str):
+    user_id = require_user_id(request)
+    from app.db.util import get_conn
+    with get_conn() as conn:
+        ocr_raw = _load_draft(conn, user_id, draft_id)
+
+    ocr_raw_json = json.dumps(ocr_raw, ensure_ascii=False)
+
+    return templates.TemplateResponse(
+        "pages/receipt_confirm.html",
+        {
+            "request": request,
+            "title": "영수증 확인",
+            "draft_id": draft_id,
+            "ocr_raw": ocr_raw,
+            "ocr_raw_json": ocr_raw_json,
+        },
+    )
+
+
 @router.post("/upload", response_model=dict)
 async def upload_receipt(
     request: Request,
     file: UploadFile = File(...),
 ):
-    """
-    OCR용 이미지 업로드 (DB 저장 X, OCR만 수행)
-    로그인 필요 → 세션 체크만.
-    """
-    _ = require_user_id(request)
+    user_id = require_user_id(request)
 
-    if file.content_type not in ALLOWED_MIMES:
-        raise HTTPException(status_code=400, detail=f"허용되지 않은 파일 형식: {file.content_type}")
+    content_type = (file.content_type or "").lower().strip()
+    filename = file.filename or "receipt.jpg"
+    ext = os.path.splitext(filename)[1].lower()
+
+    if not content_type:
+        if ext in [".jpg", ".jpeg"]:
+            content_type = "image/jpeg"
+        elif ext == ".png":
+            content_type = "image/png"
+        elif ext in [".heic", ".heif"]:
+            content_type = "image/heic"
+        else:
+            content_type = "application/octet-stream"
+
+    if content_type not in ALLOWED_MIMES:
+        raise HTTPException(status_code=400, detail=f"허용되지 않은 파일 형식: {content_type}")
 
     raw = await file.read()
     size_mb = len(raw) / (1024 * 1024)
     if size_mb > MAX_UPLOAD_MB:
         raise HTTPException(status_code=400, detail=f"파일이 너무 큽니다. 최대 {MAX_UPLOAD_MB}MB 허용")
 
+    if not raw:
+        raise HTTPException(status_code=400, detail="업로드된 파일이 비어있습니다.")
+
     try:
         ocr_json = parse_receipt_bytes(
             file_bytes=raw,
-            filename=file.filename or "receipt.jpg",
-            content_type=file.content_type or "image/jpeg",
+            filename=filename,
+            content_type=content_type,
         )
-        return JSONResponse({"status": "ok", "ocr_raw": ocr_json})
+
+        from app.db.util import get_conn
+        with get_conn() as conn:
+            draft_id = _save_draft(conn, user_id, ocr_json)
+
+        # ✅ 기존 네 앱이 /receipts/confirm 으로 이동하는 구조라면, 여기로 맞춰주는 게 제일 확실함
+        confirm_url = f"/receipts/confirm?draft_id={draft_id}"
+
+        return JSONResponse(
+            {
+                "status": "ok",
+                "draft_id": draft_id,
+                "confirm_url": confirm_url,
+                "ocr_raw": ocr_json,
+            }
+        )
+
+    except HTTPException:
+        raise
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"OCR 입력 오류: {e}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"OCR 처리 실패: {e}")
+        logger.exception("OCR 처리 중 예외 발생: %s", e)
+        raise HTTPException(status_code=500, detail=f"OCR 처리 실패(서버): {e}")
 
 
 @router.post("/confirm", response_model=dict)
@@ -278,21 +466,15 @@ def confirm_receipt(
     request: Request,
     payload: ReceiptConfirmIn,
 ):
-    """
-    OCR 결과 + 사용자 수정을 반영해 영수증을 확정 저장
-    user_id는 세션에서 가져옴 (payload.user_id는 무시)
-
-    ✅ A안: receipts 테이블에 type 컬럼이 없으므로 저장하지 않음.
-    """
     user_id = require_user_id(request)
 
     if not payload.items:
         raise HTTPException(status_code=400, detail="items 최소 1개 필요")
 
-    # 서버에서 총액 재계산
     calc_total = sum(it.qty * it.price for it in payload.items)
 
     from app.db.util import get_conn
+
     try:
         with get_conn() as conn:
             cur = conn.cursor()
@@ -327,9 +509,16 @@ def confirm_receipt(
                         it.category.strip() if it.category else None,
                     ),
                 )
+
             check_overspend_alert(conn, user_id, receipt_id)
             check_daily_overspend_alert(conn, user_id, receipt_id)
             check_fixed_cost_alert(conn, user_id, receipt_id)
+
+            if payload.draft_id:
+                try:
+                    _delete_draft(conn, user_id, payload.draft_id)
+                except Exception:
+                    logger.warning("draft delete failed: %s", payload.draft_id)
 
             return {
                 "status": "ok",
@@ -337,12 +526,10 @@ def confirm_receipt(
                 "saved_total": calc_total,
                 "items_saved": len(payload.items),
             }
+
     except sqlite3.IntegrityError as e:
         if "uq_receipt_dedup" in str(e) or "UNIQUE constraint failed" in str(e):
-            raise HTTPException(
-                status_code=409,
-                detail="이미 저장된 영수증일 수 있어요(중복 가능성).",
-            )
+            raise HTTPException(status_code=409, detail="이미 저장된 영수증일 수 있어요(중복 가능성).")
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"DB 저장 실패: {e}")
@@ -354,11 +541,6 @@ def update_receipt(
     receipt_id: int = Path(..., ge=1),
     payload: ReceiptUpdateIn = ...,
 ):
-    """
-    로그인한 사용자의 영수증만 수정 가능
-
-    ✅ A안: receipts 테이블에 type 컬럼이 없으므로 업데이트하지 않음.
-    """
     user_id = require_user_id(request)
 
     if not payload.items:
@@ -367,10 +549,10 @@ def update_receipt(
     calc_total = sum(it.qty * it.price for it in payload.items)
 
     from app.db.util import get_conn
+
     with get_conn() as conn:
         cur = conn.cursor()
 
-        # 존재/삭제/소유자 여부 체크
         row = cur.execute(
             "SELECT id, user_id, is_deleted FROM receipts WHERE id = ?",
             (receipt_id,),
@@ -378,7 +560,6 @@ def update_receipt(
         if (not row) or (row["is_deleted"] == 1) or (row["user_id"] != user_id):
             raise HTTPException(status_code=404, detail="receipt not found")
 
-        # 본문 업데이트
         cur.execute(
             """
             UPDATE receipts
@@ -402,7 +583,6 @@ def update_receipt(
             ),
         )
 
-        # 품목 전량 삭제 후 재입력
         cur.execute("DELETE FROM receipt_items WHERE receipt_id = ?", (receipt_id,))
         for it in payload.items:
             cur.execute(
@@ -419,11 +599,9 @@ def update_receipt(
                 ),
             )
 
-        # ✅ 3️⃣ update 후에도 이상지출 검사
         check_overspend_alert(conn, user_id, receipt_id)
         check_daily_overspend_alert(conn, user_id, receipt_id)
         check_fixed_cost_alert(conn, user_id, receipt_id)
-
 
         return {
             "status": "ok",
@@ -438,12 +616,10 @@ def soft_delete_receipt(
     request: Request,
     receipt_id: int = Path(..., ge=1),
 ):
-    """
-    로그인한 사용자의 영수증만 Soft Delete
-    """
     user_id = require_user_id(request)
 
     from app.db.util import get_conn
+
     with get_conn() as conn:
         cur = conn.cursor()
         cur.execute(
@@ -458,8 +634,5 @@ def soft_delete_receipt(
             (receipt_id, user_id),
         )
         if cur.rowcount == 0:
-            raise HTTPException(
-                status_code=404,
-                detail="receipt not found or already deleted",
-            )
+            raise HTTPException(status_code=404, detail="receipt not found or already deleted")
         return {"status": "ok", "receipt_id": receipt_id, "deleted": True}
