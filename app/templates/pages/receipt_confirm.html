@@ -43,8 +43,21 @@
         }
 
         if (result.paymentInfo?.date?.text) {
-          const m = result.paymentInfo.date.text.match(/(\d{4})-(\d{2})-(\d{2})/);
-          if (m) this.receiptDate = `${m[1]}-${m[2]}-${m[3]}`;
+          const rawDate = result.paymentInfo.date.text;
+
+          const m = rawDate.match(
+            /(\d{2,4})[.\-/년 ](\d{1,2})[.\-/월 ](\d{1,2})?/
+          );
+
+          if (m) {
+            let year = m[1].length === 2 ? `20${m[1]}` : m[1];
+            let month = m[2].padStart(2, '0');
+            let day = (m[3] ?? '01').padStart(2, '0'); // 일 없으면 01
+
+            this.receiptDate = `${year}-${month}-${day}`;
+          } else {
+            console.warn('⚠️ 날짜 파싱 실패:', rawDate);
+          }
         }
 
         if (result.paymentInfo?.time?.text) {
@@ -58,15 +71,22 @@
           this.nextId = 1;
 
           items.forEach(item => {
-            this.products.push({
-              id: this.nextId++,
-              name: item.name?.text || '',
-              quantity: Number(item.count?.text || 1),
-              unitPrice: Number(item.price?.price?.formatted?.value || 0),
-              swipedLeft: false,
-              touchStartX: 0
-            });
-          });
+  const qty = Number(item.count?.text || 1);
+  const lineTotal = Number(item.price?.price?.formatted?.value || 0);
+
+  const unit = qty > 0
+    ? Math.round(lineTotal / qty)
+    : lineTotal;
+
+  this.products.push({
+    id: this.nextId++,
+    name: item.name?.text || '',
+    quantity: qty,
+    unitPrice: unit,   // ✅ 단가 = 총액 ÷ 수량
+    swipedLeft: false,
+    touchStartX: 0
+  });
+});
 
           while (this.products.length < 3) {
             this.products.push({
