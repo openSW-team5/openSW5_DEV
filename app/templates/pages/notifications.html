@@ -18,7 +18,7 @@
                  {{ 'opacity-40 bg-gray-100' if alert.is_read else 'bg-white' }}">
             <a
                 href="/transactions?open={{ alert.related_receipt_id }}"
-                onclick="markRead({{ alert.id }})"
+                onclick="markRead('{{ alert.id }}')"
                 class="block">
                 <div class="text-xs text-gray-500 mb-1">{{ alert.created_at }}</div>
                 <div class="font-medium">{{ alert.message }}</div>
