@@ -1,9 +1,11 @@
 {% extends "base.html" %} {% set navbar_variant = 'back' %} {% set back_url = '/dashboard' %} {% block content %}
 
 <!-- ✅ 서버에서 내려준 OCR RAW + draft_id (sessionStorage/localStorage 안 씀) -->
+<script id="ocrRawJson" type="application/json">
+    {{ ocr_raw_json | safe }}
+</script>
 <script>
-    window.__DRAFT_ID__ = {{ (draft_id or "") | tojson }};
-    window.__OCR_RAW__  = {{ (ocr_raw or {}) | tojson }};
+    const OCR_RAW = JSON.parse(document.getElementById('ocrRawJson').textContent);
 </script>
 
 <div

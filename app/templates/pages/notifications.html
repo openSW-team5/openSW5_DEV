@@ -1,81 +1,61 @@
-{% extends "base.html" %}
-{% set navbar_variant = 'default' %}
-{% set back_url = '/' %}
-{% set footer_active = 'notification' %}
-
-{% block content %}
+{% extends "base.html" %} {% set navbar_variant = 'default' %} {% set back_url = '/' %} {% set footer_active =
+'notification' %} {% block content %}
 <div class="pt-[120px] pb-[95px] px-4">
-
-  {% if not alerts %}
+    {% if not alerts %}
     <div class="flex items-center justify-center pt-10">
-      <h1 class="text-2xl font-bold text-center">
-        알림 페이지
-      </h1>
+        <h1 class="text-2xl font-bold text-center">알림 페이지</h1>
     </div>
-  {% else %}
+    {% else %}
     <h1 class="text-xl font-bold mb-4 relative z-10">
-  알림
-  <button
-    type="button"
-    onclick="readAllAlerts()"
-    class="text-sm text-gray-500 hover:underline"
-  >
-    전부 읽기
-  </button>
-</h1>
-
+        알림
+        <button type="button" onclick="readAllAlerts()" class="text-sm text-gray-500 hover:underline">전부 읽기</button>
+    </h1>
 
     <ul class="space-y-3">
-      {% for alert in alerts %}
+        {% for alert in alerts %}
         <li
-          class="p-4 border rounded-lg shadow-sm transition
-                 {{ 'opacity-40 bg-gray-100' if alert.is_read else 'bg-white' }}"
-        >
-          <a
-            href="/transactions?open={{ alert.related_receipt_id }}"
-            onclick="markRead({{ alert.id }})"
-            class="block"
-          >
-            <div class="text-xs text-gray-500 mb-1">
-              {{ alert.created_at }}
-            </div>
-            <div class="font-medium">
-              {{ alert.message }}
-            </div>
-          </a>
+            class="p-4 border rounded-lg shadow-sm transition
+                 {{ 'opacity-40 bg-gray-100' if alert.is_read else 'bg-white' }}">
+            <a
+                href="/transactions?open={{ alert.related_receipt_id }}"
+                onclick="markRead({{ alert.id }})"
+                class="block">
+                <div class="text-xs text-gray-500 mb-1">{{ alert.created_at }}</div>
+                <div class="font-medium">{{ alert.message }}</div>
+            </a>
         </li>
-      {% endfor %}
+        {% endfor %}
     </ul>
-  {% endif %}
-
+    {% endif %}
 </div>
 
 <script>
-function markRead(alertId) {
-  // UX 우선: 실패해도 이동은 정상 진행
-  fetch(`/users/alerts/${alertId}/read`, {
-    method: "POST",
-    credentials: "include"
-  });
-}
-function readAllAlerts() {
-  console.log("🟡 readAllAlerts() called");
+    function markRead(alertId) {
+        // UX 우선: 실패해도 이동은 정상 진행
+        fetch('/users/alerts/' + alertId + '/read', {
+            method: 'POST',
+            credentials: 'include',
+        });
+    }
 
-  fetch("/users/alerts/read-all", {
-    method: "POST",
-    credentials: "include"
-  })
-  .then(res => {
-    console.log("🟢 response status:", res.status);
-    return res.json().catch(() => null);
-  })
-  .then(data => {
-    console.log("🟢 response data:", data);
-    location.reload();
-  })
-  .catch(err => {
-    console.error("🔴 fetch error:", err);
-  });
-}
+    function readAllAlerts() {
+        console.log('🟡 readAllAlerts() called');
+
+        fetch('/users/alerts/read-all', {
+            method: 'POST',
+            credentials: 'include',
+        })
+            .then((res) => {
+                console.log('🟢 response status:', res.status);
+                return res.json().catch(() => null);
+            })
+            .then((data) => {
+                console.log('🟢 response data:', data);
+                location.reload();
+            })
+            .catch((err) => {
+                console.error('🔴 fetch error:', err);
+            });
+    }
 </script>
 {% endblock %}

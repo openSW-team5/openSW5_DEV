@@ -719,9 +719,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   async function loadReceipts() {
     try {
       console.log('Fetching receipts from /receipts...');
-      const response = await fetch('/receipts', {
-  credentials: 'include'   // ⭐ 여기 추가
-});
+      const response = await fetch('/receipts');
       console.log('Response status:', response.status);
       const result = await response.json();
       console.log('Result:', result);
@@ -1430,16 +1428,19 @@ async function deleteReceipt(receiptId) {
 
   try {
     const response = await fetch(`/receipts/${receiptId}/delete`, {
-      method: 'POST',
-      credentials: 'include', // ✅ 이거 추가 (쿠키/세션 포함)
+      method: 'POST'
     });
 
     if (response.ok) {
-      await loadReceipts(); // ✅ 이것도 추천 (화면/차트/달력까지 싹 동기화)
-      if (window.ToastHelper) window.ToastHelper.success('거래내역이 삭제되었습니다.');
+      // 성공 시 목록에서 제거
+      receiptsData = receiptsData.filter(r => r.id !== receiptId);
+      const groupedReceipts = groupReceiptsByDate(receiptsData);
+      renderGroupedTransactions(groupedReceipts);
+      if (window.ToastHelper) {
+        window.ToastHelper.success('거래내역이 삭제되었습니다.');
+      }
     } else {
-      const err = await response.json().catch(() => ({}));
-      alert(err.detail || '삭제 실패');
+      throw new Error('삭제 실패');
     }
   } catch (error) {
     console.error('Error deleting receipt:', error);
