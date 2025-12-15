@@ -9,6 +9,121 @@
 </script>
 
 <div
+  x-data="{
+    receiptType: new URLSearchParams(window.location.search).get('type') || 'expense',
+    scrolled: false,
+    showSuccess: false,
+    showCategoryDropdown: false,
+    receiptDate: '',
+    receiptTime: '',
+    store: '',
+    category: '식비',
+    categories: ['식비', '교통비', '카페/간식', '쇼핑', '문화/여가', '의료/건강', '생활용품', '기타'],
+    manualAmount: 0,
+    products: [
+      { id: 1, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 },
+      { id: 2, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 },
+      { id: 3, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 }
+    ],
+    nextId: 4,
+
+    init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('from') !== 'ocr') return;
+
+      const raw = sessionStorage.getItem('ocrResult');
+      if (!raw) {
+        console.warn('❌ ocrResult 없음');
+        return;
+      }
+ 
+      try {
+        const ocr = JSON.parse(raw);
+        console.log('📦 OCR RAW:', ocr);
+
+        const result = ocr.images?.[0]?.receipt?.result;
+        console.log('🧾 receipt.result:', result);
+
+        if (!result) return;
+
+        if (result.storeInfo?.name?.text) {
+          this.store = result.storeInfo.name.text;
+        }
+
+        if (result.paymentInfo?.date?.text) {
+          const m = result.paymentInfo.date.text.match(/(\d{4})-(\d{2})-(\d{2})/);
+          if (m) this.receiptDate = `${m[1]}-${m[2]}-${m[3]}`;
+        }
+
+        if (result.paymentInfo?.time?.text) {
+          const m = result.paymentInfo.time.text.match(/(\d{2}):\s?(\d{2})/);
+          if (m) this.receiptTime = `${m[1]}:${m[2]}`;
+        }
+
+        const items = result.subResults?.[0]?.items;
+        if (Array.isArray(items)) {
+          this.products = [];
+          this.nextId = 1;
+
+          items.forEach(item => {
+            this.products.push({
+              id: this.nextId++,
+              name: item.name?.text || '',
+              quantity: Number(item.count?.text || 1),
+              unitPrice: Number(item.price?.price?.formatted?.value || 0),
+              swipedLeft: false,
+              touchStartX: 0
+            });
+          });
+
+          while (this.products.length < 3) {
+            this.products.push({
+              id: this.nextId++,
+              name: '',
+              quantity: '',
+              unitPrice: '',
+              swipedLeft: false,
+              touchStartX: 0
+            });
+          }
+        }
+
+        sessionStorage.removeItem('ocrResult');
+        console.log('✅ OCR 자동 입력 완료');
+
+      } catch (e) {
+        console.error('❌ OCR 파싱 오류:', e);
+      }
+    },
+    formatNumber(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+    subtotal(product) {
+      const qty = Number(product.quantity) || 0;
+      const price = Number(product.unitPrice) || 0;
+      return qty * price;
+    },
+    get total() {
+      return this.products.reduce((sum, product) => sum + this.subtotal(product), 0);
+    },
+    get formattedDateTime() {
+      if (!this.receiptDate && !this.receiptTime) return '';
+      return (this.receiptDate || '') + ' ' + (this.receiptTime || '');
+    },
+    addProduct() {
+      this.products.push({ id: this.nextId++, name: '', quantity: '', unitPrice: '', swipedLeft: false, touchStartX: 0 });
+    },
+    removeProduct(id) {
+      this.products = this.products.filter(p => p.id !== id);
+    },
+    async submitReceipt() {
+      try {
+        const payload = {
+          type: this.receiptType,
+          merchant: this.store,
+          purchased_at: this.receiptDate,
+          status: 'CONFIRMED'
+        };
 
     x-data="receiptConfirmPage()"
     x-init="init()"
