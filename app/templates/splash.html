@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartLedger</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .fade-out {
-      animation: fadeOut 0.5s ease-out forwards;
-    }
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-      }
-      to {
-        opacity: 0;
-      }
-    }
-  </style>
-</head>
-<body class="m-0 p-0 overflow-hidden bg-white">
-  <!-- Splash Screen -->
-  <div id="splash" class="relative w-full h-screen flex items-center justify-center">
-    <!-- Logo -->
-    <div class="w-[365px] h-[128px]">
-      <img src="{{ url_for('static', path='assets/logo.svg') }}" alt="SmartLedger" class="w-full h-full">
-    </div>
-  </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SmartLedger</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            .fade-out {
+                animation: fadeOut 0.5s ease-out forwards;
+            }
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+        </style>
+    </head>
+    <body class="m-0 p-0 overflow-hidden bg-white">
+        <!-- Splash Screen -->
+        <div id="splash" class="relative w-full h-screen flex items-center justify-center">
+            <!-- Logo -->
+            <div class="w-[365px] h-[128px]">
+                <img src="{{ url_for('static', path='assets/logo.svg') }}" alt="SmartLedger" class="w-full h-full" />
+            </div>
+        </div>
 
-  <script>
-    // 2초 후 fade out 시작하고 dashboard로 이동
-    setTimeout(function() {
-      const splash = document.getElementById('splash');
-      splash.classList.add('fade-out');
+        <script>
+            // 2초 후 fade out 시작하고 dashboard로 이동
+            setTimeout(function () {
+                const splash = document.getElementById('splash');
+                splash.classList.add('fade-out');
 
-      // fade out 완료 후 페이지 이동
-      setTimeout(function() {
-        window.location.href = '/dashboard';
-      }, 500);
-    }, 2000);
-  </script>
-</body>
+                // fade out 완료 후 페이지 이동
+                setTimeout(function () {
+                    window.location.href = '/users/login?next=/dashboard';
+                }, 500);
+            }, 2000);
+        </script>
+    </body>
 </html>

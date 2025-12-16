@@ -26,7 +26,6 @@ PROTECTED_PREFIXES = (
 
 # ✅ 로그인 필요 "단일 페이지" 경로들 (main.py에서 직접 만든 페이지들)
 PROTECTED_PATHS = {
-    "/",
     "/dashboard",
     "/transactions",
     "/search",
@@ -91,13 +90,20 @@ def _require_login(request: Request):
 
 
 # ✅ 첫 진입: 로그인 안 했으면 로그인으로, 했으면 대시보드로
+from fastapi.responses import HTMLResponse, RedirectResponse
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    user_id = getattr(request.state, "user_id", None)
-    if not user_id:
-        return RedirectResponse(url="/users/login?next=/dashboard", status_code=303)
-    return RedirectResponse(url="/dashboard", status_code=303)
+    # 스플래시 페이지로 이동 (URL!)
+    return RedirectResponse(url="/splash", status_code=303)
 
+@app.get("/splash", response_class=HTMLResponse)
+def splash(request: Request):
+    # 템플릿 렌더링 (템플릿 경로!)
+    return templates.TemplateResponse(
+        "splash.html",
+        {"request": request, "title": "SmartLedger"},
+    )
 
 # ✅ 대시보드: 로그인 필수
 @app.get("/dashboard", response_class=HTMLResponse)
