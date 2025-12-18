@@ -1,0 +1,28 @@
+name: CI/CD Pipeline (Mock Deployment)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🧪 Run build test
+        run: |
+          echo "Build test started"
+          echo "Build test completed successfully"
+
+      - name: 🚀 Deploy (Mock)
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          chmod +x deploy.sh
+          ./deploy.sh
